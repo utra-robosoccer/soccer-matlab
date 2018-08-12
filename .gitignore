@@ -31,3 +31,6 @@ octave-workspace
 .DS_Store
 Icon[]
 
+*.sh
+*.tgz
+*_ert_rtw/
