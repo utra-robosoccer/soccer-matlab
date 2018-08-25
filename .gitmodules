@@ -3,7 +3,7 @@
 	url = https://github.com/utra-robosoccer/soccer-vision
 [submodule "soccer-strategy"]
 	path = soccer-strategy
-	url = https://github.com/utra-robosoccer/soccer-strategy
+	url = https://github.com/utra-robosoccer/soccer-control
 [submodule "soccer-utility"]
 	path = soccer-utility
 	url = https://github.com/utra-robosoccer/soccer_utility
