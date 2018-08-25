@@ -13,3 +13,6 @@
 [submodule "soccer_description"]
 	path = soccer_description
 	url = https://github.com/utra-robosoccer/soccer_description
+[submodule "soccer-strategy"]
+	path = soccer-strategy
+	url = https://github.com/utra-robosoccer/soccer-strategy
