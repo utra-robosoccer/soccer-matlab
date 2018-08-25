@@ -1,9 +1,6 @@
 [submodule "soccer-vision"]
 	path = soccer-vision
 	url = https://github.com/utra-robosoccer/soccer-vision
-[submodule "soccer-strategy"]
-	path = soccer-strategy
-	url = https://github.com/utra-robosoccer/soccer-strategy
 [submodule "soccer-utility"]
 	path = soccer-utility
 	url = https://github.com/utra-robosoccer/soccer_utility
