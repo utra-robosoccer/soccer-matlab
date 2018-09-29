@@ -1,0 +1,3 @@
+[submodule "control"]
+	path = control
+	url = https://github.com/utra-robosoccer/soccer-control
