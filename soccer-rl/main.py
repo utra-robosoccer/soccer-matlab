@@ -28,6 +28,11 @@ class Humanoid:
         self.getupback_trajectory = import_float_csv('trajectories\getupback.csv')
         self.getupfront_trajectory = import_float_csv('trajectories\getupfront.csv')
 
+        self.standing_trajectory.reverse()
+        self.ready_trajectory.reverse()
+        self.getupback_trajectory.reverse()
+        self.getupfront_trajectory.reverse()
+
         self.getupback_timer = -1
         self.getupback_totaltime = len(self.getupback_trajectory)
 
@@ -48,7 +53,7 @@ class Humanoid:
         #PRINTS
         print('getupback_totaltime: {}'.format(self.getupback_totaltime))
         print('getupfront_totaltime: {}'.format(self.getupfront_totaltime))
-        print()
+        print('Number of Joints: {}'.format(p.getNumJoints(self.bodyID)))
 
     def get_discrete_state(self):
         avg_velocity = 0
@@ -112,6 +117,10 @@ class Humanoid:
         p.setJointMotorControlArray(self.bodyID, self.joints, controlMode=p.POSITION_CONTROL,
                                     targetPositions=self.standing_trajectory[0])
 
+    def ready(self):
+        p.setJointMotorControlArray(self.bodyID, self.joints, controlMode=p.POSITION_CONTROL,
+                                    targetPositions=self.ready_trajectory[0])
+
     def stabilize(self):
         self.get_imu_measurements()
         self.get_discrete_state()
@@ -157,7 +166,7 @@ if __name__ == '__main__':
         print("joint", jointInfo[0], "name=", jointInfo[1].decode('ascii'))
 
     #Start Standing
-    soccerbot.stand()
+    soccerbot.ready()
 
     # Step through simulation
     counter = 0
