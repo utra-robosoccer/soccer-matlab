@@ -28,10 +28,10 @@ class Humanoid:
         self.getupback_trajectory = import_float_csv('trajectories\getupback.csv')
         self.getupfront_trajectory = import_float_csv('trajectories\getupfront.csv')
 
-        self.standing_trajectory.reverse()
-        self.ready_trajectory.reverse()
-        self.getupback_trajectory.reverse()
-        self.getupfront_trajectory.reverse()
+        # self.standing_trajectory.reverse()
+        # self.ready_trajectory.reverse()
+        # self.getupback_trajectory.reverse()
+        # self.getupfront_trajectory.reverse()
 
         self.getupback_timer = -1
         self.getupback_totaltime = len(self.getupback_trajectory)
@@ -73,7 +73,10 @@ class Humanoid:
         else:
             self.discrete_state[0] = 'active'
             if self.getupfront_timer == -1 and self.getupback_timer == -1:
-                self.discrete_state[1] = 'falling'
+                if self.IMU_measurement[1][1] < -0.5:
+                    self.discrete_state[1] = 'fallingback'
+                elif self.IMU_measurement[1][1] > 0.5:
+                    self.discrete_state[1] = 'fallingfront'
             elif self.getupback_timer != -1:
                 self.discrete_state[1] = 'back'
             elif self.getupfront_timer != -1:
@@ -126,15 +129,19 @@ class Humanoid:
         self.get_discrete_state()
         if self.discrete_state[0] == 'rest':
             if self.discrete_state[1] == 'back':
-                self.getupback()
+                #self.getupback()
                 return
             elif self.discrete_state[1] == 'front':
-                self.getupfront()
+                #self.getupfront()
                 return
             elif self.discrete_state[1] == 'stable':
                 self.stand()
         elif self.discrete_state[0] == 'active':
-            if self.discrete_state[1] == 'falling':
+            if self.discrete_state[1] == 'fallingback':
+                self.getupback()
+                return
+            elif self.discrete_state[1] == 'fallingfront':
+                self.getupfront()
                 return
             elif self.discrete_state[1] == 'back':
                 self.getupback()
