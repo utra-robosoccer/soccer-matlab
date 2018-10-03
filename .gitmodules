@@ -1,0 +1,3 @@
+[submodule "soccer_description"]
+	path = soccer_description
+	url = https://github.com/utra-robosoccer/soccer_description
