@@ -20,18 +20,24 @@ def import_float_csv(file_name):
 
 class Humanoid:
     def __init__(self):
-        self.bodyID = p.loadURDF("../soccer_description/models/soccerbot/model.xacro", no_translation,
-                                 quaternion_rotation)
+        self.bodyID = p.loadURDF("../soccer_description/models/soccerbot/model.xacro")
 
         self.standing_trajectory = import_float_csv('trajectories\standing.csv')
         self.ready_trajectory = import_float_csv(r'trajectories\ready.csv')
         self.getupback_trajectory = import_float_csv('trajectories\getupback.csv')
         self.getupfront_trajectory = import_float_csv('trajectories\getupfront.csv')
 
-        # self.standing_trajectory.reverse()
-        # self.ready_trajectory.reverse()
-        # self.getupback_trajectory.reverse()
-        # self.getupfront_trajectory.reverse()
+        # for i in range(len(self.standing_trajectory)):
+        #     self.standing_trajectory[i].reverse()
+        #
+        # for i in range(len(self.ready_trajectory)):
+        #     self.ready_trajectory[i].reverse()
+        #
+        # for i in range(len(self.getupback_trajectory)):
+        #     self.getupback_trajectory[i].reverse()
+        #
+        # for i in range(len(self.getupfront_trajectory)):
+        #     self.getupfront_trajectory[i].reverse()
 
         self.getupback_timer = -1
         self.getupback_totaltime = len(self.getupback_trajectory)
@@ -41,12 +47,21 @@ class Humanoid:
 
         self.IMU_ID = -1
         self.joints = []
+
         for index in range(p.getNumJoints(self.bodyID)):
-            if index > 0:
-                self.joints.append(index)
+            self.joints.append(index)
             info = p.getJointInfo(self.bodyID, index)
             if info[1].decode('ascii') == 'torso_imu':
                 self.IMU_ID = info[0]
+
+
+        self.motors = self.joints[2:14] + self.joints[17:21] + self.joints[14:16] + self.joints[0:2]
+
+        print("Motor Array: (")
+        for i in range(len(self.motors)):
+            print(' {},'.format(self.motors[i]))
+        print(")")
+
         self.discrete_state = ['rest', 'stable']
         self.IMU_measurement = []
 
@@ -62,21 +77,18 @@ class Humanoid:
             avg_velocity = avg_velocity + abs(vel)
         avg_velocity = avg_velocity / 3
 
-        if avg_velocity < 0.001 and self.getupfront_timer == -1 and self.getupback_timer == -1:
+        if avg_velocity < 0.005 and self.getupfront_timer == -1 and self.getupback_timer == -1:
             self.discrete_state[0] = 'rest'
-            if self.IMU_measurement[1][1] < -0.1:
+            if self.IMU_measurement[1][1] < -0.707:
                 self.discrete_state[1] = 'back'
-            elif self.IMU_measurement[1][1] > 0.1:
+            elif self.IMU_measurement[1][1] > 0.707:
                 self.discrete_state[1] = 'front'
             else:
                 self.discrete_state[1] = 'stable'
         else:
             self.discrete_state[0] = 'active'
             if self.getupfront_timer == -1 and self.getupback_timer == -1:
-                if self.IMU_measurement[1][1] < -0.5:
-                    self.discrete_state[1] = 'fallingback'
-                elif self.IMU_measurement[1][1] > 0.5:
-                    self.discrete_state[1] = 'fallingfront'
+                self.discrete_state[1] = 'falling'
             elif self.getupback_timer != -1:
                 self.discrete_state[1] = 'back'
             elif self.getupfront_timer != -1:
@@ -99,7 +111,7 @@ class Humanoid:
             self.getupback_timer = 0
 
         print('getupback_timer: {}'.format(self.getupback_timer))
-        p.setJointMotorControlArray(self.bodyID, self.joints, controlMode=p.POSITION_CONTROL,
+        p.setJointMotorControlArray(self.bodyID, self.motors, controlMode=p.POSITION_CONTROL,
                                     targetPositions=self.getupback_trajectory[self.getupback_timer])
         self.getupback_timer = self.getupback_timer + 1
 
@@ -112,16 +124,16 @@ class Humanoid:
             self.getupfront_timer = 0
 
         print("getupfront_timer: {}".format(self.getupfront_timer))
-        p.setJointMotorControlArray(self.bodyID, self.joints, controlMode=p.POSITION_CONTROL,
+        p.setJointMotorControlArray(self.bodyID, self.motors, controlMode=p.POSITION_CONTROL,
                                     targetPositions=self.getupfront_trajectory[self.getupfront_timer])
         self.getupfront_timer = self.getupfront_timer + 1
 
     def stand(self):
-        p.setJointMotorControlArray(self.bodyID, self.joints, controlMode=p.POSITION_CONTROL,
+        p.setJointMotorControlArray(self.bodyID, self.motors, controlMode=p.POSITION_CONTROL,
                                     targetPositions=self.standing_trajectory[0])
 
     def ready(self):
-        p.setJointMotorControlArray(self.bodyID, self.joints, controlMode=p.POSITION_CONTROL,
+        p.setJointMotorControlArray(self.bodyID, self.motors, controlMode=p.POSITION_CONTROL,
                                     targetPositions=self.ready_trajectory[0])
 
     def stabilize(self):
@@ -129,23 +141,21 @@ class Humanoid:
         self.get_discrete_state()
         if self.discrete_state[0] == 'rest':
             if self.discrete_state[1] == 'back':
-                #self.getupback()
+                self.getupback()
+                # self.getupfront()
                 return
             elif self.discrete_state[1] == 'front':
-                #self.getupfront()
+                self.getupfront()
                 return
             elif self.discrete_state[1] == 'stable':
                 self.stand()
+                # self.ready()
         elif self.discrete_state[0] == 'active':
-            if self.discrete_state[1] == 'fallingback':
-                self.getupback()
-                return
-            elif self.discrete_state[1] == 'fallingfront':
-                self.getupfront()
+            if self.discrete_state[1] == 'falling':
                 return
             elif self.discrete_state[1] == 'back':
                 self.getupback()
-                return
+                # self.getupfront()
             elif self.discrete_state[1] == 'front':
                 self.getupfront()
                 return
@@ -156,11 +166,13 @@ if __name__ == '__main__':
 
     # Pybullet Setup
     p.connect(p.GUI)
-    plane = p.loadURDF("pybullet/gym/pybullet_data/plane.urdf")
 
+    incline = -5 #In degrees
     no_translation = [0, 0, 0]
-    euclidean_rotation = [0,0,0]
+    euclidean_rotation = [0, (2*3.141592)/360*incline, 0]
     quaternion_rotation = p.getQuaternionFromEuler(euclidean_rotation)
+    plane = p.loadURDF("pybullet/gym/pybullet_data/plane.urdf", no_translation, quaternion_rotation)
+
 
     #Create Humanoid
     soccerbot = Humanoid()
@@ -173,7 +185,7 @@ if __name__ == '__main__':
         print("joint", jointInfo[0], "name=", jointInfo[1].decode('ascii'))
 
     #Start Standing
-    soccerbot.ready()
+    soccerbot.stand()
 
     # Step through simulation
     counter = 0
