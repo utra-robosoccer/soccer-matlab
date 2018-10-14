@@ -5,39 +5,36 @@ Robot and Animations
 
 import os
 import sys
+import numpy as np
+import matplotlib as plt
+
+import tensorflow as tf
+import pybullet as p
+
 import settings
 import state 
 import policy 
 
-import numpy as np
-import pybullet as p
-import tensorflow as tf
-import matplotlib as plt
-
-from time import sleep
-
-
 
 class Robot(object):
-    """ Bot la
+    """ 
     """
+    def __init__(self, bot_model_path):
 
-    # maximum pitch beyond which the robot is to be considered tilted
-    MAX_ALLOWED_PITCH = 0.785398163
-
-    def __init__(self):
-
-        # core attributes 
-        self.state = None 
-        self.policy = None 
+        self.init_bot(bot_model_path)
         self.session = None 
-        
 
-        # initialize robot
-        self.body = p.loadURDF("../soccer_description/models/soccerbot/model.xacro")
-        self.state = RobotState()
+
+    def init_bot(self, bot_model_path):
+        """ initialize robot core attributes 
+        Args:
+            bot_model_path: URDF file
+        """
+        self.body = p.loadURDF(bot_model_path)
+        self.state = state.RobotState()
+        self.policy = policy.PPO()
+
         self.imu = -1
-        self.imuMeasurements = JointMeasurement()
         self.joints = []
         self.motors = []
 
@@ -48,19 +45,14 @@ class Robot(object):
             if jointInfo[1].decode('ascii') == "torso_imu":
                 self.imu = jointInfo[0]
 
-        if self.imu == -1:
-            raise AttributeError("Could not find robot's imu sensor from joint list")
-
         # rearrange joint order to match the order of positions found in the csv files. See:
         # https://docs.google.com/spreadsheets/d/1KgIYwm3fNen8yjLEa-FEWq-GnRUnBjyg4z64nZ2uBv8/edit#gid=775054312
         self.motors = self.joints[2:14] + self.joints[17:21] + self.joints[14:16] + self.joints[0:2]
 
-        # initialize animations
-        self.getupBackAnimation = Animation("./trajectories/getupback.csv")
-        self.getupFrontAnimation = Animation("./trajectories/getupfront.csv")
-        self.readyAnimation = Animation("./trajectories/ready.csv")
-        self.standingAnimation = Animation("./trajectories/standing.csv")
-        self.activeAnimation = None
+    def get_state(self):
+        """ updated state consists of ...
+        """
+
 
     def updateImuMeasurments(self):
     	"""Get IMU measurements from simulation and convert to usable format"""
@@ -80,11 +72,6 @@ class Robot(object):
             self.state.balanceState = self.state.TILTED_BACK
         else:
             self.state.balanceState = self.state.STABLE
-
-    def runAnimation(self, motorPositions):
-    	"""Receives a list of positions and applies it motors"""
-        p.setJointMotorControlArray(self.body, self.motors, controlMode=p.POSITION_CONTROL,
-                                    targetPositions=motorPositions)
 
     def stabilize(self):
     	"""

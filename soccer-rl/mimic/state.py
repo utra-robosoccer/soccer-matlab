@@ -14,7 +14,7 @@ import numpy as np
 import tensorflow as tf
 
 
-class JointMeasurement:
+class JointMeasurement(object):
 	"""
 	wrapper class for measurement values of a joint
 	"""
@@ -24,7 +24,7 @@ class JointMeasurement:
         self.position = (0, 0, 0)
 
 
-class Animation:
+class Animation(object):
 	"""
 	Encapsulates a trajectory, its total length, and current state.
 	Caller is responsible for checking to see if the animation is done and resetting when appropriate.
@@ -59,7 +59,7 @@ class Animation:
     def reset(self):
         self.currentTimer = 0
 
-class RobotState:
+class RobotState(object):
 	"""
 	Encapsulates robot state. Do not directly assign to state parameters. Use the predefined values instead
 	"""
@@ -76,6 +76,7 @@ class RobotState:
     def __init__(self):
         self.motorState = self.DEACTIVE
         self.balanceState = self.STABLE
+        self.imuMeasurements = JointMeasurement()
 
     def __str__(self):
         return "balance: " + self.balanceState + "\nmotor: " + self.motorState

@@ -1,4 +1,5 @@
 #System Parameters
+BOT_MODEL = "../soccer_description/models/soccerbot/model.xacro"
 TRAIN_DIR = "/home/utra-art/soccer-rl/Train_Data"
 
 #ACT/CRIT parameters
