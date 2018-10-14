@@ -1,5 +1,5 @@
 """
-Robot and Animations 
+Robot and Animations
 """
 
 import numpy as np
@@ -7,11 +7,10 @@ import pybullet as p
 import matplotlib as plt
 from time import sleep
 
-
 class JointMeasurement:
-	"""
-	wrapper class for measurement values of a joint
-	"""
+    """
+    wrapper class for measurement values of a joint
+    """
     def __init__(self):
         self.orientation = (0, 0, 0)
         self.velocity = (0, 0, 0)
@@ -19,27 +18,27 @@ class JointMeasurement:
 
 
 class Animation:
-	"""
-	Encapsulates a trajectory, its total length, and current state.
-	Caller is responsible for checking to see if the animation is done and resetting when appropriate.
-	"""
+    """
+    Encapsulates a trajectory, its total length, and current state.
+    Caller is responsible for checking to see if the animation is done and resetting when appropriate.
+    """
     def __init__(self, path):
         self.loadTrajectoryCSV(path)
         self.currentTimer = 0
         self.length = len(self.trajectory)
 
     def loadTrajectoryCSV(self, path):
-    	"""
-	    loads joint positions for a trajectory from a CSV file into a 2-D list where each one of the inner lists
-	    is a list of positions for each joint at a single instance of time
-    	"""
+        """
+        loads joint positions for a trajectory from a CSV file into a 2-D list where each one of the inner lists
+        is a list of positions for each joint at a single instance of time
+        """
         self.trajectory = []
         with open(path, 'r') as inFile:
             for line in inFile:
                 self.trajectory.append(list(map(float, line.split(','))))
 
     def run(self):
-    	"""returns joint positions at current time of trajectory"""
+        """returns joint positions at current time of trajectory"""
         if (self.currentTimer < self.length):
             rval = self.trajectory[self.currentTimer]
             self.currentTimer += 1
@@ -54,9 +53,9 @@ class Animation:
         self.currentTimer = 0
 
 class RobotState:
-	"""
-	Encapsulates robot state. Do not directly assign to state parameters. Use the predefined values instead
-	"""
+    """
+    Encapsulates robot state. Do not directly assign to state parameters. Use the predefined values instead
+    """
 
     # motor states
     ACTIVE = "ACTIVE"
@@ -112,14 +111,14 @@ class Robot:
         self.activeAnimation = None
 
     def updateImuMeasurments(self):
-    	"""Get IMU measurements from simulation and convert to usable format"""
+        """Get IMU measurements from simulation and convert to usable format"""
         imu_info = p.getLinkState(self.body, self.imu, computeLinkVelocity=1)
         self.imuMeasurements.position = imu_info[0]
         self.imuMeasurements.orientation = p.getEulerFromQuaternion(imu_info[1])
         self.imuMeasurements.velocity = imu_info[6]
 
     def updateBalanceState(self):
-    	"""Interpret IMU measurements to determine if the robot is tilted. updates state accordingly"""
+        """Interpret IMU measurements to determine if the robot is tilted. updates state accordingly"""
         self.updateImuMeasurments()
         pitch = self.imuMeasurements.orientation[1]
 
@@ -131,16 +130,16 @@ class Robot:
             self.state.balanceState = self.state.STABLE
 
     def runAnimation(self, motorPositions):
-    	"""Receives a list of positions and applies it motors"""
+        """Receives a list of positions and applies it motors"""
         p.setJointMotorControlArray(self.body, self.motors, controlMode=p.POSITION_CONTROL,
                                     targetPositions=motorPositions)
 
     def stabilize(self):
-    	"""
-	    Attempts to keep the robot standing up by running animations based on state.
-	    Animations will only run when the robot is relatively stationary i.e. this will allow the robot to fully
-	    fall and then try to get it to stand up again
-    	"""
+        """
+        Attempts to keep the robot standing up by running animations based on state.
+        Animations will only run when the robot is relatively stationary i.e. this will allow the robot to fully
+        fall and then try to get it to stand up again
+        """
         if self.state.motorState == self.state.DEACTIVE:
             self.updateBalanceState()
             if sum(self.imuMeasurements.velocity) < 0.05:
