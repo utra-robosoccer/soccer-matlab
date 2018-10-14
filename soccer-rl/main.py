@@ -9,7 +9,7 @@ from environment import Ramp
 
 
 if __name__ == '__main__':
-    
+    d
     # Pybullet Setup
     p.connect(p.GUI)
     ramp = Ramp("pybullet/gym/pybullet_data/plane.urdf", (0, 0, 0), (0, 0, 0))

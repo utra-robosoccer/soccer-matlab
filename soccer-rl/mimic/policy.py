@@ -6,11 +6,35 @@ import settings
 import networks
 import numpy as np
 import tensorflow as tf
+from abc import ABC, abstractmethod
 
-class PPO(object):
 
+class Policy(ABC):
+    """
+    """
     def __init__(self):
+        super().__init__()
 
+    @abstractmethod
+    def build_graph(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def choose_action(self, state):
+        raise NotImplementedError
+
+
+class PPO(Policy):
+    """
+    """
+    def __init__(self):
+        super().__init__()
+        self.actor = None 
+        self.old_actor = None 
+        self.critic = None 
+
+
+        # old stuff 
         self.session = tf.Session(config=tf.ConfigProto(allow_soft_placement=True,log_device_placement=False))
         self.actor = networks.Actor_MLP(scope="actor1",units=[settings.S_DIM,100,settings.A_DIM],activations=[None,'relu','tanh'],trainable=True)
         self.old_actor = networks.Actor_MLP(scope="actor0",units=[settings.S_DIM,100,settings.A_DIM],activations=[None,'relu','tanh'],trainable=False)
@@ -30,6 +54,7 @@ class PPO(object):
         self.old_actor.build_graph(self.state_tf,0)
         self.critic.build_graph(self.state_tf,self.critic_step)
         self.build_graph()
+
 
     def build_graph(self):
         '''
@@ -84,7 +109,7 @@ class PPO(object):
         value = self.session.run(self.critic.outputs[-1], {self.state_tf:state})[0,0]
         return value
 
-    def choose_action(self,state):
+    def choose_action(self, state):
         '''
         Queries the actor network to sample an action from a gaussian distribution
         that is obtained from the output of the nerual network at the given state
@@ -118,7 +143,6 @@ class PPO(object):
 
         [self.session.run(self.critic_train_op, {self.state_tf:states,self.action_tf:actions,self.return_tf:returns,self.adv_tf:adv}) for _ in range(settings.C_UPDATE_STEPS)]
 
-
     def save(self):
         print("Saving checkpoint")
         save_path = os.path.join(settings.TRAIN_DIR,"Checkpoints","model.ckpt")
@@ -128,4 +152,6 @@ class PPO(object):
         print("Loading checkpoint")
         save_path = os.path.join(settings.TRAIN_DIR)
         self.saver.restore(self.session, tf.train.latest_checkpoint(save_path)) 
-        
+
+
+
