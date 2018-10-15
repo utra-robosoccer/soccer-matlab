@@ -3,3 +3,4 @@ tensorflow
 pybullet
 numpy
 matplotlib
+pytest
