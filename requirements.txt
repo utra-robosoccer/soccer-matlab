@@ -1,6 +1,5 @@
-pip
-tensorflow
-pybullet
 numpy
 matplotlib
 pytest
+tensorflow
+pybullet
