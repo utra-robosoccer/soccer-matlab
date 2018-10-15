@@ -13,7 +13,7 @@ if useRobot
     rosinit(robotIp, 'NodeHost', localIp)
 %     device = rosdevice(robotIp, 'nvidia', 'nvidia');
 %     device.ROSFolder = '/opt/ros/kinetic';
-%     device.CatkinWorkspace = '~/soccer_ws';
+%     device.CatkinWorkspace = '~/catkin_ws';
 else
     setenv('ROS_IP', localIp)
     setenv('ROS_MASTER_URI',strcat('http://', gazeboIp, ':11311'))

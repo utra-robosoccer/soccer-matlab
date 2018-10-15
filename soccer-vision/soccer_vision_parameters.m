@@ -1,9 +1,12 @@
 % Load Paths
-addpath('soccer-vision/media')
-addpath('soccer-vision/vectormath')
+sampleTime = 1/30;
+
+% Imageproperties
+imageHeight = 240;
+imageWidth = 320;
 
 % VSS_MODE = 2 for Video file, 1 for Gazebo
-VSS_MODE = 1;
+VSS_MODE = 2;
 
 % Connect Robot
 if VSS_MODE == 1
@@ -20,4 +23,4 @@ scalerho = 1/500;
 lineTrackingThreshold = 0.2; % Cannot jump 1 per time step
 
 % Test files
-videotestfile = strcat(pwd,'/soccer-vision/media/videos/2.mp4');
+videotestfile = strcat(pwd,'/soccer-vision/media/videos/testcamera.mp4');
