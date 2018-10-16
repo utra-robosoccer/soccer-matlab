@@ -9,14 +9,7 @@ classdef Command < handle
         % Body physical parameters
         hip_height = 0.16;
         hip_width = 0.0315;
-        dh = [
-            0.0280     -pi/2         0      pi/2
-                 0      pi/2         0     -pi/2
-                 0         0    0.0930         0
-                 0         0    0.0827         0
-                 0         0         0      pi/2
-                 0         0    0.0253         0
-        ];
+        dh = csvread('models/soccerbot/dh_table.csv',1,0,[1,0,6,4]);
         
         % Movement timing parameters
         swing_time = 0.5;

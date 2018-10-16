@@ -1,12 +1,26 @@
 %% Initialization Parameters
-dh = [
-    0.0280     -pi/2         0      pi/2
-         0      pi/2         0     -pi/2
-         0         0    0.0930         0
-         0         0    0.0827         0
-         0         0         0      pi/2
-         0         0    0.0253         0
-];
+dh = csvread('models/soccerbot/dh_table.csv',1,0,[1,0,6,4]);
+
+% % DH table starts from 'base_link'
+% dh_arm = [
+%         0       pi/2        0.3536      0
+%         0.0157  0           0.0725      0
+%         0.1     0           0           -pi/2
+% ];
+% dh_arm = dh_arm(:, [3 4 1 2 ]);   
+% 
+% % DH table starts from 'torso'
+% dh_leg = [
+%      -0.0135     pi/2         0.035      0
+%          0      -pi/2         0.156      0
+%          0         0          0          0
+%          0.0929    0          0        -pi/2
+%          0         0          0          0
+%          0.0827  -pi/2        0          0
+% ];
+% dh_led = dh(:, [3 4 1 2 ]); % inverting columns d,theta,a,alpha vs. a,alpha,d,theta
+
+
 body_height = 0.099 + 0.16;
 body.depth = 0.1305;
 body.height = 0.152;
