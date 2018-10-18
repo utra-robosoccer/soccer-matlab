@@ -12,6 +12,12 @@ classdef Point2f < handle
             obj.x = x;
             obj.y = y;
         end
+        function n = norm(obj)
+            n = sqrt(obj.x^2 + obj.y^2);
+        end
+        function v = toVector(obj)
+            v = Vec2f(obj.x,obj.y);
+        end
     end
 end
 

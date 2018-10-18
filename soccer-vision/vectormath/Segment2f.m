@@ -23,6 +23,9 @@ classdef Segment2f < handle
         function b = intersecty(obj)
             b = obj.p1.y - obj.slope * obj.p1.x;
         end
+        function draw(obj)
+            plot([obj.p1.x obj.p2.x], [obj.p1.y obj.p2.y])
+        end
     end
     
     methods(Static)
