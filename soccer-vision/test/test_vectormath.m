@@ -69,8 +69,8 @@ imgw = 500;
 figure;
 
 hold on;
-for i = -1.5:0.01:3.1
-    for j = 150:300
+for i = -3.1:0.1:3.1
+    for j = 50:50:250
         l = Line2f(j, i);
         l2 = l.newOrigin(250,250);
         l2.draw(imgh, imgw);

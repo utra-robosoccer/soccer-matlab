@@ -29,7 +29,16 @@ for i = 1:length(counts)
     line{i} = Line2f(rho(i), theta(i));
 end
 
+% Center lines at (W/2, 0)
 
 
-    
+% Sort in order of angle
+
+
+% For the left and right most lines, find intersections with the border of 
+% the camera screen, for the ones in between, find intersections among the
+% lines themselves
+
+% Return a list of segments
+
 end

@@ -35,7 +35,7 @@ classdef Line2f < handle
             
             proj = v2.Projection(v);
             
-            line2f = Line2f(obj.rho - proj, obj.theta);            
+            line2f = Line2f(obj.rho + proj, obj.theta);            
         end
         function segment = screenIntersection(obj, height, width)
             obj.normalize();

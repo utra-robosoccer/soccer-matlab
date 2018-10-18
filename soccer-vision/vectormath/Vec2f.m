@@ -19,8 +19,10 @@ classdef Vec2f
         function unitVec = Unit(obj)
             unitVec = Vec2f(obj.dx / obj.Norm(), obj.dy / obj.Norm());
         end
+        
+        % Projection of obj2 onto obj
         function projection = Projection(obj, obj2)
-            projection = Vec2f.dot(obj, obj2.Unit());
+            projection = Vec2f.dot(obj.Unit(), obj2);
         end
     end
     
