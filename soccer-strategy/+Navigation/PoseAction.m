@@ -1,4 +1,5 @@
 classdef PoseAction < handle
+    % Consists of a pose (from control and an action)
     
     properties
         ActionLabel

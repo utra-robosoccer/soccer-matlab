@@ -1,9 +1,10 @@
-curPose = Pose(0,0,10,0,0);
 destPose = Pose(2.5,2.5,10,0,0);
 
-obs1 = Pose(1.3,1.3,0,0,0);
-obs2 = Pose(-1.7,1.7,0,0,0);
-obs3 = Pose(1.5,-1.5,0,0,0);
+self = Navigation.Object(Pose(0,0,10,0,0), Navigation.ObstacleType.Self);
+obs1 = Navigation.Object(Pose(1.3,1.3,0,0,0), Navigation.ObstacleType.Friendly);
+obs2 = Navigation.Object(Pose(-1.7,1.7,0,0,0), Navigation.ObstacleType.Friendly);
+obs3 = Navigation.Object(Pose(1.5,-1.5,0,0,0), Navigation.ObstacleType.Friendly);
+
 obstacles = {obs1, obs2, obs3};
 
 speed = 0.05; % m/s

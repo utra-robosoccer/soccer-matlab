@@ -1,4 +1,4 @@
-function trajectories = SequenceConversion(varargin)
+function trajectories = sequenceconversion(varargin)
 %SEQUENCECONVERSION interpolates between several joint positions 
 %   SEQUENCECONVERSION(POSITIONS, DURATIONS)
 %   SEQUENCECONVERSION(POSITIONS, DURATIONS, SPEEDS)

@@ -17,12 +17,12 @@ classdef Vec2f
             norm = sqrt(obj.dx^2 + obj.dy^2);
         end
         function unitVec = Unit(obj)
-            unitVec = Vec2f(obj.dx / obj.Norm(), obj.dy / obj.Norm());
+            unitVec = Geometry.Vec2f(obj.dx / obj.Norm(), obj.dy / obj.Norm());
         end
         
         % Projection of obj2 onto obj
         function projection = Projection(obj, obj2)
-            projection = Vec2f.dot(obj.Unit(), obj2);
+            projection = Geometry.Vec2f.dot(obj.Unit(), obj2);
         end
     end
     

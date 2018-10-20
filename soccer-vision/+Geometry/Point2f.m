@@ -16,7 +16,7 @@ classdef Point2f < handle
             n = sqrt(obj.x^2 + obj.y^2);
         end
         function v = toVector(obj)
-            v = Vec2f(obj.x,obj.y);
+            v = Geometry.Vec2f(obj.x,obj.y);
         end
     end
 end

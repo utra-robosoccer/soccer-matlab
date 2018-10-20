@@ -1,4 +1,4 @@
-classdef Pose < handle
+classdef Pose < handle 
     %POSE a general location on the field
     
     properties

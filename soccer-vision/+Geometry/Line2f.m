@@ -27,15 +27,15 @@ classdef Line2f < handle
            end
         end
         function point = center(obj)
-            point = Point2f(obj.rho * cos(obj.theta), obj.rho * sin(obj.theta));
+            point = Geometry.Point2f(obj.rho * cos(obj.theta), obj.rho * sin(obj.theta));
         end
         function line2f = newOrigin(obj, x, y)
-            v = Vec2f(x, y);
-            v2 = Vec2f(obj.center().x, obj.center().y);
+            v = Geometry.Vec2f(x, y);
+            v2 = Geometry.Vec2f(obj.center().x, obj.center().y);
             
             proj = v2.Projection(v);
             
-            line2f = Line2f(obj.rho + proj, obj.theta);            
+            line2f = Geometry.Line2f(obj.rho + proj, obj.theta);            
         end
         function segment = screenIntersection(obj, height, width)
             obj.normalize();
@@ -43,10 +43,10 @@ classdef Line2f < handle
             w = width;
             h = height;
             
-            bottomLine = Line2f(0, pi/2);
-            leftLine = Line2f(0, 0);
-            rightLine = Line2f(w, 0);
-            topLine = Line2f(h, pi/2);
+            bottomLine = Geometry.Line2f(0, pi/2);
+            leftLine = Geometry.Line2f(0, 0);
+            rightLine = Geometry.Line2f(w, 0);
+            topLine = Geometry.Line2f(h, pi/2);
             
             diagtheta = atan2(h,w);
             diagrho = sqrt(h^2 + w^2);
@@ -54,30 +54,30 @@ classdef Line2f < handle
             % No line if it crosses the two bounds
             if (obj.theta > pi/2 && obj.rho > h * cos(obj.theta - pi/2) || ...
                 obj.theta < 0 && obj.rho > w * cos(obj.theta))
-                r_int = Point2f(0,0);
-                l_int = Point2f(0,0);
-                segment = Segment2f(r_int, l_int);
+                r_int = Geometry.Point2f(0,0);
+                l_int = Geometry.Point2f(0,0);
+                segment = Geometry.Segment2f(r_int, l_int);
                 return
             end
                 
             % Right intersection
             if (obj.rho < w * cos(obj.theta))
-                r_int = Line2f.intersection(obj, bottomLine);
+                r_int = Geometry.Line2f.intersection(obj, bottomLine);
             elseif (obj.rho > diagrho * cos(obj.theta - diagtheta))
-                r_int = Line2f.intersection(obj, topLine);
+                r_int = Geometry.Line2f.intersection(obj, topLine);
             else
-                r_int = Line2f.intersection(obj, rightLine);
+                r_int = Geometry.Line2f.intersection(obj, rightLine);
             end
             
             % Left intersection
             if (obj.rho < h * cos(pi/2 - obj.theta))
-                l_int = Line2f.intersection(obj, leftLine);
+                l_int = Geometry.Line2f.intersection(obj, leftLine);
             elseif (obj.rho < diagrho * cos((pi/2 - obj.theta) - (pi/2 - diagtheta)))
-                l_int = Line2f.intersection(obj, topLine);
+                l_int = Geometry.Line2f.intersection(obj, topLine);
             else
-                l_int = Line2f.intersection(obj, rightLine);
+                l_int = Geometry.Line2f.intersection(obj, rightLine);
             end
-            segment = Segment2f(r_int, l_int);
+            segment = Geometry.Segment2f(r_int, l_int);
         end
         
         function draw(obj, height, width)
@@ -102,7 +102,7 @@ classdef Line2f < handle
             r = A \ b;
             
             % Create the intersection
-            intersect = Point2f(r(1), r(2));
+            intersect = Geometry.Point2f(r(1), r(2));
         end
     end
 end

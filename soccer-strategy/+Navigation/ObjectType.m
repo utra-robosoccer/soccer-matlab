@@ -1,10 +1,11 @@
-classdef ObstacleType < uint8
+classdef ObjectType < uint8
     %ACTIONS Different labels for actions that the robot can perform
     
     enumeration
-        Friendly (0)
-        Enemy (1)
-        Ball (2)
+        Self(0)
+        Friendly (1)
+        Enemy (2)
+        Ball (3)
     end
     
 end
