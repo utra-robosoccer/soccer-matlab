@@ -1,4 +1,4 @@
-function [coord] = poseToOccupancy(pose)
+function [coord] = posetooccupancy(pose)
     % Map size is 9 x 6 meters where x is 6 meters and y is 9 meters
     xPose = pose.x + 3;
     yPose = pose.y + 4.5;

@@ -1,9 +1,9 @@
-function [waypoints, mapInflated] = findWayPoints(curPose, destPos, obstacles)
-    field = createMap;
+function [waypoints, mapInflated] = findwaypoints(curPose, destPos, obstacles)
+    field = createmap;
     
     if nargin == 3            
         for i = 1 : length(obstacles)
-            coord = int32(poseToOccupancy(obstacles{i}));
+            coord = int32(posetooccupancy(obstacles{i}));
             field(coord(2), coord(1)) = 1;
         end
     end
@@ -14,8 +14,8 @@ function [waypoints, mapInflated] = findWayPoints(curPose, destPos, obstacles)
     prm.NumNodes = 500;
     prm.ConnectionDistance = 8;
     
-    curPosAdj = (poseToOccupancy(curPose));
-    destPosAdj = (poseToOccupancy(destPos));
+    curPosAdj = (posetooccupancy(curPose));
+    destPosAdj = (posetooccupancy(destPos));
     
     % Method 1
     path = findpath(prm, curPosAdj, destPosAdj);

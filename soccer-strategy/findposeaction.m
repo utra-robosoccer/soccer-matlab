@@ -1,4 +1,4 @@
-function poseActionList = wayPointsToPoseActionList(waypoints, speed)
+function poseActionList = findposeaction(waypoints, speed)
     % Speed in m/s
 
     [l,~] = size(waypoints);
