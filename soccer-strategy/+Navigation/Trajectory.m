@@ -12,10 +12,6 @@ classdef Trajectory
             %   Detailed explanation goes here
             obj.Property1 = inputArg1 + inputArg2;
         end
-        
-        function visualize(obj)
-            run(
-        end
     end
 end
 

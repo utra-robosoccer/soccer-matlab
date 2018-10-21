@@ -1,4 +1,4 @@
-classdef ObjectType < uint8
+classdef EntityType < uint8
     %ACTIONS Different labels for actions that the robot can perform
     
     enumeration

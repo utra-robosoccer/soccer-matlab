@@ -31,7 +31,7 @@ poseActions{7} = Navigation.PoseAction(end_pose, Command.ActionLabel.FixStance, 
 poseActions{8} = Navigation.PoseAction(end_pose, Command.ActionLabel.Kick, 1);
 poseActions{9} = Navigation.PoseAction(end_pose, Command.ActionLabel.Rest, 0.5);
 
-[angles, q0_left, q0_right] = visualizetrajectory(poseActions);
+[angles, q0_left, q0_right] = createtrajectory(poseActions);
 
 %% Simulate based on these angles
 load_system('biped_robot');

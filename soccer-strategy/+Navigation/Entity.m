@@ -1,4 +1,4 @@
-classdef Object
+classdef Entity
     %OBSTACLE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -8,7 +8,7 @@ classdef Object
     end
     
     methods
-        function obj = Obstacle(pose, type)
+        function obj = Entity(pose, type)
             %ACTION contructs desired action
         %   OBJ = OBSTACLE(POSE, obstacleType, GOAL, DURATION)
             obj.pose = pose;
