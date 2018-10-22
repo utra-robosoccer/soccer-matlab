@@ -10,7 +10,7 @@ function [angles, q0_left, q0_right] = createtrajectory(poseActions, plot)
         command.append(p.ActionLabel, p.Pose, p.Duration);
         totalDuration = totalDuration + p.Duration;
     end
-    totalSteps = int16(totalDuration * 100) + 100; % 1 second to rebalance itself
+    totalSteps = int16(floor(totalDuration) * 100); % 1 second to rebalance itself
     
     angles = zeros(12, totalSteps);
     for i = 1:(totalSteps)

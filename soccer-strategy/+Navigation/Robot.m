@@ -6,8 +6,6 @@ classdef Robot < Navigation.Entity
         body_height = 0.17;
         body;
         
-        q0_left;
-        q0_right;
     end
     
     methods
@@ -33,21 +31,23 @@ classdef Robot < Navigation.Entity
         end
         
         function SimulationTrajectory(obj, trajectory)
+            % Trajectory = [1x1] Navigation.Trajectory
+            
             load_system('biped_robot');
             in = Simulink.SimulationInput('biped_robot');
             in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(300));
             in = in.setModelParameter('SimulationMode', 'Normal');
 
-            angles_ts = timeseries(trajectory, (0:length(trajectory)-1)*0.01);
+            angles_ts = timeseries(trajectory.angles, (0:length(trajectory.angles)-1)*0.01);
 
             in = in.setVariable('dh', obj.dh, 'Workspace', 'biped_robot');
-            in = in.setVariable('q0_left', obj.q0_left, 'Workspace', 'biped_robot');
-            in = in.setVariable('q0_right', obj.q0_right, 'Workspace', 'biped_robot');
+            in = in.setVariable('q0_left', trajectory.q0_left, 'Workspace', 'biped_robot');
+            in = in.setVariable('q0_right', trajectory.q0_right, 'Workspace', 'biped_robot');
             in = in.setVariable('angles', angles_ts, 'Workspace', 'biped_robot');
             in = in.setVariable('init_body_height', obj.body_height, 'Workspace', 'biped_robot');
             in = in.setVariable('hip_width', 0.063, 'Workspace', 'biped_robot');
             in = in.setVariable('body', obj.body, 'Workspace', 'biped_robot');
-            in = in.setVariable('init_angle', curPose.q, 'Workspace', 'biped_robot');
+            in = in.setVariable('init_angle', trajectory.startpose.q, 'Workspace', 'biped_robot');
 
             sim(in);
         end
