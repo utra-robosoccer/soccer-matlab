@@ -73,6 +73,10 @@ classdef Pose < handle
             t = true;
         end
         
+        function len = length(obj)
+            len = sqrt(obj.x^2 + obj.y^2 + obj.z^2);
+        end
+        
         function draw(obj, label, size)
             if (nargin == 3)
                 quiver(obj.x, obj.y, cos(obj.q) * size, sin(obj.q) * size, 0, 'LineWidth', size * 30, 'MaxHeadSize', 0.4);

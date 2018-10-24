@@ -62,6 +62,18 @@ classdef Trajectory
                 'Right Ankle Foot')
             grid minor;
         end
+        
+        function dist = TotalDistance(obj)
+            dist = 0;
+            for i = 1:length(obj.waypoints)-1
+                delta = obj.waypoints{i+1} - obj.waypoints{i};
+                dist = dist + delta.length();
+            end
+        end
+        
+        function vel = AverageSpeed(obj)
+            vel = obj.TotalDistance() / obj.duration;
+        end
     end
 end
 

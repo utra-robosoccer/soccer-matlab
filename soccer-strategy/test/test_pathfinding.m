@@ -1,6 +1,6 @@
 
 % Create a robot
-robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
+robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.10);
 
 % Destination position
 endPose = Pose(2.5,2.5,0,0,0);
@@ -20,4 +20,5 @@ hold on;
 trajectory.DrawPath();
 figure;
 trajectory.PlotAngles();
+trajectory.AverageSpeed();
 robot.SimulationTrajectory(trajectory);
