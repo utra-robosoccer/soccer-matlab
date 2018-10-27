@@ -1,10 +1,5 @@
 classdef findtrajectorysystem < matlab.System
-    % findWayPointsObject Find Way Points
-    %
-    % This template includes the minimum set of functions required
-    % to define a System object with discrete state.
 
-    % Public, tunable properties
     properties
 
     end
@@ -13,44 +8,33 @@ classdef findtrajectorysystem < matlab.System
 
     end
 
-    % Pre-computed constants
     properties(Access = private)
-
+        robot
     end
 
     methods(Access = protected)
         function setupImpl(obj)
-            % Perform one-time calculations, such as computing constants
+            obj.robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.10);
         end
 
         function trajectoryOut = stepImpl(obj, currentPose, destinationPose, obstacles)
-            % Implement algorithm. Calculate y as a function of input u and
-            % discrete states.
+            % currentPose = [1x1] Pose
+            % destinationPose = [1x1] Pose
+            % obstacles = [1xN] Pose
             
-            curPose = Pose(0,0,10,0,0);
+            % Test
             destPose = Pose(2.5,2.5,10,0,0);
 
-            obs1 = Pose(1.3,1.3,0,0,0);
-            obs2 = Pose(-1.7,1.7,0,0,0);
-            obs3 = Pose(1.5,-1.5,0,0,0);
-            obstacles = {obs1, obs2, obs3};
-            speed = 0.05;
-            
-            trajectoryOut = zeros(3000,20);
-            [trajectory, ~, ~] = findtrajectory(curPose, destPose, obstacles, speed);
-            trajectoryFitted = trajectory;
-            trajectoryFitted = trajectoryFitted';
-            [l,w] = size(trajectoryFitted);
-            
-            for i = 1:l
-                for j = 1:w
-                    trajectoryOut(l,w) = trajectoryFitted(l,w);
-                end
-            end
-        end
+            % Add objstacles
+            obs1 = Navigation.Entity(Pose(1.3,1.3,0,0,0), Navigation.EntityType.Friendly);
+            obs2 = Navigation.Entity(Pose(-1.7,1.7,0,0,0), Navigation.EntityType.Friendly);
+            obs3 = Navigation.Entity(Pose(1.5,-1.5,0,0,0), Navigation.EntityType.Friendly);
 
-        function resetImpl(obj)
-            % Initialize / reset discrete-state properties
+            map = Navigation.Map(9, 6, 0.05);
+            map.objects = {robot, obs1, obs2, obs3};
+            trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
+            
+            trajectoryOut = zeros(20,1000);
         end
     end
 end
