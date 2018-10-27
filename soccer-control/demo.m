@@ -21,17 +21,17 @@ bot_pose = Pose(0.4, -0.2, 0, -pi, 0.04);
 mid2_pose = Pose(0.1, 0, 0, -pi, 0.04);
 end_pose = Pose(0.1, 0, 0, 0, 0.0);
 
-poseActions{1} = PoseAction(start_pose, Command.ActionLabel.PrepareLeft, 0.5);
-poseActions{2} = PoseAction(mid1_pose, Command.ActionLabel.Forward, 2);
-poseActions{3} = PoseAction(top_pose, Command.ActionLabel.Strafe, 5);
-poseActions{4} = PoseAction(bot_pose, Command.ActionLabel.Forward, 7);
-poseActions{5} = PoseAction(mid2_pose, Command.ActionLabel.Forward, 5);
-poseActions{6} = PoseAction(end_pose, Command.ActionLabel.Turn, 3);
-poseActions{7} = PoseAction(end_pose, Command.ActionLabel.FixStance, 1);
-poseActions{8} = PoseAction(end_pose, Command.ActionLabel.Kick, 1);
-poseActions{9} = PoseAction(end_pose, Command.ActionLabel.Rest, 0.5);
+poseActions{1} = Navigation.PoseAction(start_pose, Command.ActionLabel.PrepareLeft, 0.5);
+poseActions{2} = Navigation.PoseAction(mid1_pose, Command.ActionLabel.Forward, 2);
+poseActions{3} = Navigation.PoseAction(top_pose, Command.ActionLabel.Strafe, 5);
+poseActions{4} = Navigation.PoseAction(bot_pose, Command.ActionLabel.Forward, 7);
+poseActions{5} = Navigation.PoseAction(mid2_pose, Command.ActionLabel.Forward, 5);
+poseActions{6} = Navigation.PoseAction(end_pose, Command.ActionLabel.Turn, 3);
+poseActions{7} = Navigation.PoseAction(end_pose, Command.ActionLabel.FixStance, 1);
+poseActions{8} = Navigation.PoseAction(end_pose, Command.ActionLabel.Kick, 1);
+poseActions{9} = Navigation.PoseAction(end_pose, Command.ActionLabel.Rest, 0.5);
 
-[angles, q0_left, q0_right] = run(poseActions);
+[angles, q0_left, q0_right] = createtrajectory(poseActions);
 
 %% Simulate based on these angles
 load_system('biped_robot');

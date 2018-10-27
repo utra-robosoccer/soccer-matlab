@@ -1,4 +1,4 @@
-function angles = control_main
+function angles = main
 % Used to generate library, to run simulation use the run script
     start_pose = Pose(0, 0, 0, 0, 0);
     end_pose = Pose(0.5, 0, 0, 0, 0.0);

@@ -40,7 +40,7 @@ classdef Segment2f < handle
             x = (intersecty2 - intersecty1) / (slope1 - slope2);
             y = slope1 * x + intersecty1;
             
-            intersect = Point2f(x, y);
+            intersect = Geometry.Point2f(x, y);
         end
         function intersect = intersection2(obj1, obj2)
             %METHOD1 Finds the screen intersection between 2 points
@@ -67,7 +67,7 @@ classdef Segment2f < handle
             xintersect = (b2-b1)/(m1-m2);
             yintersect = m1*xintersect + b1;
             
-            intersect = Point2f(xintersect,yintersect);
+            intersect = Geometry.Point2f(xintersect,yintersect);
         end
     end
 end

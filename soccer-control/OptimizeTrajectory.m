@@ -1,4 +1,4 @@
-function optimal = OptimizeTrajectory( starting )
+function optimal = optimizetrajectory( starting )
 %OPTIMIZETRAJECTORY Summary of this function goes here
 %   Detailed explanation goes here
     
