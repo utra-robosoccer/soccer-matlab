@@ -5,10 +5,10 @@ classdef Map < handle
     properties
         pathfindingmethod = 0; % 0 for occupancy, 1 for RRT
         occupancymap
-        objects
-        resolution = 0.05
-        height = 9 % y (meters)
-        width = 6  % x (meters)
+        objects = {};
+        resolution = 0.05;
+        height = 9; % y (meters)
+        width = 6;  % x (meters)
         inflationradius = 0.2; % 20 cm
         numnodes = 2000; % Number of spots on map
         connectiondistance = 0.4; % 30 cm

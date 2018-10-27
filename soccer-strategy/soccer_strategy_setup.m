@@ -4,7 +4,7 @@ addpath('soccer-strategy/systems')
 addpath('soccer-strategy/data')
 
 % Connect Robot
-connectRobot;
+connectrobot;
 
 % Sample Time
 sampleTime = 0.01;

@@ -9,7 +9,7 @@ classdef findtrajectorysystem < matlab.System
     end
 
     properties(Access = private)
-        robot
+        robot;
     end
 
     methods(Access = protected)
@@ -32,9 +32,9 @@ classdef findtrajectorysystem < matlab.System
 
             map = Navigation.Map(9, 6, 0.05);
             map.objects = {robot, obs1, obs2, obs3};
-            trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
-            
-            trajectoryOut = zeros(20,1000);
+%             trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
+%             
+             trajectoryOut = zeros(3000,20);
         end
     end
 end
