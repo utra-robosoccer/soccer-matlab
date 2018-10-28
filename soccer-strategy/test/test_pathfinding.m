@@ -1,6 +1,6 @@
 
 % Create a robot
-robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.10);
+robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
 
 % Destination position
 endPose = Pose(2.5,2.5,0,0,0);
