@@ -30,4 +30,4 @@ install:
   - pip3 install -r requirements.txt
 # command to run tests
   
-script: py.test --cov-report term-missing --cov app -v
+script: python soccer-rl/tests/test.py
