@@ -1,4 +1,4 @@
-classdef findTrajectoryObject < matlab.System
+classdef findtrajectorysystem < matlab.System
     % findWayPointsObject Find Way Points
     %
     % This template includes the minimum set of functions required
@@ -37,7 +37,7 @@ classdef findTrajectoryObject < matlab.System
             speed = 0.05;
             
             trajectoryOut = zeros(3000,20);
-            [trajectory, ~, ~] = findTrajectory(curPose, destPose, obstacles, speed);
+            [trajectory, ~, ~] = findtrajectory(curPose, destPose, obstacles, speed);
             trajectoryFitted = trajectory;
             trajectoryFitted = trajectoryFitted';
             [l,w] = size(trajectoryFitted);

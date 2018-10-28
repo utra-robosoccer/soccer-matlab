@@ -1,4 +1,4 @@
-classdef BipedalRobotSystemObject < matlab.System
+classdef bipedalrobotsystem < matlab.System
     % System Object used as a matlab block for path planning
     %
 

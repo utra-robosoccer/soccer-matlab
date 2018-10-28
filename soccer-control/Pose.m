@@ -1,4 +1,4 @@
-classdef Pose < handle
+classdef Pose < handle 
     %POSE a general location on the field
     
     properties
@@ -71,6 +71,22 @@ classdef Pose < handle
         
         function t = isobject(obj)
             t = true;
+        end
+        
+        function len = length(obj)
+            len = sqrt(obj.x^2 + obj.y^2 + obj.z^2);
+        end
+        
+        function draw(obj, label, size)
+            if (nargin == 3)
+                quiver(obj.x, obj.y, cos(obj.q) * size, sin(obj.q) * size, 0, 'LineWidth', size * 30, 'MaxHeadSize', 0.4);
+            else
+                quiver(obj.x, obj.y, cos(obj.q) * obj.v * 2, sin(obj.q) * obj.v * 2, 0, 'LineWidth', 4, 'MaxHeadSize', 0.4);
+            end
+            
+            if (nargin == 2)
+                text(obj.x + 0.05,obj.y + 0.05,label,'FontSize',6)
+            end
         end
     end
     
