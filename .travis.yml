@@ -28,7 +28,7 @@ python:
 install:
   - sudo apt-get install python3-pip
   - sudo pip3 install -U pip wheel
-  - sudo pip3 install setuptools
+  - sudo pip3 install setuptools --upgrade
   - pip3 install -r requirements.txt
 # command to run tests
   
