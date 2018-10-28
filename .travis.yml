@@ -26,7 +26,9 @@ python:
   - "3.6"
 # command to install dependencies
 install:
-  - pip3 install --upgrade pip3
+  - sudo apt-get install python3-pip
+  - sudo pip3 install -U pip wheel
+  - sudo pip3 install setuptools
   - python3 -m ensurepip --upgrade
   - pip3 install -r requirements.txt
 # command to run tests
