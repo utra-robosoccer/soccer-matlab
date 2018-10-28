@@ -3,15 +3,15 @@ classdef Map < handle
     %   Detailed explanation goes here
     
     properties
-        pathfindingmethod = 0; % 0 for occupancy, 1 for RRT
+        pathfindingmethod = 0;      % 0 for occupancy, 1 for RRT
         occupancymap
-        objects
-        resolution = 0.05
-        height = 9 % y (meters)
-        width = 6  % x (meters)
-        inflationradius = 0.2; % 20 cm
-        numnodes = 2000; % Number of spots on map
-        connectiondistance = 0.4; % 30 cm
+        objects;                    % List of objects
+        resolution = 0.05;
+        height = 9;                 % y (meters)
+        width = 6;                  % x (meters)
+        inflationradius = 0.2;      % 20 cm
+        numnodes = 2000;            % Number of spots on map
+        connectiondistance = 0.4;   % 30 cm
     end
     
     methods
@@ -22,7 +22,6 @@ classdef Map < handle
             obj.width = width;
             obj.resolution = resolution;
             
-            obj.UpdateOccupancyMap();
         end
         
         function AddObject(obj, object)
@@ -65,7 +64,7 @@ classdef Map < handle
             % Create Map
             obj.occupancymap = robotics.OccupancyGrid(occupancygrid, 1/obj.resolution);
             obj.occupancymap.GridLocationInWorld = [-obj.width/2,-obj.height/2];
-
+            
             for i = 1:length(obj.objects)
                 if (obj.objects{i}.type == Navigation.EntityType.Self)
                     continue
@@ -80,20 +79,33 @@ classdef Map < handle
             % Start Pose [1x1] Pose
             % End Pose [1x1] Pose
             
-            % First find waypoints
-            waypoints = obj.FindWaypoints(startPose, endPose, speed);
-            
-            % Convert waypoints to pose actions
-            poseactions = obj.WaypointsPoseAction(waypoints, speed);
-            
-            % Calculate from the pose action list
-            [angles, q0_left, q0_right] = createtrajectory(poseactions);
-            
-            % Clip off bad angles
-            
-            trajectory = Navigation.Trajectory(startPose, endPose, waypoints, poseactions, angles);
-            trajectory.q0_left = q0_left;
-            trajectory.q0_right = q0_right;
+            try
+                % First find waypoints
+                waypoints = obj.FindWaypoints(startPose, endPose, speed);
+
+                % Convert waypoints to pose actions
+                poseactions = obj.WaypointsPoseAction(waypoints, speed);
+
+                % Calculate from the pose action list
+                [angles, q0_left, q0_right] = createtrajectory(poseactions);
+
+                % Clip off bad angles
+                trajectory = Navigation.Trajectory(startPose, endPose, waypoints, poseactions, angles);
+                trajectory.q0_left = q0_left;
+                trajectory.q0_right = q0_right;
+                
+            catch ME
+                disp(strcat('Failed: ', ME.identifier))
+                disp(startPose)
+                disp(endPose)
+                disp('------ Objects -----')
+                for i = 1:length(obj.objects)
+                    disp(obj.objects{i})
+                end
+                obj.Draw
+                pause
+                trajectory = Navigation.Trajectory(startPose, startPose, startPose, Navigation.PoseAction(startPose, 0, 0), 0);
+            end
         end
         
         function waypoints = FindWaypoints(obj, startpose, endpose, speed)
@@ -114,7 +126,11 @@ classdef Map < handle
                 prm.ConnectionDistance = obj.connectiondistance;
                 path = prm.findpath(startCoordinate, endCoordinate);
             else
-                path = RRTStar(startCoordinate, endCoordinate, obj.obstacles);
+%                 path = RRTStar(startCoordinate, endCoordinate, obj.objects);
+                prm = robotics.PRM(obj.occupancymap);
+                prm.NumNodes = obj.numnodes;
+                prm.ConnectionDistance = obj.connectiondistance;
+                path = prm.findpath(startCoordinate, endCoordinate);
             end
             
             % Adjust some waypoints to even path
@@ -133,13 +149,15 @@ classdef Map < handle
 
         end
         
-        function poseactions = WaypointsPoseAction(obj, waypoints, speed)
+        function poseactions = WaypointsPoseAction(~, waypoints, speed)
             [l,~] = size(waypoints);
             poseactions = cell(l,1);
             for i = 1:l
                 actionLabel = Command.ActionLabel.Forward;
-                poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel); 
-                
+                poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel);
+            end
+            
+            for i = 1:l
                 if (i == 1)
                     continue
                 end
@@ -148,6 +166,27 @@ classdef Map < handle
                 ydelta = poseactions{i}.Pose.y - poseactions{i-1}.Pose.y;
                 distance = sqrt(xdelta * xdelta + ydelta * ydelta);
                 poseactions{i}.Duration = distance / speed;
+            end
+        end
+        
+        function newpose = RandomPose(obj)
+            found = 0;
+            obj.UpdateOccupancyMap();
+            
+            while found == 0
+                rndx = (rand - 0.5) * (obj.width - 2 * obj.inflationradius - 2 * obj.resolution);
+                rndy = (rand - 0.5) * (obj.height - 2 * obj.inflationradius - 2 * obj.resolution);
+                randangle = (rand - 0.5) * 2 * pi;
+                newpose = Pose(rndx, rndy, 0, randangle, 0);
+                                
+                % Cannot be within proximity
+                found = 1;
+                for i = 1:length(obj.objects)
+                    if (length(obj.objects{i}.pose - newpose) < obj.resolution + obj.inflationradius * 2)
+                        found = 0;
+                        break;
+                    end
+                end
             end
         end
     end

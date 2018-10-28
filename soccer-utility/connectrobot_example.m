@@ -1,9 +1,12 @@
+%% Connects the matlab to the robot
+% make a copy and rename this file to connectrobot.m
+
 % IP Addresses for robots
 rosshutdown;
 
-localIp = '172.16.10.68';
-gazeboIp = '172.16.10.19';
-robotIp = '100.64.36.165';
+localIp = '111.111.111.111'; % IP address of your computer (ifconfig)
+gazeboIp = '172.16.10.19';   % IP address of gazebo simulator computer
+robotIp = '100.64.36.165';   % IP address of robot
 
 useRobot = 0; 
 

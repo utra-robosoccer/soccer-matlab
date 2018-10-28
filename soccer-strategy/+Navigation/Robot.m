@@ -4,7 +4,7 @@ classdef Robot < Navigation.Entity
         dh % Dh table for the robot
         speed = 0.05 % m/s
         body_height = 0.17;
-        body;
+        body = struct('depth',0.17, 'height', 0.152, 'width', 0.145);
         
     end
     
@@ -24,7 +24,7 @@ classdef Robot < Navigation.Entity
                      0         0         0      pi/2
                      0         0    0.0253         0
             ];
-            obj.body_height = 0.17;%0.099 + 0.16;
+            obj.body_height = 0.17; %0.099 + 0.16;
             obj.body.depth = 0.1305;
             obj.body.height = 0.152;
             obj.body.width = 0.145;
@@ -35,7 +35,7 @@ classdef Robot < Navigation.Entity
             
             load_system('biped_robot');
             in = Simulink.SimulationInput('biped_robot');
-            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(300));
+            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(length(trajectory.angles)/100));
             in = in.setModelParameter('SimulationMode', 'Normal');
 
             angles_ts = timeseries(trajectory.angles, (0:length(trajectory.angles)-1)*0.01);
