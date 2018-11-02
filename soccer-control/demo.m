@@ -1,6 +1,5 @@
 %% Initialization Parameters
-dh = csvread('models/soccerbot/dh_table.csv',1,0,[1,0,6,4]);
-
+dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
 % % DH table starts from 'base_link'
 % dh_arm = [
 %         0       pi/2        0.3536      0

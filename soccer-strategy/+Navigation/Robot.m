@@ -16,14 +16,13 @@ classdef Robot < Navigation.Entity
             
             % ROBOT Construct an instance of this class
             obj.speed = speed;
-            obj.dh = [
-                0.0280     -pi/2         0      pi/2
-                     0      pi/2         0     -pi/2
-                     0         0    0.0930         0
-                     0         0    0.0827         0
-                     0         0         0      pi/2
-                     0         0    0.0253         0
-            ];
+            
+            % Load DH table
+            path_folders = genpath('soccer_description');
+            addpath(genpath(path_folders));
+            obj.dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
+            rmpath(genpath(path_folders));
+            
             obj.body_height = 0.17;%0.099 + 0.16;
             obj.body.depth = 0.1305;
             obj.body.height = 0.152;
