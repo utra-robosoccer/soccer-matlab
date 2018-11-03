@@ -1,4 +1,6 @@
 # soccer-matlab
+[![Travis build](https://travis-ci.org/utra-robosoccer/soccer-matlab.svg?branch=master)](https://travis-ci.org/utra-robosoccer/soccer-matlab)
+
 Documentation can be found here for matlab repository 
 
 To get started

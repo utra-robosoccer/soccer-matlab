@@ -35,3 +35,4 @@ Icon[]
 *.tgz
 *_ert_rtw/
 soccer-utility/soccer_msgs/matlab_gen/
+soccer-utility/connectrobot.m

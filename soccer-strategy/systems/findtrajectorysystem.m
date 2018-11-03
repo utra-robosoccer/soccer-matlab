@@ -1,56 +1,63 @@
-classdef findtrajectorysystem < matlab.System
-    % findWayPointsObject Find Way Points
-    %
-    % This template includes the minimum set of functions required
-    % to define a System object with discrete state.
+classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
 
-    % Public, tunable properties
     properties
-
+        outputduration = 100;            % Seconds
     end
 
     properties(DiscreteState)
-
     end
 
-    % Pre-computed constants
     properties(Access = private)
-
+        robot;
+        trajectory;
     end
-
+    
     methods(Access = protected)
         function setupImpl(obj)
-            % Perform one-time calculations, such as computing constants
+            obj.robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
+            obj.trajectory = zeros(10000,20);    % Output max trajectory
+
         end
 
         function trajectoryOut = stepImpl(obj, currentPose, destinationPose, obstacles)
-            % Implement algorithm. Calculate y as a function of input u and
-            % discrete states.
+            % currentPose = [1x1] Pose
+            % destinationPose = [1x1] Pose
+            % obstacles = [1xN] Pose
             
-            curPose = Pose(0,0,10,0,0);
-            destPose = Pose(2.5,2.5,10,0,0);
+            % Test
+            endPose = Pose(2.5,2.5,10,0,0);
 
-            obs1 = Pose(1.3,1.3,0,0,0);
-            obs2 = Pose(-1.7,1.7,0,0,0);
-            obs3 = Pose(1.5,-1.5,0,0,0);
-            obstacles = {obs1, obs2, obs3};
-            speed = 0.05;
+            % Add objstacles
+            obs1 = Navigation.Entity(Pose(1.3,1.3,0,0,0), Navigation.EntityType.Friendly);
+            obs2 = Navigation.Entity(Pose(-1.7,1.7,0,0,0), Navigation.EntityType.Friendly);
+            obs3 = Navigation.Entity(Pose(1.5,-1.5,0,0,0), Navigation.EntityType.Friendly);
+
+            map = Navigation.Map(9, 6, 0.05);
+            map.objects = {obj.robot, obs1, obs2, obs3};
+            traj = map.FindTrajectory(obj.robot.pose, endPose, obj.robot.speed);
             
-            trajectoryOut = zeros(3000,20);
-            [trajectory, ~, ~] = findtrajectory(curPose, destPose, obstacles, speed);
-            trajectoryFitted = trajectory;
-            trajectoryFitted = trajectoryFitted';
-            [l,w] = size(trajectoryFitted);
-            
-            for i = 1:l
-                for j = 1:w
-                    trajectoryOut(l,w) = trajectoryFitted(l,w);
+            % Fill in the trajectory
+            [l,w] = size(traj.angles);
+            for i = 1:w
+                for j = 1:l
+                    obj.trajectory(i,j) = traj.angles(j,i);
                 end
             end
+            
+            trajectoryOut = obj.trajectory;
         end
-
-        function resetImpl(obj)
-            % Initialize / reset discrete-state properties
+        
+        function c1 = isOutputFixedSizeImpl(~)
+            c1 = true;
+        end
+        function sz_1 = getOutputSizeImpl(obj)
+            sz_1 = [obj.outputduration * 100 20];
+        end 
+        function out = getOutputDataTypeImpl(~)
+            out = "double";
+        end
+        function c1 = isOutputComplexImpl(~)
+            c1 = false;
         end
     end
 end
