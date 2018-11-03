@@ -1,5 +1,6 @@
 # soccer-matlab
 [![Travis build](https://travis-ci.org/utra-robosoccer/soccer-matlab.svg?branch=master)](https://travis-ci.org/utra-robosoccer/soccer-matlab)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/utra-robosoccer/soccer-embedded.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/utra-robosoccer/soccer-embedded/alerts/)
 
 Documentation can be found here for matlab repository 
 
