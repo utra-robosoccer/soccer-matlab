@@ -174,8 +174,8 @@ classdef Map < handle
             obj.UpdateOccupancyMap();
             
             while found == 0
-                rndx = (rand - 0.5) * (obj.width - 2 * obj.inflationradius - 2 * obj.resolution);
-                rndy = (rand - 0.5) * (obj.height - 2 * obj.inflationradius - 2 * obj.resolution);
+                rndx = (rand - 0.5) * (obj.width - 3 * obj.inflationradius - 2 * obj.resolution);
+                rndy = (rand - 0.5) * (obj.height - 3 * obj.inflationradius - 2 * obj.resolution);
                 randangle = (rand - 0.5) * 2 * pi;
                 newpose = Pose(rndx, rndy, 0, randangle, 0);
                                 
