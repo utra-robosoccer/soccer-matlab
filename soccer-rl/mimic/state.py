@@ -19,9 +19,14 @@ class JointMeasurement(object):
 	wrapper class for measurement values of a joint
 	"""
     def __init__(self):
-        self.orientation = (0, 0, 0)
-        self.velocity = (0, 0, 0)
-        self.position = (0, 0, 0)
+        jointStates = p.getJointStates(object.body, object.joints)
+        linkStates = []
+        for i in len(range(object.joints)):
+            linkStates.append(p.getLinkState(object.body, object.joints))
+
+        self.orientation = [linkState[2] for linkState in linkStates]
+        self.positions = [jointState[0] for jointState in jointStates]
+        self.velocity = [jointState[1] for jointState in jointStates]
 
 
 class Animation(object):
