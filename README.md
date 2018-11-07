@@ -8,6 +8,7 @@
 - [ROS Custom Message Support](https://www.mathworks.com/help/robotics/ug/ros-custom-message-support.html)
 - [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox)
 - [Computer Vision Toolbox](http://petercorke.com/wordpress/toolboxes/machine-vision-toolbox)
+- Optional: Preferences > Keyboard > Shortcuts change to Windows default shortcuts
 
 ### Installation
 ```bash
