@@ -11,7 +11,7 @@ function segments = trimlines(rho, theta, counts, H, W)
 % 
 % Output:
 %   Seg1 = [(0, 50), (50, 50)]
-% . Seg2 = [(50, 0), (50, 50)]
+%   Seg2 = [(50, 0), (50, 50)]
 %
 
 % Zero out invalid values
@@ -25,16 +25,16 @@ for i = 1:length(counts)
 end
 
 % Define emtpy array of lines
-lines = Geometry.Line2f.empty(counts,0);
+lines = Geometry.Line2f.empty(length(counts),0);
 
 % Create lines and normalize
 for i = 1:length(counts)
-    lines(i) = Line2f(rho(i), theta(i));
+    lines(i) = Geometry.Line2f(rho(i), theta(i));
 end
 
 % Center lines at (W/2, 0)
 for i = 1:length(counts)
-    lines(i) = line(i).newOrigin(W/2,0);
+    lines(i) = lines(i).newOrigin(W/2,0);
 end
 
 % Sort in order of angle
@@ -46,28 +46,33 @@ lines = lines(ind);
 % For the left and right most lines, find intersections with the border of 
 % the camera screen, for the ones in between, find intersections among the
 % lines themselves
-points = [];
+points = {};
 p_index = 1;
-points(1) = pickLeftIntersection(lines(0).screenIntersection(H,W));
+points{1} = pickLeftIntersection(lines(1).screenIntersection(H,W))
 p_index = p_index + 1;
-for i = 2:length(counts)
+for i = 2:length(counts)-1
     intersection = Geometry.Line2f.intersection(lines(i),lines(i-1));
-    if isOutOfPicture(intersect)
-        points(p_index) = pickRightIntersection(line(i-1).screenIntersection(H,W));
+    if isOutOfPicture(intersection, H, W)
+        points{p_index} = pickRightIntersection(line(i-1).screenIntersection(H,W));
         p_index = p_index + 1;
-        points(p_index) = pickLeftIntersection(line(i).screenIntersection(H,W));
+        points{p_index} = pickLeftIntersection(line(i).screenIntersection(H,W));
         p_index = p_index + 1;
     else
-        points(p_index) = intersection;
+        points{p_index} = intersection;
         p_index = p_index + 1;
-        points(p_index) = intersection;
+        points{p_index} = intersection;
         p_index = p_index + 1;
     end
     
 end
+
+points{p_index} = pickRightIntersection(lines(end).screenIntersection(H,W));
+
 % Return a list of segments
 for i=1:2:length(points)
-    segments((i+1)/2) = Geometry.Segment2f(points(i), points(i+1));
+    segments{(i+1)/2} = Geometry.Segment2f(points{i}, points{i+1});
+end
+
 end
 
 function intersect = pickLeftIntersection(points)
@@ -98,6 +103,7 @@ function intersect = pickRightIntersection(points)
     end
 
 end
+
 function outOfPicture = isOutOfPicture(point, H, W)
     outOfPicture = point.x > W | point.y > H | point.x < 0 | point.y < 0;
 end
