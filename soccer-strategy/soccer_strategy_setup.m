@@ -2,6 +2,8 @@
 addpath('soccer-strategy/fixed_trajectories')
 addpath('soccer-strategy/systems')
 addpath('soccer-strategy/data')
+addpath('soccer-strategy/tests')
+savepath
 
 % Connect Robot
 connectrobot;
