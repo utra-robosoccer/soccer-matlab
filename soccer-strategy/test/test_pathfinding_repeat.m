@@ -11,7 +11,7 @@ for i = 1:10
     map = Navigation.Map(9, 6, 0.05);
     
     % Create a robot
-    robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
+    robot = Navigation.Robot(Pose(0,0,pi/2,0,0), Navigation.EntityType.Self, 0.05);
 
     % Add obstacles
     for j = 1:obstaclecount

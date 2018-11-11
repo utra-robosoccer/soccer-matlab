@@ -10,11 +10,8 @@ classdef Command < handle
         hip_height = 0.16;
         hip_width = 0.0315;
         
-        % Load DH table
-        path_folders = genpath('soccer_description');
-%         addpath(genpath(path_folders));
+        % DH Table (loaded)
         dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
-%         rmpath(genpath(path_folders));
         
         % Movement timing parameters
         swing_time = 0.5;
@@ -24,6 +21,7 @@ classdef Command < handle
         % Movement physical parameters
         step_height = 0.05;
         angles = zeros(2,6);
+        
         %%% TODO separate into left and right, fix timing
         footsteps
         foot_pos
@@ -39,7 +37,7 @@ classdef Command < handle
         % Kicking Parameters
         kick_prep_dist = 0.05;
         kick_forw_dist = 0.12;
-        kick_time = 0.5; % NOT FULLY IMPLEMENTED
+        kick_time = 0.5;    % NOT FULLY IMPLEMENTED
         kick_height = 0.04; % NOT IMPLEMENTED
         
         % Low level stuff
@@ -96,7 +94,7 @@ classdef Command < handle
             init_speed = -obj.actions.speedAtTime(init_time);
             fin_speed = -obj.actions.speedAtTime(init_time + duration);
             
-            %Ensure continuous rotations
+            % Ensure continuous rotations
             iq = mod(init_pos.q, 2*pi); fq = mod(fin_pos.q, 2*pi);
             if abs(fq - iq) > pi
                 if abs(fq) > abs(iq)
@@ -143,17 +141,17 @@ classdef Command < handle
                     label == Command.ActionLabel.Backward
                 ninc_pose = obj.actions.positionAtTime(obj.cycle_time / 2 + obj.secant_size);
                 delt_pose = ninc_pose - next_pose;
-                %Find normal, and flip the direction depending on step side
+                % Find normal, and flip the direction depending on step side
                 normalv = [-delt_pose.y, delt_pose.x];
                 if xor(last_step.side == Footsteps.Foot.Left, ...
                         label == Command.ActionLabel.Backward)
                     normalv = -normalv;
                 end
 
-                %Find position of next footstep based on normal and d
+                % Find position of next footstep based on normal and d
                 next_step = [next_pose.x next_pose.y] ...
                     - normalv/norm(normalv) * step_width;
-                %Angle q of the nextfootstep
+                % Angle q of the nextfootstep
                 next_q = atan2(delt_pose.y, delt_pose.x);
                 if label == Command.ActionLabel.Backward
                     next_q = mod(next_q + pi, 2 * pi);
@@ -277,9 +275,11 @@ classdef Command < handle
             if obj.footsteps.isempty() && ~obj.actions.isempty()
                 obj.generateNextFootstep();
             end
+            
             footstep = obj.footsteps.next();
             action = obj.actions.next();
             label = obj.getCurrentLabel();
+            
             if (label == Command.ActionLabel.PrepareLeft || ...
                     label == Command.ActionLabel.PrepareRight || ...
                     label == Command.ActionLabel.Rest) ... 

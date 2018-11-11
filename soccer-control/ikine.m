@@ -1,5 +1,5 @@
 function q = ikine(dh, x6, y6, z6, g, q0)
-%IKINE returns joint angles to produces ee position %%% OUT OF DATE
+%IKINE (Inverse Kinematics) returns joint angles to produces ee position
 %   Q = IKINE(DH, X6, Z6, G, Q0)
 % 
 %   Uses an analytical inverse kinematics to produce the joint angles
