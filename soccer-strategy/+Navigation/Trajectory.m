@@ -36,7 +36,7 @@ classdef Trajectory
         
         function DrawPath(obj)
             obj.startpose.draw('START', 0.2);
-            obj.endpose.draw('START', 0.2);
+            obj.endpose.draw('END', 0.2);
             
             for i = 1:length(obj.waypoints)
                 obj.waypoints{i}.draw(num2str(i));

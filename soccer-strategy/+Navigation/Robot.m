@@ -29,7 +29,7 @@ classdef Robot < Navigation.Entity
             obj.body.width = 0.145;
         end
         
-        function SimulationTrajectory(obj, trajectory)
+        function simPosition = SimulationTrajectory(obj, trajectory)
             % Trajectory = [1x1] Navigation.Trajectory
             
             load_system('biped_robot');
@@ -47,8 +47,9 @@ classdef Robot < Navigation.Entity
             in = in.setVariable('hip_width', 0.063, 'Workspace', 'biped_robot');
             in = in.setVariable('body', obj.body, 'Workspace', 'biped_robot');
             in = in.setVariable('init_angle', trajectory.startpose.q, 'Workspace', 'biped_robot');
-
-            sim(in);
+            
+            simOut = sim(in);
+            simPosition = [simOut.yout{3}.Values.x.Data, simOut.yout{3}.Values.y.Data];
         end
     end
 end
