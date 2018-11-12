@@ -82,10 +82,10 @@ classdef Map < handle
             try
                 % First find waypoints
                 waypoints = obj.FindWaypoints(startPose, endPose, speed);
-
+                
                 % Convert waypoints to pose actions
                 poseactions = obj.WaypointsPoseAction(waypoints, speed);
-
+                
                 % Calculate from the pose action list
                 [angles, q0_left, q0_right] = createtrajectory(poseactions);
 
@@ -126,7 +126,7 @@ classdef Map < handle
                 prm.ConnectionDistance = obj.connectiondistance;
                 path = prm.findpath(startCoordinate, endCoordinate);
             else
-%                 path = RRTStar(startCoordinate, endCoordinate, obj.objects);
+%                   path = RRTStar(startCoordinate, endCoordinate, obj.objects);
                 prm = robotics.PRM(obj.occupancymap);
                 prm.NumNodes = obj.numnodes;
                 prm.ConnectionDistance = obj.connectiondistance;
@@ -146,15 +146,48 @@ classdef Map < handle
                 waypoints{i} = Pose(path(i,1), path(i,2), 0, ...
                     atan2(path(i+1,2)-path(i,2), path(i+1,1) - path(i,1)), speed);
             end
-
+         
         end
         
         function poseactions = WaypointsPoseAction(~, waypoints, speed)
             [l,~] = size(waypoints);
             poseactions = cell(l,1);
+            disp(l);
             for i = 1:l
-                actionLabel = Command.ActionLabel.Forward;
+                % additions:
+                disp(i);
+                if (i == l) % end pose, robot should Rest
+                    actionLabel = Command.ActionLabel.Rest;
+                elseif (1 < i && i < l)
+                    prevActionLabel = poseactions{i - 1}.ActionLabel;
+                    prevX = poseactions{i-1}.Pose.x;
+                    prevY = poseactions{i-1}.Pose.y;
+                    currX = waypoints{i}.x;
+                    currY = waypoints{i}.y;
+                    if (prevActionLabel == Command.ActionLabel.Turn)
+                        % FixStance action comes after Turn action
+                        actionLabel = Command.ActionLabel.FixStance;
+                    elseif (prevActionLabel == Command.ActionLabel.PrepareLeft || ...
+                            prevActionLabel == Command.ActionLabel.PrepareRight)
+                        actionLabel = Command.ActionLabel.Turn;
+                    elseif (currX > prevX && currY > prevY)
+                        actionLabel = Command.ActionLabel.Forward;
+                    elseif (currX > prevX && currY < prevY)
+                        actionLabel = Command.ActionLabel.PrepareRight;
+                    elseif (currX < prevX && currY > prevY)
+                        actionLabel = Command.ActionLabel.PrepareLeft;
+                    elseif (currX < prevX && currY < prevY)
+                        actionLabel = Command.ActionLabel.Backward;
+                    else
+                        actionLabel = Command.ActionLabel.Kick;
+                    end
+                else
+                    actionLabel = Command.ActionLabel.Forward;
+                end
                 poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel);
+                % --------
+%                 actionLabel = Command.ActionLabel.Forward; % init action was Forward
+%                 poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel);
             end
             
             for i = 1:l

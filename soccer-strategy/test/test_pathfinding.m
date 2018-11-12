@@ -33,3 +33,10 @@ plot(truepath(:,1), truepath(:,2));
 
 legend('Expected Path', 'Simulation Ground Truth')
 
+% for i = 1:length(trajectory.waypoints)
+%     disp(trajectory.poseactions{i}.ActionLabel);
+% end
+%figure;
+%trajectory.PlotAngles();
+%trajectory.AverageSpeed();
+%robot.SimulationTrajectory(trajectory);

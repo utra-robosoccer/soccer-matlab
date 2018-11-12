@@ -38,7 +38,7 @@ classdef Robot < Navigation.Entity
             in = in.setModelParameter('SimulationMode', 'Normal');
 
             angles_ts = timeseries(trajectory.angles, (0:length(trajectory.angles)-1)*0.01);
-
+            
             in = in.setVariable('dh', obj.dh, 'Workspace', 'biped_robot');
             in = in.setVariable('q0_left', trajectory.q0_left, 'Workspace', 'biped_robot');
             in = in.setVariable('q0_right', trajectory.q0_right, 'Workspace', 'biped_robot');

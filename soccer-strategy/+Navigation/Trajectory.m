@@ -21,7 +21,7 @@ classdef Trajectory
         function obj = Trajectory(startpose, endpose, waypoints, poseactions, angles)
             %TRAJECTORY Construct an instance of this class
             %   waypoints   [1 x N] list of Navigation.Pose
-            %   poseactions [1 x N[ list of Navigation.PoseActions
+            %   poseactions [1 x N] list of Navigation.PoseActions
             %   angles      [20 x N] trajectory
             
             obj.startpose = startpose;
