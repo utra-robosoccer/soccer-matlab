@@ -34,7 +34,7 @@ classdef Robot < Navigation.Entity
             
             load_system('biped_robot');
             in = Simulink.SimulationInput('biped_robot');
-            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(length(trajectory.angles)/100));
+            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(trajectory.Duration));
             in = in.setModelParameter('SimulationMode', 'Normal');
 
             angles_ts = timeseries(trajectory.angles, (0:length(trajectory.angles)-1)*0.01);
