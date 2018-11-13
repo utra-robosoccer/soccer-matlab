@@ -14,11 +14,12 @@ obs3 = Navigation.Entity(Pose(1.5,-1.5,0,0,0), Navigation.EntityType.Friendly);
 map = Navigation.Map(9, 6, 0.05);
 map.objects = {robot, obs1, obs2, obs3};
 trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
-
-<<<<<<< Updated upstream
+for i = 1:length(trajectory.waypoints)
+    disp(trajectory.poseactions{i}.ActionLabel);
+end
 % Draw the angles
-figure;
-trajectory.PlotAngles();
+% figure;
+% trajectory.PlotAngles();
 
 % Get the actual trajectory
 trajectory.AverageSpeed();
@@ -29,24 +30,20 @@ hold on;
 grid minor;
 map.Draw();
 trajectory.DrawPath();
-<<<<<<< HEAD
+
 plot(truepath(:,1), truepath(:,2));
 
 legend('Expected Path', 'Simulation Ground Truth')
 
-% for i = 1:length(trajectory.waypoints)
-%     disp(trajectory.poseactions{i}.ActionLabel);
-% end
 %figure;
 %trajectory.PlotAngles();
 %trajectory.AverageSpeed();
 %robot.SimulationTrajectory(trajectory);
-=======
-for i = 1:length(trajectory.waypoints)
-    disp(trajectory.poseactions{i}.ActionLabel);
-end
-return;
-% return;
+% 
+% for i = 1:length(trajectory.waypoints)
+%     disp(trajectory.poseactions{i}.ActionLabel);
+% end
+
 % Draw the map and path
 map.Draw();
 hold on;
@@ -55,7 +52,11 @@ trajectory.DrawPath();
 %trajectory.PlotAngles();
 %trajectory.AverageSpeed();
 robot.SimulationTrajectory(trajectory);
->>>>>>> Stashed changes
-=======
 plot(simPose(:,1), simPose(:,2));
->>>>>>> upstream/master
+% map.Draw();
+% hold on;
+% trajectory.DrawPath();
+% %figure;
+% %trajectory.PlotAngles();
+% %trajectory.AverageSpeed();
+% robot.SimulationTrajectory(trajectory);
