@@ -21,32 +21,11 @@ trajectory.PlotAngles();
 
 % Get the actual trajectory
 trajectory.AverageSpeed();
-truepath = robot.SimulationTrajectory(trajectory);
+[simTime, simPose] = robot.SimulationTrajectory(trajectory);
+close all;
 
-% Draw ground truth simulation position
-f = figure('pos',[10 10 900 600]);
-ax = axes('Parent',f,'position',[0.13 0.29  0.77 0.64]);
 hold on;
 grid minor;
 map.Draw();
 trajectory.DrawPath();
-plot(truepath(:,1), truepath(:,2));
-
-% Interactive Robot control
-startTime = 0;
-currentTime = 0;
-endTime = trajectory.Duration;
-
-robot = importrobot('soccer_description/models/soccerbot/model.xacro');
-conf = homeConfiguration(robot);
-ax = show(robot, conf);
-
-b = uicontrol('Parent',f,'Style','slider','Position',[81,54,419,23],...
-              'value',currentTime, 'min',startTime, 'max',endTime);
-b.Callback = @(es,ed) updateConfiguration(ax, robot, conf, currentTime); 
-
-legend('Expected Path', 'Simulation Ground Truth')
-
-function updateConfiguration(es, ed, robot, conf, currentTime)
-    es = show(robot, conf);
-end
+plot(simPose(:,1), simPose(:,2));
