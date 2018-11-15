@@ -17,42 +17,25 @@ trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
 for i = 1:length(trajectory.waypoints)
     disp(trajectory.poseactions{i}.ActionLabel);
 end
+
 % Draw the angles
-% figure;
-% trajectory.PlotAngles();
+figure;
+trajectory.PlotAngles();
 
 % Get the actual trajectory
 trajectory.AverageSpeed();
 [simTime, simPose] = robot.SimulationTrajectory(trajectory);
 close all;
 
-hold on;
-grid minor;
-map.Draw();
-trajectory.DrawPath();
-
-plot(truepath(:,1), truepath(:,2));
-
 legend('Expected Path', 'Simulation Ground Truth')
-
-%figure;
-%trajectory.PlotAngles();
-%trajectory.AverageSpeed();
-%robot.SimulationTrajectory(trajectory);
-% 
-% for i = 1:length(trajectory.waypoints)
-%     disp(trajectory.poseactions{i}.ActionLabel);
-% end
 
 % Draw the map and path
 map.Draw();
 hold on;
 trajectory.DrawPath();
-%figure;
-%trajectory.PlotAngles();
-%trajectory.AverageSpeed();
 robot.SimulationTrajectory(trajectory);
 plot(simPose(:,1), simPose(:,2));
+
 % map.Draw();
 % hold on;
 % trajectory.DrawPath();
