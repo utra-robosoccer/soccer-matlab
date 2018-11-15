@@ -74,6 +74,10 @@ classdef Trajectory
         function vel = AverageSpeed(obj)
             vel = obj.TotalDistance() / obj.duration;
         end
+        
+        function duration = Duration(obj)
+            duration = length(obj.angles) * 0.01;
+        end
     end
 end
 

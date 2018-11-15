@@ -21,15 +21,11 @@ trajectory.PlotAngles();
 
 % Get the actual trajectory
 trajectory.AverageSpeed();
-truepath = robot.SimulationTrajectory(trajectory);
+[simTime, simPose] = robot.SimulationTrajectory(trajectory);
+close all;
 
-% Draw ground truth simulation position
-figure;
 hold on;
 grid minor;
 map.Draw();
 trajectory.DrawPath();
-plot(truepath(:,1), truepath(:,2));
-
-legend('Expected Path', 'Simulation Ground Truth')
-
+plot(simPose(:,1), simPose(:,2));
