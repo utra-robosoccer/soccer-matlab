@@ -12,7 +12,7 @@ obs2 = Navigation.Entity(Pose(-1.7,1.7,0,0,0), Navigation.EntityType.Friendly);
 obs3 = Navigation.Entity(Pose(1.5,-1.5,0,0,0), Navigation.EntityType.Friendly);
 
 map = Navigation.Map(9, 6, 0.05);
-map.objects = {robot, obs1, obs2, obs3}; 
+map.objects = {robot, obs1, obs2, obs3};
 trajectory = map.FindTrajectory(robot, endPose, robot.speed);
 
 % Draw the angles
