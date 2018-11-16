@@ -5,6 +5,12 @@ if ~exist('manual', 'var')
     load('poses.mat')
 end
 
+% Manually change position of one motor
+% clear customTrajectory
+% manual =  zeros(1,20);
+% motor_idx = 18;
+% manual(motor_idx) = pi/6;
+
 % Animations
 load('animations.mat')
 
