@@ -35,7 +35,7 @@ classdef Robot < Navigation.Entity
         end
         
         function [angles, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
-            command = Command.Command(obj.pose);
+            command = Command.Command(poseActions{1}.Pose);
             command.swing_time = obj.swing_time;
             command.stance_time = obj.stance_time;
             command.cycle_time = obj.cycle_time;
