@@ -14,9 +14,10 @@ classdef Command < handle
         dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
         
         % Movement timing parameters
+        cycle_time = 2;
         swing_time = 0.5;
         stance_time = 1.5;
-        cycle_time = 2;
+
         
         % Movement physical parameters
         step_height = 0.05;
@@ -25,7 +26,7 @@ classdef Command < handle
         %%% TODO separate into left and right, fix timing
         footsteps
         foot_pos
-        %%%
+
         body_pose = Pose(0, -0.0, 0, 0, 0);
         cur_angles = zeros(2,6);
         

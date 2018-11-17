@@ -75,6 +75,13 @@ classdef Trajectory
             vel = obj.TotalDistance() / obj.duration;
         end
         
+        function angles = UrdfConventionAngles(obj)
+            angles = obj.angles;
+            angles(6,:) = -angles(6,:);
+            angles(7,:) = -angles(7,:);
+            angles(12,:) = -angles(12,:);
+        end
+
         function duration = Duration(obj)
             duration = length(obj.angles) * 0.01;
         end
