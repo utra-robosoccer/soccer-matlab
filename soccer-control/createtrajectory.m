@@ -1,4 +1,6 @@
 function [angles, q0_left, q0_right] = createtrajectory(poseActions, plot)
+
+
     command = Command.Command(poseActions{1}.Pose);
     q0_left = command.cur_angles(1,:);
     q0_right = command.cur_angles(2,:);

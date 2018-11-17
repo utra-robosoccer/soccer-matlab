@@ -36,7 +36,7 @@ classdef Trajectory
         
         function DrawPath(obj)
             obj.startpose.draw('START', 0.2);
-            obj.endpose.draw('START', 0.2);
+            obj.endpose.draw('END', 0.2);
             
             for i = 1:length(obj.waypoints)
                 obj.waypoints{i}.draw(num2str(i));
@@ -80,6 +80,10 @@ classdef Trajectory
             angles(6,:) = -angles(6,:);
             angles(7,:) = -angles(7,:);
             angles(12,:) = -angles(12,:);
+        end
+
+        function duration = Duration(obj)
+            duration = length(obj.angles) * 0.01;
         end
     end
 end

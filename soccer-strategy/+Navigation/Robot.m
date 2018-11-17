@@ -70,12 +70,12 @@ classdef Robot < Navigation.Entity
             end
         end
         
-        function SimulationTrajectory(obj, trajectory)
+        function [simTime, simPosition] = SimulationTrajectory(obj, trajectory)
             % Trajectory = [1x1] Navigation.Trajectory
             
             load_system('biped_robot');
             in = Simulink.SimulationInput('biped_robot');
-            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(length(trajectory.angles)/100));
+            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(trajectory.Duration));
             in = in.setModelParameter('SimulationMode', 'Normal');
 
             angles_ts = timeseries(trajectory.angles, (0:length(trajectory.angles)-1)*0.01);
@@ -88,8 +88,10 @@ classdef Robot < Navigation.Entity
             in = in.setVariable('hip_width', obj.body_hip_width, 'Workspace', 'biped_robot');
             in = in.setVariable('body', obj.torso_dimensions, 'Workspace', 'biped_robot');
             in = in.setVariable('init_angle', trajectory.startpose.q, 'Workspace', 'biped_robot');
-
-            sim(in);
+            
+            simOut = sim(in);
+            simTime = simOut.tout;
+            simPosition = [simOut.yout{3}.Values.x.Data, simOut.yout{3}.Values.y.Data, simOut.yout{3}.Values.q.Data];
         end
     end
 end
