@@ -6,7 +6,7 @@ classdef Robot < Navigation.Entity
         % Movement Parameters
         speed = 0.05 % m/s
         swing_time = 0.5;
-        stance_time = 1.5;
+        stance_time = 1.0;
         cycle_time = 2;
         step_height = 0.05;
         
@@ -14,7 +14,6 @@ classdef Robot < Navigation.Entity
         body_height = 0.17; %0.099 + 0.16;
         body_hip_height = 0.16;
         body_hip_width = 0.07;
-        
         
         torso_dimensions = struct('depth',0.1305, 'height', 0.152, 'width', 0.145);
     end
@@ -36,14 +35,13 @@ classdef Robot < Navigation.Entity
         end
         
         function [angles, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
-            command = Command.Command(poseActions{1}.Pose);
+            command = Command.Command(obj.pose);
             command.swing_time = obj.swing_time;
             command.stance_time = obj.stance_time;
             command.cycle_time = obj.cycle_time;
             command.step_height = obj.step_height;
             command.hip_height = obj.body_hip_height;
             command.hip_width = obj.body_hip_width / 2;
-            
             
             q0_left = command.cur_angles(1,:);
             q0_right = command.cur_angles(2,:);
