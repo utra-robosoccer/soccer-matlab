@@ -59,7 +59,7 @@ in = in.setVariable('q0_left', q0_left, 'Workspace', 'biped_robot');
 in = in.setVariable('q0_right', q0_right, 'Workspace', 'biped_robot');
 in = in.setVariable('angles', angles_ts, 'Workspace', 'biped_robot');
 in = in.setVariable('init_body_height', body_height, 'Workspace', 'biped_robot');
-in = in.setVariable('hip_width', 0.063, 'Workspace', 'biped_robot');
+in = in.setVariable('hip_width', 0.07, 'Workspace', 'biped_robot');
 in = in.setVariable('body', body, 'Workspace', 'biped_robot');
 in = in.setVariable('init_angle', start_pose.q, 'Workspace', 'biped_robot');
 

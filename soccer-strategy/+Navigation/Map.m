@@ -75,28 +75,28 @@ classdef Map < handle
             
         end
         
-        function trajectory = FindTrajectory(obj, startPose, endPose, speed)
+        function trajectory = FindTrajectory(obj, robot, endPose, speed)
             % Start Pose [1x1] Pose
             % End Pose [1x1] Pose
             
             try
                 % First find waypoints
-                waypoints = obj.FindWaypoints(startPose, endPose, speed);
+                waypoints = obj.FindWaypoints(robot.pose, endPose, speed);
 
                 % Convert waypoints to pose actions
                 poseactions = obj.WaypointsPoseAction(waypoints, speed);
 
                 % Calculate from the pose action list
-                [angles, q0_left, q0_right] = createtrajectory(poseactions);
+                [angles, q0_left, q0_right] = robot.CreateTrajectory(poseactions);
 
                 % Clip off bad angles
-                trajectory = Navigation.Trajectory(startPose, endPose, waypoints, poseactions, angles);
+                trajectory = Navigation.Trajectory(robot.pose, endPose, waypoints, poseactions, angles);
                 trajectory.q0_left = q0_left;
                 trajectory.q0_right = q0_right;
                 
             catch ME
                 disp(strcat('Failed: ', ME.identifier))
-                disp(startPose)
+                disp(robot.pose)
                 disp(endPose)
                 disp('------ Objects -----')
                 for i = 1:length(obj.objects)
@@ -104,7 +104,7 @@ classdef Map < handle
                 end
                 obj.Draw
                 pause
-                trajectory = Navigation.Trajectory(startPose, startPose, startPose, Navigation.PoseAction(startPose, 0, 0), 0);
+                trajectory = Navigation.Trajectory(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(startPose, 0, 0), 0);
             end
         end
         

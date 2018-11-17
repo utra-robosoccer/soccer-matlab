@@ -27,7 +27,7 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
             % Test
             endPose = Pose(2.5,2.5,10,0,0);
 
-            % Add objstacles
+            % Add obstacles
             obs1 = Navigation.Entity(Pose(1.3,1.3,0,0,0), Navigation.EntityType.Friendly);
             obs2 = Navigation.Entity(Pose(-1.7,1.7,0,0,0), Navigation.EntityType.Friendly);
             obs3 = Navigation.Entity(Pose(1.5,-1.5,0,0,0), Navigation.EntityType.Friendly);
@@ -35,7 +35,7 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
             map = Navigation.Map(9, 6, 0.05);
             map.objects = {obj.robot, obs1, obs2, obs3};
             traj = map.FindTrajectory(obj.robot.pose, endPose, obj.robot.speed);
-            
+                        
             % Fill in the trajectory
             [l,w] = size(traj.angles);
             for i = 1:w
@@ -43,6 +43,9 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
                     obj.trajectory(i,j) = traj.angles(j,i);
                 end
             end
+            
+            obj.trajectory(:,1) = -obj.trajectory(:,1);
+            obj.trajectory(:,6) = -obj.trajectory(:,6);
             
             trajectoryOut = obj.trajectory;
         end
