@@ -8,7 +8,7 @@ classdef Robot < Navigation.Entity
         swing_time = 0.5;
         stance_time = 1.0;
         cycle_time = 2;
-        step_height = 0.05;
+        step_height = 0.035;
         
         % Body Parameters
         body_height = 0.17; %0.099 + 0.16;

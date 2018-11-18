@@ -20,7 +20,7 @@ classdef Command < handle
 
         
         % Movement physical parameters
-        step_height = 0.05;
+        step_height = 0.035;
         angles = zeros(2,6);
         
         %%% TODO separate into left and right, fix timing
