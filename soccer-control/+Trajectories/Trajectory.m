@@ -7,7 +7,7 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
     
     methods
         function pos = positionAtTime(obj, t)
-        %POSITIONATTIME produces the positions at time t
+            %POSITIONATTIME produces the positions at time t
             p = zeros(1, 5);
             for i = 1:5
                 p(i) = obj.data{i}.positionAtTime(t);
@@ -15,7 +15,7 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
             pos = Pose(p(1), p(2), p(3), p(4), p(5));
         end
         function speed = speedAtTime(obj, t)
-        %SPEEDATTIME produces the speeds at time t
+            %SPEEDATTIME produces the speeds at time t
             s = zeros(1, 5);
             for i = 1:5
                 s(i) = obj.data{i}.speedAtTime(t);
@@ -27,27 +27,27 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
     methods(Static)
         function obj = footTrajectory(duration, ...
                 prev_pos, next_pos, prev_speed, next_speed, height)
-        %FOOTTRAJECTORY Produces a forward an vertical trajectory for foot
-        %   OBJ = FOOTTRAJECTORY(DURATION, PREV_POS, NEXT_POS, PREV_SPEED, NEXT_SPEED, HEIGHT)
-        %
-        %   This produces the path that the foot will follow across one
-        %   cycle (stance or swing. A stance cycle will simply have height
-        %   of 0. Does not model off-axis movement of the foot.
-        %
-        %
-        %   Arguments
-        %
-        %   DURATION = [1 x 1]
-        %       The time to move between the two positions
-        %
-        %   PREV_POS, NEXT_POS = [1 x 1]
-        %       The starting and ending positions of the foot in the x-axis
-        %
-        %   PREV_SPEED, NEXT_SPEED = [1 x 1]
-        %       The starting and ending speeds of the foot in the x-axis
-        %
-        %   HEIGHT = [1 x 1]
-        %       The peak height during mid-swing of the cycle
+            %FOOTTRAJECTORY Produces a forward an vertical trajectory for foot
+            %   OBJ = FOOTTRAJECTORY(DURATION, PREV_POS, NEXT_POS, PREV_SPEED, NEXT_SPEED, HEIGHT)
+            %
+            %   This produces the path that the foot will follow across one
+            %   cycle (stance or swing. A stance cycle will simply have height
+            %   of 0. Does not model off-axis movement of the foot.
+            %
+            %
+            %   Arguments
+            %
+            %   DURATION = [1 x 1]
+            %       The time to move between the two positions
+            %
+            %   PREV_POS, NEXT_POS = [1 x 1]
+            %       The starting and ending positions of the foot in the x-axis
+            %
+            %   PREV_SPEED, NEXT_SPEED = [1 x 1]
+            %       The starting and ending speeds of the foot in the x-axis
+            %
+            %   HEIGHT = [1 x 1]
+            %       The peak height during mid-swing of the cycle
 
             %Ensure continuous rotations
             iq = mod(prev_pos.q, 2*pi); fq = mod(next_pos.q, 2*pi);
@@ -76,20 +76,20 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
         end
         
         function obj = plannedPath(duration, prev_pose, next_pose)
-        %PLANNEDPATH Produces a planar trajectory for body
-        %   OBJ = PLANNEDPATH(DURATION, PREV_POS, NEXT_POS)
-        %
-        %   This produces the path that the body will follow based on an 
-        %   inital and final Pose.
-        %
-        %
-        %   Arguments
-        %
-        %   DURATION = [1 x 1]
-        %       The time to move between the two positions
-        %
-        %   PREV_POS, NEXT_POS = Pose
-        %       The starting and ending poses of the body
+            %PLANNEDPATH Produces a planar trajectory for body
+            %   OBJ = PLANNEDPATH(DURATION, PREV_POS, NEXT_POS)
+            %
+            %   This produces the path that the body will follow based on an 
+            %   inital and final Pose.
+            %
+            %
+            %   Arguments
+            %
+            %   DURATION = [1 x 1]
+            %       The time to move between the two positions
+            %
+            %   PREV_POS, NEXT_POS = Pose
+            %       The starting and ending poses of the body
         
             obj = Trajectories.Trajectory();
             obj.duration = duration;

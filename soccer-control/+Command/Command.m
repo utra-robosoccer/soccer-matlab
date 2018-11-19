@@ -4,7 +4,7 @@ classdef Command < handle
     properties
         % High-level actions and idealized path
         actions
-        prepared_side = Footsteps.Foot.Left;
+        prepared_side = Mechanics.Foot.Left;
         
         % Body physical parameters
         hip_height = 0.16;
@@ -17,7 +17,6 @@ classdef Command < handle
         cycle_time = 2;
         swing_time = 0.5;
         stance_time = 1.5;
-
         
         % Movement physical parameters
         step_height = 0.05;
@@ -27,7 +26,7 @@ classdef Command < handle
         footsteps
         foot_pos
 
-        body_pose = Pose(0, -0.0, 0, 0, 0);
+        body_pose = Pose(0, 0, 0, 0, 0);
         cur_angles = zeros(2,6);
         
         % Trajectories
@@ -57,39 +56,39 @@ classdef Command < handle
             end
         end
         
-        %TODO this is not the right place for this function
         function traj = buildBodyTraj(obj, init_time, ...
                 init_step, fin_step, duration)
-        %BUILDBODYTRAJ builds body trajectory between footsteps
-        %   TRAJ = BUILDBODYTRAJ(OBJ, INIT_TIME, INIT_STEP, ...
-        %       FIN_STEP, DURATION)
-        %
-        %   BUILDBODYTRAJ constructs a smoothed trajectory for the body to
-        %   follow between footsteps. This is done with bezier curves,
-        %   allowing trajectory to precisely match foot tajectory when
-        %   needed.
-        %
-        %
-        %   Arguments
-        %
-        %   INIT_TIME = [1 x 1] 
-        %       How far into the future from the current time to construct
-        %       the body trajectory.
-        %
-        %   INIT_STEP = [1 x 1] Pose
-        %       The initial position of the body.
-        %
-        %   FIN_STEP = [1 x 1] Pose
-        %       The final position of the body.
-        %
-        %   DURATION = [1 x 1]
-        %       How long the trajectory should take.
-        %
-        %
-        %   Outputs
-        %
-        %   TRAJ = [1 x 1] Trajectories.Trajectory(dim=2)
-        %       The two-dimensional body trajectory.
+            %BUILDBODYTRAJ builds body trajectory between footsteps
+            %   TRAJ = BUILDBODYTRAJ(OBJ, INIT_TIME, INIT_STEP, ...
+            %       FIN_STEP, DURATION)
+            %
+            %   BUILDBODYTRAJ constructs a smoothed trajectory for the body to
+            %   follow between footsteps. This is done with bezier curves,
+            %   allowing trajectory to precisely match foot tajectory when
+            %   needed.
+            %
+            %
+            %   Arguments
+            %
+            %   INIT_TIME = [1 x 1] 
+            %       How far into the future from the current time to construct
+            %       the body trajectory.
+            %
+            %   INIT_STEP = [1 x 1] Pose
+            %       The initial position of the body.
+            %
+            %   FIN_STEP = [1 x 1] Pose
+            %       The final position of the body.
+            %
+            %   DURATION = [1 x 1]
+            %       How long the trajectory should take.
+            %
+            %
+            %   Outputs
+            %
+            %   TRAJ = [1 x 1] Trajectories.Trajectory(dim=2)
+            %       The two-dimensional body trajectory.
+            
             init_pos = init_step - obj.actions.positionAtTime(init_time);
             fin_pos = fin_step - obj.actions.positionAtTime(init_time + duration);
             init_speed = -obj.actions.speedAtTime(init_time);
@@ -122,8 +121,8 @@ classdef Command < handle
         end
         
         function generateNextFootstep(obj)
-        %GENERATENEXTFOOTSTEP produces the next footstep along the path
-        %   GENERATENEXTFOOTSTEPS(OBJ)
+            %GENERATENEXTFOOTSTEP produces the next footstep along the path
+            %   GENERATENEXTFOOTSTEPS(OBJ)
 
             step_duration = obj.cycle_time / 2;
             step_width = obj.hip_width;
@@ -132,7 +131,7 @@ classdef Command < handle
             label = obj.getCurrentLabel();
             
             if label == Command.ActionLabel.PrepareLeft || ...
-                    obj.footsteps.positionAtTime(0).side == Footsteps.Foot.Right
+                    obj.footsteps.positionAtTime(0).side == Mechanics.Foot.Right
                 last_step = obj.foot_pos{1};
             else
                 last_step = obj.foot_pos{2};
@@ -142,9 +141,10 @@ classdef Command < handle
                     label == Command.ActionLabel.Backward
                 ninc_pose = obj.actions.positionAtTime(obj.cycle_time / 2 + obj.secant_size);
                 delt_pose = ninc_pose - next_pose;
+                
                 % Find normal, and flip the direction depending on step side
                 normalv = [-delt_pose.y, delt_pose.x];
-                if xor(last_step.side == Footsteps.Foot.Left, ...
+                if xor(last_step.side == Mechanics.Foot.Left, ...
                         label == Command.ActionLabel.Backward)
                     normalv = -normalv;
                 end
@@ -152,6 +152,7 @@ classdef Command < handle
                 % Find position of next footstep based on normal and d
                 next_step = [next_pose.x next_pose.y] ...
                     - normalv/norm(normalv) * step_width;
+                
                 % Angle q of the nextfootstep
                 next_q = atan2(delt_pose.y, delt_pose.x);
                 if label == Command.ActionLabel.Backward
@@ -162,7 +163,7 @@ classdef Command < handle
 
                 % Calculate the footposition (offset)
                 normalv = [-sin(next_q) cos(next_q)];
-                if last_step.side == Footsteps.Foot.Left
+                if last_step.side == Mechanics.Foot.Left
                     normalv = -normalv;
                 end
                 next_step = [next_pose.x next_pose.y] ...
@@ -174,20 +175,20 @@ classdef Command < handle
 
                 % Calculate the footposition (offset)
                 normalv = [-sin(next_q) cos(next_q)];
-                if last_step.side == Footsteps.Foot.Left
+                if last_step.side == Mechanics.Foot.Left
                     normalv = -normalv;
                 end
                 next_step = [init_pose.x init_pose.y] - normalv/norm(normalv) * step_width;
                 
             else % Keep feet as they are
                 if label == Command.ActionLabel.Kick
-                    footstep = Footsteps.Footstep(...
+                    footstep = Mechanics.Footstep(...
                         last_step.x - obj.kick_prep_dist * cos(last_step.q), ...
                         last_step.y - obj.kick_prep_dist * sin(last_step.q), ...
                         0, last_step.side, obj.swing_time ...
                     );
                     obj.footsteps.append(footstep);
-                    footstep = Footsteps.Footstep(...
+                    footstep = Mechanics.Footstep(...
                         footstep.x + obj.kick_forw_dist * cos(last_step.q), ...
                         footstep.y + obj.kick_forw_dist * sin(last_step.q), ...
                         0, last_step.side, obj.kick_time ...
@@ -201,7 +202,7 @@ classdef Command < handle
             
 
             % Create the footstep
-            footstep = Footsteps.Footstep(next_step(1), next_step(2), ...
+            footstep = Mechanics.Footstep(next_step(1), next_step(2), ...
                 next_q, last_step.side, step_duration);
             obj.footsteps.append(footstep);
         end
@@ -210,30 +211,30 @@ classdef Command < handle
     
     methods
         function obj = Command(start_pose)
-        %COMMAND initializes the command object
-        %   OBJ = COMMAND(START_POS)
-        %
-        %   
-        %   Arguments
-        %
-        %   START_POS = [1 x 1] Pose
-        %       Where the robot starts.
+            %COMMAND initializes the command object
+            %   OBJ = COMMAND(START_POS)
+            %
+            %   
+            %   Arguments
+            %
+            %   START_POS = [1 x 1] Pose
+            %       Where the robot starts.
             obj.body_pose = start_pose;
             
             % Initial Foot Positions
             obj.foot_pos = {
-                Footsteps.Footstep(-obj.hip_width * sin(start_pose.q), ...
+                Mechanics.Footstep(-obj.hip_width * sin(start_pose.q), ...
                                     obj.hip_width * cos(start_pose.q), ...
-                                    start_pose.q, Footsteps.Foot.Left, 0),... 
-                Footsteps.Footstep( obj.hip_width * sin(start_pose.q), ...
+                                    start_pose.q, Mechanics.Foot.Left, 0),... 
+                Mechanics.Footstep( obj.hip_width * sin(start_pose.q), ...
                                    -obj.hip_width * cos(start_pose.q), ...
-                                    start_pose.q, Footsteps.Foot.Right, 0)
+                                    start_pose.q, Mechanics.Foot.Right, 0)
             }; % L, R
             
             % Initialize queues
             obj.actions = Trajectories.LiveQueue(Command.Action(...
                 Command.ActionLabel.Forward,Pose(0,0,0,0,0),Pose(0,0,0,0,0),0));
-            obj.footsteps = Trajectories.LiveQueue(Footsteps.Footstep(), false);
+            obj.footsteps = Trajectories.LiveQueue(Mechanics.Footstep(), false);
             obj.foot_traj_l = Trajectories.LiveQueue(Trajectories.FootCycle(...
                 obj.actions, obj.foot_pos{1}, obj.foot_pos{2}, 0, 0, 0));
             obj.foot_traj_r = Trajectories.LiveQueue(Trajectories.FootCycle(...
@@ -246,33 +247,36 @@ classdef Command < handle
             %TODO should not depend on footstep position
             obj.cur_angles(1,3) = 1;
             obj.cur_angles(2,3) = 1;
-            obj.cur_angles(1,:) = ikine(obj.dh, ...
+            obj.cur_angles(1,:) = Mechanics.Leg.InverseKinematics(obj.dh, ...
                 obj.foot_pos{1}.x + obj.hip_width * sin(start_pose.q), ...
                 obj.foot_pos{1}.y - obj.hip_width * cos(start_pose.q), ...
                 -obj.hip_height, 0, obj.cur_angles(1,:));
-            obj.cur_angles(2,:) = ikine(obj.dh, ...
+            obj.cur_angles(2,:) = Mechanics.Leg.InverseKinematics(obj.dh, ...
                 obj.foot_pos{2}.x - obj.hip_width * sin(start_pose.q), ...
                 obj.foot_pos{2}.y + obj.hip_width * cos(start_pose.q), ...
                 -obj.hip_height, 0, obj.cur_angles(2,:));
         end
         
         function angles = next(obj)
-        %NEXT produces the next set of joint angles
-        %   ANGLES = NEXT(OBJ)
-        %
-        %   This is the main method for the COMMAND object. This method
-        %   advances time forward and keeps track of all important changes
-        %   that result from this. It then determines the current angles
-        %   based on this.
-        %
-        %
-        %   Outputs
-        %
-        %   Angles = [2 x 6]
-        %       The 12 angles corresponding to the current desired angular
-        %       position.
+            % NEXT produces the next set of joint angles
+            %   ANGLES = NEXT(OBJ)
+            %
+            %   This is the main method for the COMMAND object. This method
+            %   advances time forward and keeps track of all important changes
+            %   that result from this. It then determines the current angles
+            %   based on this.
+            %
+            %
+            %   Outputs
+            %
+            %   Angles = [2 x 6]
+            %       The 12 angles corresponding to the current desired angular
+            %       position.
+            
+            % Update the ID of the movement
             obj.idx = obj.idx + 1;
             
+            % Generate a new footstep
             if obj.footsteps.isempty() && ~obj.actions.isempty()
                 obj.generateNextFootstep();
             end
@@ -294,13 +298,13 @@ classdef Command < handle
                     0, obj.swing_time, obj.swing_time ...
                 ));
                 if label == Command.ActionLabel.PrepareLeft
-                    obj.prepared_side = Footsteps.Foot.Left;
+                    obj.prepared_side = Mechanics.Foot.Left;
                     obj.body_traj.append(obj.buildBodyTraj( ...
                         0, obj.body_traj.positionAtTime(0), ...
                         obj.foot_pos{1}, obj.swing_time ...
                     ));
                 elseif label == Command.ActionLabel.PrepareRight
-                    obj.prepared_side = Footsteps.Foot.Right;
+                    obj.prepared_side = Mechanics.Foot.Right;
                     obj.body_traj.append(obj.buildBodyTraj( ...
                         0, obj.body_traj.positionAtTime(0), ...
                         obj.foot_pos{2}, obj.swing_time ...
@@ -313,8 +317,8 @@ classdef Command < handle
                     ));
                 end
                 
-            %TODO Figure out how to remove if statement to reduce repistion
-            elseif footstep.side == Footsteps.Foot.Left && ...
+            % Forward walking movement
+            elseif footstep.side == Mechanics.Foot.Left && ...
                     footstep ~= obj.foot_pos{1}
                 % Build new trajectories for feet to reach next footstep
                 obj.foot_traj_l.append(Trajectories.FootCycle( ...
@@ -336,7 +340,7 @@ classdef Command < handle
                     ));
                 end
                 obj.foot_pos{1} = footstep;
-            elseif footstep.side == Footsteps.Foot.Right && ...
+            elseif footstep.side == Mechanics.Foot.Right && ...
                     footstep ~= obj.foot_pos{2}
                 % Build new trajectories for feet to reach next footstep
                 obj.foot_traj_l.append(Trajectories.FootCycle( ...
@@ -374,13 +378,13 @@ classdef Command < handle
             lq = atan2(ly, lx) - abq;
             rq = atan2(ry, rx) - abq;
             
-            obj.cur_angles(1,:) = ikine(obj.dh, ...
+            obj.cur_angles(1,:) = Mechanics.Leg.InverseKinematics(obj.dh, ...
                 lr * cos(lq), lr * sin(lq), ...
                 ftl.z - obj.hip_height, ...
                 mod(ftl.q - bp.q + pi, 2*pi) - pi, ...
                 obj.cur_angles(1,:) ...
             );
-            obj.cur_angles(2,:) = ikine(obj.dh, ...
+            obj.cur_angles(2,:) = Mechanics.Leg.InverseKinematics(obj.dh, ...
                 rr * cos(rq), rr * sin(rq), ...
                 ftr.z - obj.hip_height, ...
                 mod(ftr.q - bp.q + pi, 2*pi) - pi, ...
@@ -390,25 +394,27 @@ classdef Command < handle
         end
         
         function append(obj, label, goal, duration)
-        %APPEND adds a new action to the action queue
-        %   APPEND(OBJ, LABEL, GOAL, DURATION)
-        %
-        %   Construct a new action based on the provided inputs and appends
-        %   it to the queue. Also update other parameters as needed.
-        %
-        %
-        %   Arguments
-        %
-        %   LABEL = [1 x 1] Command.ActionLabel
-        %       The desired type of action.
-        %
-        %   GOAL = [1 x 1] Pose
-        %       The desired final position
-        %
-        %   DURATION = [1 x 1]
-        %       The desired duration of the action.
+            %APPEND adds a new action to the action queue
+            %   APPEND(OBJ, LABEL, GOAL, DURATION)
+            %
+            %   Construct a new action based on the provided inputs and appends
+            %   it to the queue. Also update other parameters as needed.
+            %
+            %
+            %   Arguments
+            %
+            %   LABEL = [1 x 1] Command.ActionLabel
+            %       The desired type of action.
+            %
+            %   GOAL = [1 x 1] Pose
+            %       The desired final position
+            %
+            %   DURATION = [1 x 1]
+            %       The desired duration of the action.
+            
+            % Get the duration of the movement
             if label == Command.ActionLabel.PrepareLeft || ...
-                    label == Command.ActionLabel.PrepareLeft || ...
+                    label == Command.ActionLabel.PrepareRight || ...
                     label == Command.ActionLabel.Rest
                 duration = obj.cycle_time / 2 - obj.swing_time;
             elseif label == Command.ActionLabel.FixStance
@@ -417,16 +423,14 @@ classdef Command < handle
                 duration = obj.swing_time * 2 + obj.kick_time;
             end
             
+            % Create an action movement, append new action to old one
             if ~isempty(obj.actions)
-                action = Command.Action( ...
-                    label, obj.actions.data{obj.actions.length}.goal, ...
-                    goal, duration ...
-                );
+                action = Command.Action(label, obj.actions.data{obj.actions.length}.goal, goal, duration);
             else
-                action = Command.Action( ...
-                    label, obj.body_pose, goal, duration ...
-                );
+                action = Command.Action(label, obj.body_pose, goal, duration);
             end
+            
+            % Update the new body pose, and add the action
             obj.body_pose = goal;
             obj.actions.append(action);
         end

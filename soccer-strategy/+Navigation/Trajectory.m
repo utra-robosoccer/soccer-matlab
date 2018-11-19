@@ -77,9 +77,9 @@ classdef Trajectory
         
         function angles = UrdfConventionAngles(obj)
             angles = obj.angles;
+            
+            angles(1,:) = -angles(1,:);
             angles(6,:) = -angles(6,:);
-            angles(7,:) = -angles(7,:);
-            angles(12,:) = -angles(12,:);
         end
 
         function duration = Duration(obj)
