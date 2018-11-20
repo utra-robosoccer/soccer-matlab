@@ -43,7 +43,7 @@ classdef Robot < Navigation.Entity
             rmpath(genpath(path_folders));            
         end
         
-        function [angles, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
+        function [angles, states, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
             command = Command.Command(poseActions{1}.Pose);
             command.swing_time = obj.swing_time;
             command.stance_time = obj.stance_time;
@@ -65,8 +65,9 @@ classdef Robot < Navigation.Entity
             totalSteps = int16(floor(totalDuration) * 100); % 1 second to rebalance itself
 
             angles = zeros(12, totalSteps);
+            states = zeros(1, totalSteps);
             for i = 1:(totalSteps)
-                cn = command.next();
+                [cn, states(i)] = command.next();
                 angles(:, i) = [cn(1, :), cn(2, :)]';
             end
 

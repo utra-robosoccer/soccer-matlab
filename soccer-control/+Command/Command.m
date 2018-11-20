@@ -257,7 +257,7 @@ classdef Command < handle
                 -obj.hip_height, 0, obj.cur_angles(2,:));
         end
         
-        function angles = next(obj)
+        function [angles, actionState] = next(obj)
             % NEXT produces the next set of joint angles
             %   ANGLES = NEXT(OBJ)
             %
@@ -273,6 +273,9 @@ classdef Command < handle
             %       The 12 angles corresponding to the current desired angular
             %       position.
             
+            % Default actionState is 
+            actionState = Command.ActionState.Default;
+            
             % Update the ID of the movement
             obj.idx = obj.idx + 1;
             
@@ -285,6 +288,7 @@ classdef Command < handle
             action = obj.actions.next();
             label = obj.getCurrentLabel();
             
+            % Prepare Left, Right, Rest
             if (label == Command.ActionLabel.PrepareLeft || ...
                     label == Command.ActionLabel.PrepareRight || ...
                     label == Command.ActionLabel.Rest) ... 
@@ -363,9 +367,30 @@ classdef Command < handle
                 end
                 obj.foot_pos{2} = footstep;
             end
-            ftl = obj.foot_traj_l.next();
-            ftr = obj.foot_traj_r.next();
+            [ftl, fstatel] = obj.foot_traj_l.next();
+            [ftr, fstater] = obj.foot_traj_r.next();
             bp = obj.body_traj.next();
+            
+            % Output the actionState
+            if label == Command.ActionLabel.Forward
+                if (footstep.side == Mechanics.Foot.Left)
+                    if (fstatel == Mechanics.FootState.Swing)
+                        actionState = Command.ActionState.LeftSwing;
+                    elseif (fstatel == Mechanics.FootState.Stance)
+                        actionState = Command.ActionState.LeftToRightStance;
+                    else
+                        actionState = Command.ActionState.Default;
+                    end
+                else
+                    if (fstater == Mechanics.FootState.Swing)
+                        actionState = Command.ActionState.RightSwing;
+                    elseif (fstater == Mechanics.FootState.Stance)
+                        actionState = Command.ActionState.RightToLeftStance;
+                    else
+                        actionState = Command.ActionState.Default;
+                    end
+                end
+            end
             
             % Transform from world frame to body frame
             abq = action.q + bp.q;

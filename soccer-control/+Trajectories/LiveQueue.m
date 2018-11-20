@@ -84,7 +84,7 @@ classdef LiveQueue < Trajectories.GeneralizedTrajectory
             obj.last_hold = init_data.positionAtTime(0);
         end
         
-        function position = next(obj)
+        function [position, state] = next(obj)
         %NEXT produces the next element in the queue
         %   POSITION = NEXT(OBJ)
         %
@@ -95,9 +95,13 @@ classdef LiveQueue < Trajectories.GeneralizedTrajectory
         %
         %   POSTION = [T]
         %       The next output of the trajectory, time varies.
+        %   STATE = [1 x 1] int
+        %       The next state of the trajectory, if applicable
+        %
             obj.current_time = obj.current_time + obj.increment;
             obj.simplify();
             position = obj.positionAtTime(0);
+            state = obj.stateAtTime(0);
         end
         
         function position = positionAtTime(obj, time)
@@ -163,6 +167,39 @@ classdef LiveQueue < Trajectories.GeneralizedTrajectory
                 idx = idx + 1;
             end
             speed = obj.data{idx}.speedAtTime(obj.current_time + time);
+        end
+        
+        function state = stateAtTime(obj, time)            
+        %SPEEDATTIME returns the state at the given time, if applicable
+        %   V = SPEEDATTIME(OBJ, T)
+        %
+        %
+        %   Arguments
+        %
+        %   T = [1 x 1]
+        %       The time to retrieve the state at
+        %
+        %
+        %   Outputs
+        %
+        %   V = [T]
+        %       The state at time T, if applicable
+            % Determine current action (usually 1) and return speed
+            idx = 1;
+            if ~isa(obj.data{idx}, 'Trajectories.FootCycle')
+                state = -1;
+                return;
+            end
+            while time > obj.transitions(idx) - obj.current_time && ...
+                    idx <= obj.end_idx
+                time = time - obj.transitions(idx);
+                idx = idx + 1;
+            end
+            if isempty(obj) || time >= obj.duration - obj.current_time
+                state = 0;
+                return
+            end
+            state = obj.data{idx}.stateAtTime(obj.current_time + time);
         end
         
         function empty = isempty(obj)
