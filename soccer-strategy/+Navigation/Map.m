@@ -96,6 +96,11 @@ classdef Map < handle
                 
             catch ME
                 disp(strcat('Failed: ', ME.identifier))
+                disp(ME.message)
+                for i = 1:length(ME.stack)
+                    disp(ME.stack(i))
+                end
+                disp(ME.stack)
                 disp(robot.pose)
                 disp(endPose)
                 disp('------ Objects -----')
@@ -104,7 +109,7 @@ classdef Map < handle
                 end
                 obj.Draw
                 pause
-                trajectory = Navigation.Trajectory(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(startPose, 0, 0), 0);
+                trajectory = Navigation.Trajectory(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(robot.pose, 0, 0), 0);
             end
         end
         

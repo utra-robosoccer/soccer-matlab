@@ -8,8 +8,8 @@ classdef LiveQueue < Trajectories.GeneralizedTrajectory
     
     properties (Hidden)
         transitions % Transition times between the data
-        data % List of data
-        current_time = 0 % Time from beggining of first data
+        data        % List of data
+        current_time = 0 % Time from beginning of first data
         increment = 0.01 % Time step
         last_hold % Last position expected in data
         speed_enabled = true % Whether or not speed calculation enabled

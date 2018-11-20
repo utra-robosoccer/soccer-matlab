@@ -6,7 +6,7 @@ addpath('soccer-strategy/tests')
 savepath
 
 % To prevent starting error
-load('soccer-strategy/data/pose2d.mat')
+load('soccer-strategy/data/types.mat')
 
 % Connect Robot
 connectrobot;
