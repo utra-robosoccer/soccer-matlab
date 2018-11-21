@@ -17,7 +17,8 @@ git clone --recurse-submodules https://github.com/utra-robosoccer/soccer-matlab
 - In Matlab, navigate to the soccer-utility directory so you can see all the folders (Note: Never cd into a folder in matlab, always add to path)
 - Make a copy of your soccer-utility/connectrobot_example.m to soccer-utility/connectrobot.m
 Make sure your matlab's base folder is soccer-matlab. And then run soccer-utility/initialize.m
-- Run the soccer-utility/setup.m. This will add all the folders to your matlab path as well as install the ros custom message support. Follow the instructions on the command line prompt
+Follow the 3-step instructions shown in Matlab terminal after running the initialize.m
+- Run the soccer-utility/setup.m. This will add all the folders to your matlab path as well as install the ros custom message support. Follow the instructions on the command line prompt {deprecated}
 
 ### Testing
 
