@@ -10,16 +10,17 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
     properties(Access = private)
         robot;
         trajectory;
+        states;
     end
     
     methods(Access = protected)
         function setupImpl(obj)
             obj.robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
             obj.trajectory = zeros(10000,20);    % Output max trajectory
-
+            obj.states = zeros(10000,1);
         end
 
-        function trajectoryOut = stepImpl(obj, currentPose, destinationPose, obstacles)
+        function [trajectory, states] = stepImpl(obj, currentPose, destinationPose, obstacles)
             % currentPose = [1x1] Pose
             % destinationPose = [1x1] Pose
             % obstacles = [1xN] Pose
@@ -41,13 +42,15 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
             for i = 1:w
                 for j = 1:l
                     obj.trajectory(i,j) = traj.angles(j,i);
+                    obj.states(i) = traj.states(i);
                 end
             end
             
             obj.trajectory(:,1) = -obj.trajectory(:,1);
             obj.trajectory(:,6) = -obj.trajectory(:,6);
             
-            trajectoryOut = obj.trajectory;
+            trajectory = obj.trajectory;
+            states = obj.states;
         end
         
         function c1 = isOutputFixedSizeImpl(~)

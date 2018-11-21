@@ -6,14 +6,23 @@ classdef Robot < Navigation.Entity
         % Movement Parameters
         speed = 0.05 % m/s
         swing_time = 0.5;
-        stance_time = 1.0;
+        stance_time = 1.5;
         cycle_time = 2;
         step_height = 0.05;
         
-        % Body Parameters
-        body_height = 0.17; %0.099 + 0.16;
-        body_hip_height = 0.16;
-        body_hip_width = 0.07;
+        % Hip height while walking, higher means can not make big steps 
+        % (Maximum 0.198, unable to move)
+        body_hip_height = 0.180;
+        
+        % Hight of the torso's bottom
+        body_height = 0.175 + 0.031075; % Hip Height while walking + distance hip to body
+        
+        % Seperation between the hips
+        body_hip_width = 0.0645;
+        
+        % body_height = 0.22835; %0.099 + 0.16;
+        % body_hip_height = 0.197;
+        % body_hip_width = 0.06452;
         
         torso_dimensions = struct('depth',0.1305, 'height', 0.152, 'width', 0.145);
     end
@@ -34,7 +43,7 @@ classdef Robot < Navigation.Entity
             rmpath(genpath(path_folders));            
         end
         
-        function [angles, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
+        function [angles, states, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
             command = Command.Command(poseActions{1}.Pose);
             command.swing_time = obj.swing_time;
             command.stance_time = obj.stance_time;
@@ -56,8 +65,9 @@ classdef Robot < Navigation.Entity
             totalSteps = int16(floor(totalDuration) * 100); % 1 second to rebalance itself
 
             angles = zeros(12, totalSteps);
+            states = zeros(1, totalSteps);
             for i = 1:(totalSteps)
-                cn = command.next();
+                [cn, states(i)] = command.next();
                 angles(:, i) = [cn(1, :), cn(2, :)]';
             end
 

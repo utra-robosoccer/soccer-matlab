@@ -10,6 +10,8 @@ classdef Trajectory
         poseactions % The paths
         angles      % Motor angles for the robot during that time
         
+        states      % The current state of the robot (actionLabel type)
+        
         totalsteps
         duration
         
@@ -44,7 +46,11 @@ classdef Trajectory
         end
         
         function PlotAngles(obj)
-            plot(1:obj.totalsteps, obj.angles);
+            figure;
+            
+            % Plot the angles
+            subplot(4,4,1:12);
+            ax = plot(1:obj.totalsteps, obj.angles);
             title('Trajectory');
             xlabel('Step');
             ylabel('Angle');
@@ -61,6 +67,20 @@ classdef Trajectory
                 'Right Calve Ankle', ...,
                 'Right Ankle Foot')
             grid minor;
+            
+            % Plot the state
+            subplot(4,4,13:16); 
+            plot(1:obj.totalsteps,obj.states);
+            title('State')
+            xlabel('Step')
+            ylabel('State')
+            ylim([0,5])
+            grid minor;
+            
+            dim = [0.15 0.6 0.3 0.3];
+            str = {'1: Left Swing','2: Left To Right Stance', '3: Right Swing', '4: Right To Left Stance'};
+            annotation('textbox',dim,'String',str,'FitBoxToText','on', 'BackgroundColor', 'white');
+            
         end
         
         function dist = TotalDistance(obj)
@@ -77,9 +97,9 @@ classdef Trajectory
         
         function angles = UrdfConventionAngles(obj)
             angles = obj.angles;
+            
+            angles(1,:) = -angles(1,:);
             angles(6,:) = -angles(6,:);
-            angles(7,:) = -angles(7,:);
-            angles(12,:) = -angles(12,:);
         end
 
         function duration = Duration(obj)

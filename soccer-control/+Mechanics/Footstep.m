@@ -2,7 +2,7 @@ classdef Footstep < Pose & Trajectories.GeneralizedTrajectory
     %FOOTSTEP defines the position and orientation of a footstep
     
     properties
-        side = Footsteps.Foot.Left;
+        side = Mechanics.Foot.Left;
     end
     
     methods (Hidden)
@@ -13,7 +13,7 @@ classdef Footstep < Pose & Trajectories.GeneralizedTrajectory
         %   Seperate function needed to allow for code generation. For
         %   input/output parameter specifications, see constructor.
             if nargin == 1
-                x = 0; y = 0; q = 0; side = Footsteps.Foot.Left; time = 0;
+                x = 0; y = 0; q = 0; side = Mechanics.Foot.Left; time = 0;
             else
                 x = varargin{2}; y = varargin{3}; q = varargin{4}; 
                 side = varargin{5}; time = varargin{6};
