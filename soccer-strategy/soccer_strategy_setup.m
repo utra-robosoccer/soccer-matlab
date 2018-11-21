@@ -19,3 +19,14 @@ motorCalibration = [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
 
 % Fixed Trajectories
 loadFixedTrajectories
+
+% Left Right Control
+hipCalveGain = 1;
+kneeGain = 2;
+
+% Forward Backward control
+forearmGain = 1.5;
+feetGain = 0.1;
+
+
+
