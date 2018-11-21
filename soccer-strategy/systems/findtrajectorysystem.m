@@ -53,17 +53,21 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
             states = obj.states;
         end
         
-        function c1 = isOutputFixedSizeImpl(~)
+        function [c1, c2] = isOutputFixedSizeImpl(~)
             c1 = true;
+            c2 = true;
         end
-        function sz_1 = getOutputSizeImpl(obj)
+        function [sz_1, sz_2] = getOutputSizeImpl(obj)
             sz_1 = [obj.outputduration * 100 20];
+            sz_2 = [obj.outputduration * 100 1];
         end 
-        function out = getOutputDataTypeImpl(~)
-            out = "double";
+        function [out1, out2] = getOutputDataTypeImpl(~)
+            out1 = "double";
+            out2 = "double";
         end
-        function c1 = isOutputComplexImpl(~)
+        function [c1, c2] = isOutputComplexImpl(~)
             c1 = false;
+            c2 = false;
         end
     end
 end
