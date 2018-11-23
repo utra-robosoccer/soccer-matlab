@@ -16,5 +16,4 @@ map.objects = {robot, obs1, obs2, obs3};
 trajectory = map.FindTrajectory(robot, endPose, robot.speed);
 
 % Draw the angles
-figure;
-trajectory.PlotAngles();
+trajectory.PlotAngles;

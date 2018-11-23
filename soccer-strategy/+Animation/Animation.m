@@ -18,22 +18,49 @@ classdef Animation
             obj.duration = duration;
         end
      
-        function tseries = GetTimeSeries(obj)
-            tseries = timeseries(obj.trajectory, obj.GetTimeVector);
+        function tseries = TimeSeries(obj)
+            tseries = timeseries(obj.trajectory, obj.TimeVector);
         end
         
-        function tvector = GetTimeVector(obj)
+        function tvector = TimeVector(obj)
             tvector = obj.ts:obj.ts:obj.duration;
         end
         
-        function frameCount = GetFrameCount(obj)
+        function frameCount = FrameCount(obj)
             frameCount = obj.duration / obj.ts;
+        end
+        
+        function Plot(obj)
+            plot(obj.TimeVector, obj.trajectory);
+            title('Trajectory');
+            xlabel('Seconds');
+            ylabel('Angles');
+            legend('Torso Left Hip Side', ...,
+                'Left Hip Side Front', ...,
+                'Left Hip Front Thigh', ...,
+                'Left Thigh Calve', ...,
+                'Left Calve Ankle', ...,
+                'Left Ankle Foot', ...,
+                'Torso Right Hip Side', ...,
+                'Right Hip Side Front', ...,
+                'Right Hip Front Thigh', ...,
+                'Right Thigh Calve', ...,
+                'Right Calve Ankle', ...,
+                'Right Ankle Foot')
+            grid minor;
         end
     end
     
     methods(Static)
+        function obj = CreateAnimation(angles, ts)
+            [l,~] = size(angles);
+            duration = l*ts;
+            obj = Animation.Animation(Animation.State(angles(1,:)), Animation.State(angles(end,:)), ts, duration);
+            obj.trajectory = angles;
+        end
+        
         % Creates an animation using the 2 states
-        function obj = CreateAnimation(statebegin, stateend, ts, duration)
+        function obj = CreateAnimation2States(statebegin, stateend, ts, duration)
             obj = Animation.Animation(statebegin, stateend, ts, duration);
             
             % Create smooth path
@@ -41,7 +68,7 @@ classdef Animation
 
             % Create the spline
             trajpoints = [obj.statebegin.angles; obj.stateend.angles];
-            obj.trajectory = spline(t, trajpoints', obj.GetTimeVector)';
+            obj.trajectory = spline(t, trajpoints', obj.TimeVector)';
         end
         
         % Creates an animation using keyframes
@@ -55,7 +82,7 @@ classdef Animation
             end
             
             % Create the spline
-            tvector = obj.GetTimeVector;
+            tvector = obj.TimeVector;
             [frameCount,~] = size(keyframes);
             tframes = linspace(0, duration, frameCount); % # seconds to getup
             trajspline = spline(tframes, keyframes', tvector)';
@@ -70,7 +97,7 @@ classdef Animation
         % Create a nodding trajectory based on a current state
         function obj = CreateAnimationHeadNodding(statecurrent, ts, duration)
             obj = Animation.Animation(statecurrent, statecurrent, ts, duration);
-            framecount = obj.GetFrameCount;
+            framecount = obj.FrameCount;
             
             % Create only the motion for the head
             headmotion = zeros(1,framecount);
@@ -91,7 +118,7 @@ classdef Animation
         
         function obj = CreateAnimationHeadShaking(statecurrent, ts, duration)
             obj = Animation.Animation(statecurrent, statecurrent, ts, duration);
-            framecount = obj.GetFrameCount;
+            framecount = obj.FrameCount;
             
             % Create only the motion for the head
             headmotion = zeros(1,framecount);

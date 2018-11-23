@@ -12,8 +12,8 @@ end
 standingstate = Animation.State(standing);
 readystate = Animation.State(ready);
 
-standingtoreadyanimation = Animation.Animation.CreateAnimation(standingstate, readystate, ts, 10);
-readytostandinganimation = Animation.Animation.CreateAnimation(readystate, standingstate, ts, 10);
+standingtoreadyanimation = Animation.Animation.CreateAnimation2States(standingstate, readystate, ts, 10);
+readytostandinganimation = Animation.Animation.CreateAnimation2States(readystate, standingstate, ts, 10);
 
 % Animations
 load('keyframes.mat')
@@ -25,14 +25,12 @@ headnoddinganimation = Animation.Animation.CreateAnimationHeadNodding(readystate
 headshakinganimation = Animation.Animation.CreateAnimationHeadShaking(readystate, ts, 20);
 
 % Turn all the animations to time series
-standingtoready = standingtoreadyanimation.GetTimeSeries;
-readytostanding = readytostandinganimation.GetTimeSeries;
-getupfrontsmooth = getupfrontanimation.GetTimeSeries;
-getupbacksmooth = getupbackanimation.GetTimeSeries;
-headnodding = headnoddinganimation.GetTimeSeries;
-headshaking = headshakinganimation.GetTimeSeries;
+standingtoready = standingtoreadyanimation.TimeSeries;
+readytostanding = readytostandinganimation.TimeSeries;
+getupfrontsmooth = getupfrontanimation.TimeSeries;
+getupbacksmooth = getupbackanimation.TimeSeries;
+headnodding = headnoddinganimation.TimeSeries;
+headshaking = headshakinganimation.TimeSeries;
 
 % Clear unnessesary information
-clear getUpBackWayPoints getUpFrontWayPoints getupbackanimation ...
-    getupfrontanimation headnoddinganimation headshakinganimation readystate ...
-    readytostandinganimation standingstate standingtoreadyanimation ts
+clear getUpBackWayPoints getUpFrontWayPoints ts

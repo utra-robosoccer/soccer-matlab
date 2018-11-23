@@ -90,7 +90,7 @@ classdef Map < handle
                 [angles, states, q0_left, q0_right] = robot.CreateTrajectory(poseactions);
 
                 % Clip off bad angles
-                trajectory = Navigation.Trajectory(robot.pose, endPose, waypoints, poseactions, angles);
+                trajectory = Navigation.Path(robot.pose, endPose, waypoints, poseactions, angles);
                 trajectory.q0_left = q0_left;
                 trajectory.q0_right = q0_right;
                 trajectory.states = states;
@@ -110,7 +110,7 @@ classdef Map < handle
                 end
                 obj.Draw
                 pause
-                trajectory = Navigation.Trajectory(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(robot.pose, 0, 0), 0);
+                trajectory = Navigation.Path(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(robot.pose, 0, 0), 0);
             end
         end
         
