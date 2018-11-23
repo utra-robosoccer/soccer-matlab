@@ -9,6 +9,7 @@ classdef Robot < Navigation.Entity
         stance_time = 1.5;
         cycle_time = 2;
         step_height = 0.05;
+        step_outwards = 0.02;
         
         % Hip height while walking, higher means can not make big steps 
         % (Maximum 0.198, unable to move)
@@ -17,11 +18,9 @@ classdef Robot < Navigation.Entity
         % Hight of the torso's bottom
         body_height = 0.175 + 0.031075; % Hip Height while walking + distance hip to body
         
-        % Seperation between the hips, also determins how spread the feed
-        % are while walking
-        body_hip_width = 0.10;
+        % Seperation between the hips
+        body_hip_width = 0.0645;
         
-        % Torso Dimensions
         torso_dimensions = struct('depth',0.1305, 'height', 0.152, 'width', 0.145);
     end
     
@@ -49,6 +48,7 @@ classdef Robot < Navigation.Entity
             command.step_height = obj.step_height;
             command.hip_height = obj.body_hip_height;
             command.hip_width = obj.body_hip_width / 2;
+            command.step_outwards = obj.step_outwards;
             
             q0_left = command.cur_angles(1,:);
             q0_right = command.cur_angles(2,:);
