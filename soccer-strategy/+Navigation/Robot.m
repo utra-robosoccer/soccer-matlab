@@ -17,13 +17,11 @@ classdef Robot < Navigation.Entity
         % Hight of the torso's bottom
         body_height = 0.175 + 0.031075; % Hip Height while walking + distance hip to body
         
-        % Seperation between the hips
-        body_hip_width = 0.0645;
+        % Seperation between the hips, also determins how spread the feed
+        % are while walking
+        body_hip_width = 0.10;
         
-        % body_height = 0.22835; %0.099 + 0.16;
-        % body_hip_height = 0.197;
-        % body_hip_width = 0.06452;
-        
+        % Torso Dimensions
         torso_dimensions = struct('depth',0.1305, 'height', 0.152, 'width', 0.145);
     end
     
