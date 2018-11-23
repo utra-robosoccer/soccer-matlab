@@ -19,7 +19,7 @@ classdef State
         
         function Publish(obj, duration)
             if (nargin == 1)
-                duration = 5;
+                duration = 1;
             end
             
             % Connects to the simulation (gazebo)
@@ -31,8 +31,8 @@ classdef State
 
             msg = rosmessage(robotgoalpub);
 
-            for i = 1 : duration * 0.01
-                msg.Trajectories(1:18) = jointangles;
+            for i = 1 : duration / 0.01
+                msg.Trajectories(1:18) = jointangles(1:18);
                 robotgoalpub.send(msg)
                 pause(0.01)
             end

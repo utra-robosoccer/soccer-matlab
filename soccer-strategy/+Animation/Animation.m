@@ -72,7 +72,7 @@ classdef Animation
             msg = rosmessage(robotgoalpub);
 
             for i = 1:length(jointangles)
-                msg.Trajectories(1:12) = jointangles(i,1:12);
+                msg.Trajectories(1:18) = jointangles(i,1:18);
                 robotgoalpub.send(msg)
                 
                 if (step)
@@ -128,17 +128,20 @@ classdef Animation
         end
         
         % Create a nodding trajectory based on a current state
-        function obj = CreateAnimationHeadNodding(statecurrent, ts, duration)
+        function obj = CreateAnimationHeadNodding(statecurrent, ts, duration, extent)
             obj = Animation.Animation(statecurrent, statecurrent, ts, duration);
             framecount = obj.FrameCount;
             
             % Create only the motion for the head
             headmotion = zeros(1,framecount);
-            for i = 1:framecount/2
-               headmotion(i) = (framecount/4 - i) / framecount/4 * pi/4;
+            for i = 1:framecount/4
+               headmotion(i) = i / (framecount/4) * extent;
             end
-            for i = 1:framecount/2
-               headmotion(framecount/2 + i) = (i - framecount/4) / framecount/4 * pi/4;
+            for i = framecount/4:3*framecount/4
+               headmotion(i) = (1 - (i - framecount/4)/(framecount/4)) * extent;
+            end
+            for i = 3*framecount/4:framecount
+               headmotion(i) = ((i - 3*framecount/4)/(framecount/4)-1) * extent;
             end
             
             % Fill in the rest of trajectory
@@ -149,17 +152,22 @@ classdef Animation
             obj.trajectory(:,18) = headmotion;
         end
         
-        function obj = CreateAnimationHeadShaking(statecurrent, ts, duration)
+        function obj = CreateAnimationHeadShaking(statecurrent, ts, duration, extent)
             obj = Animation.Animation(statecurrent, statecurrent, ts, duration);
             framecount = obj.FrameCount;
             
             % Create only the motion for the head
             headmotion = zeros(1,framecount);
-            for i = 1:framecount/2
-               headmotion(i) = (framecount/4 - i) / framecount/4 * pi/2;
+            
+            % Outwards
+            for i = 1:framecount/4
+               headmotion(i) = i / (framecount/4) * extent;
             end
-            for i = 1:framecount/2
-               headmotion(framecount/2 + i) = (i - framecount/4) / framecount/4 * pi/2;
+            for i = framecount/4:3*framecount/4
+               headmotion(i) = (1 - (i - framecount/4)/(framecount/4)) * extent;
+            end
+            for i = 3*framecount/4:framecount
+               headmotion(i) = ((i - 3*framecount/4)/(framecount/4)-1) * extent;
             end
             
             % Fill in the rest of trajectory
