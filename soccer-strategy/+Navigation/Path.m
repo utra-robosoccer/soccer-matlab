@@ -55,9 +55,9 @@ classdef Path
             
             % Plot the state
             subplot(4,4,13:16); 
-            plot(1:obj.FrameCount,obj.states);
+            plot(obj.animation.TimeVector,obj.states);
             title('State')
-            xlabel('Step')
+            xlabel('Seconds')
             ylabel('State')
             ylim([0,5])
             grid minor;
@@ -80,28 +80,11 @@ classdef Path
             vel = obj.TotalDistance() / obj.Duration;
         end
         
-        function angles = UrdfConventionAngles(obj)
-            angles = obj.animation.angles;
-            
-            angles(1,:) = -angles(1,:);
-            angles(6,:) = -angles(6,:);
-        end
-        
-        function Publish(obj)
-            % Connects to the simulation (gazebo)
-            connectrobot
-
-            jointangles = obj.UrdfConventionAngles;
-
-            robotgoalpub = rospublisher('/robotGoal','soccer_msgs/RobotGoal');
-
-            msg = rosmessage(robotgoalpub);
-
-            for i = 1:length(jointangles)
-                msg.Trajectories(1:12) = jointangles(1:12,i);
-                robotgoalpub.send(msg)
-                pause(0.01)
+        function Publish(obj, step)
+            if (nargin == 1)
+                step = 0;
             end
+            obj.animation.Publish(step);
         end
     end
 end

@@ -49,6 +49,39 @@ classdef Animation
                 'Right Ankle Foot')
             grid minor;
         end
+        
+        function angles = UrdfConventionAngles(obj)
+            angles = obj.trajectory;
+            
+            angles(:,1) = -angles(:,1);
+            angles(:,6) = -angles(:,6);
+        end
+        
+        function Publish(obj, step)
+            if (nargin == 1)
+                step = 0;
+            end
+            
+            % Connects to the simulation (gazebo)
+            connectrobot
+
+            jointangles = obj.UrdfConventionAngles;
+
+            robotgoalpub = rospublisher('/robotGoal','soccer_msgs/RobotGoal');
+
+            msg = rosmessage(robotgoalpub);
+
+            for i = 1:length(jointangles)
+                msg.Trajectories(1:12) = jointangles(i,1:12);
+                robotgoalpub.send(msg)
+                
+                if (step)
+                    pause;
+                else
+                    pause(obj.ts);
+                end
+            end
+        end
     end
     
     methods(Static)
