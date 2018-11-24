@@ -1,7 +1,6 @@
 test_pathfinding
 
 % Get the actual trajectory
-path.AverageSpeed();
 [simTime, simPose] = robot.SimulateTrajectory(path);
 close all;
 

@@ -1,14 +1,12 @@
 classdef Leg
-    %LEG Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties
     end
     
     methods(Static)
         function q = InverseKinematics(dh, x6, y6, z6, g, q0)
-            %IKINE (Inverse Kinematics) returns joint angles to produces ee position
-            %   Q = IKINE(DH, X6, Z6, G, Q0)
+            %INVERSEKINEMATICS returns joint angles to produces ee position
+            %   Q = INVERSEKINEMATICS(DH, X6, Z6, G, Q0)
             % 
             %   Uses an analytical inverse kinematics to produce the joint angles
             %   required to produced the desired position and orientation for the foot.
