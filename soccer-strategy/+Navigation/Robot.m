@@ -9,6 +9,7 @@ classdef Robot < Navigation.Entity
         stance_time = 1.5;
         cycle_time = 2;
         step_height = 0.05;
+        step_outwards = 0.02;
         
         % Hip height while walking, higher means can not make big steps 
         % (Maximum 0.198, unable to move)
@@ -19,10 +20,6 @@ classdef Robot < Navigation.Entity
         
         % Seperation between the hips
         body_hip_width = 0.0645;
-        
-        % body_height = 0.22835; %0.099 + 0.16;
-        % body_hip_height = 0.197;
-        % body_hip_width = 0.06452;
         
         torso_dimensions = struct('depth',0.1305, 'height', 0.152, 'width', 0.145);
     end
@@ -43,7 +40,7 @@ classdef Robot < Navigation.Entity
             rmpath(genpath(path_folders));            
         end
         
-        function [angles, states, q0_left, q0_right] = CreateTrajectory(obj, poseActions, plot)
+        function [angles, states, q0_left, q0_right] = CreateTrajectory(obj, poseActions)
             command = Command.Command(poseActions{1}.Pose);
             command.swing_time = obj.swing_time;
             command.stance_time = obj.stance_time;
@@ -51,6 +48,7 @@ classdef Robot < Navigation.Entity
             command.step_height = obj.step_height;
             command.hip_height = obj.body_hip_height;
             command.hip_width = obj.body_hip_width / 2;
+            command.step_outwards = obj.step_outwards;
             
             q0_left = command.cur_angles(1,:);
             q0_right = command.cur_angles(2,:);
@@ -64,38 +62,32 @@ classdef Robot < Navigation.Entity
             end
             totalSteps = int16(floor(totalDuration) * 100); % 1 second to rebalance itself
 
-            angles = zeros(12, totalSteps);
-            states = zeros(1, totalSteps);
+            angles = zeros(totalSteps, 12);
+            states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(:, i) = [cn(1, :), cn(2, :)]';
-            end
-
-            if (nargin == 3)
-                if (plot == 1)
-                    plot((1:totalSteps), angles);
-                end
+                angles(i, :) = [cn(1, :), cn(2, :)];
             end
         end
         
-        function [simTime, simPosition] = SimulationTrajectory(obj, trajectory)
+        function [simTime, simPosition] = SimulateTrajectory(obj, path)
             % Trajectory = [1x1] Navigation.Trajectory
             
             load_system('biped_robot');
             in = Simulink.SimulationInput('biped_robot');
-            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(trajectory.Duration));
+            in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(path.Duration));
             in = in.setModelParameter('SimulationMode', 'Normal');
 
-            angles_ts = timeseries(trajectory.angles, (0:length(trajectory.angles)-1)*0.01);
+            angles_ts = path.animation.TimeSeries;
 
             in = in.setVariable('dh', obj.dh, 'Workspace', 'biped_robot');
-            in = in.setVariable('q0_left', trajectory.q0_left, 'Workspace', 'biped_robot');
-            in = in.setVariable('q0_right', trajectory.q0_right, 'Workspace', 'biped_robot');
+            in = in.setVariable('q0_left', path.q0_left, 'Workspace', 'biped_robot');
+            in = in.setVariable('q0_right', path.q0_right, 'Workspace', 'biped_robot');
             in = in.setVariable('angles', angles_ts, 'Workspace', 'biped_robot');
             in = in.setVariable('init_body_height', obj.body_height, 'Workspace', 'biped_robot');
             in = in.setVariable('hip_width', obj.body_hip_width, 'Workspace', 'biped_robot');
             in = in.setVariable('body', obj.torso_dimensions, 'Workspace', 'biped_robot');
-            in = in.setVariable('init_angle', trajectory.startpose.q, 'Workspace', 'biped_robot');
+            in = in.setVariable('init_angle', path.startpose.q, 'Workspace', 'biped_robot');
             
             simOut = sim(in);
             simTime = simOut.tout;

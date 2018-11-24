@@ -18,4 +18,4 @@ sampleTime = 0.01;
 motorCalibration = [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
 
 % Fixed Trajectories
-loadFixedTrajectories
+soccer_strategy_fixed_trajectories
