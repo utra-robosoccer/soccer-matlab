@@ -75,7 +75,7 @@ classdef Map < handle
             
         end
         
-        function trajectory = FindTrajectory(obj, robot, endPose, speed)
+        function path = FindPath(obj, robot, endPose, speed)
             % Start Pose [1x1] Pose
             % End Pose [1x1] Pose
             
@@ -90,10 +90,10 @@ classdef Map < handle
                 [angles, states, q0_left, q0_right] = robot.CreateTrajectory(poseactions);
 
                 % Clip off bad angles
-                trajectory = Navigation.Trajectory(robot.pose, endPose, waypoints, poseactions, angles);
-                trajectory.q0_left = q0_left;
-                trajectory.q0_right = q0_right;
-                trajectory.states = states;
+                path = Navigation.Path(robot.pose, endPose, waypoints, poseactions, angles);
+                path.q0_left = q0_left;
+                path.q0_right = q0_right;
+                path.states = states;
                 
             catch ME
                 disp(strcat('Failed: ', ME.identifier))
@@ -110,7 +110,7 @@ classdef Map < handle
                 end
                 obj.Draw
                 pause
-                trajectory = Navigation.Trajectory(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(robot.pose, 0, 0), 0);
+                path = Navigation.Path(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(robot.pose, 0, 0), 0);
             end
         end
         

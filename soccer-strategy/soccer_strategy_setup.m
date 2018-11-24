@@ -18,7 +18,7 @@ sampleTime = 0.01;
 motorCalibration = [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
 
 % Fixed Trajectories
-loadFixedTrajectories
+soccer_strategy_fixed_trajectories
 
 % Left Right Control
 hipCalveGain = 1;
@@ -27,6 +27,3 @@ kneeGain = 2;
 % Forward Backward control
 forearmGain = 1.5;
 feetGain = 0.1;
-
-
-

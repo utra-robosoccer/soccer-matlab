@@ -1,4 +1,4 @@
-classdef BezierTrajectory < Trajectories.GeneralizedTrajectory
+classdef CircularTrajectory < Trajectories.GeneralizedTrajectory
 %BEZIERTRAJECTORY Defines a general purpose 1D bezier trajectory
     
     properties

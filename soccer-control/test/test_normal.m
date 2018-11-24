@@ -24,6 +24,10 @@ body_height = 0.099 + 0.16;
 body.depth = 0.1305;
 body.height = 0.152;
 body.width = 0.145;
+ground.length = 9;
+ground.width = 6;
+ground.depth = 0.01;
+gravity = 9.81;
 
 %% Generate Angles
 
@@ -62,5 +66,9 @@ in = in.setVariable('init_body_height', body_height, 'Workspace', 'biped_robot')
 in = in.setVariable('hip_width', 0.07, 'Workspace', 'biped_robot');
 in = in.setVariable('body', body, 'Workspace', 'biped_robot');
 in = in.setVariable('init_angle', start_pose.q, 'Workspace', 'biped_robot');
+in = in.setVariable('body_mass', 1.529201,'Workspace', 'biped_robot');
+in = in.setVariable('ground', ground,'Workspace', 'biped_robot');
+in = in.setVariable('gravity', gravity,'Workspace', 'biped_robot');
+
 
 out = sim(in);

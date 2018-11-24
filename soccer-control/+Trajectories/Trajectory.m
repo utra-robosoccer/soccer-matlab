@@ -26,7 +26,7 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
     
     methods(Static)
         function obj = footTrajectory(duration, ...
-                prev_pos, next_pos, prev_speed, next_speed, height)
+                prev_pos, next_pos, prev_speed, next_speed, height, outwards)
             %FOOTTRAJECTORY Produces a forward an vertical trajectory for foot
             %   OBJ = FOOTTRAJECTORY(DURATION, PREV_POS, NEXT_POS, PREV_SPEED, NEXT_SPEED, HEIGHT)
             %
@@ -48,6 +48,9 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
             %
             %   HEIGHT = [1 x 1]
             %       The peak height during mid-swing of the cycle
+            %
+            %   OUTWARDS = [1 x 1]
+            %       The peak outwards during mid-swing of the cycle
 
             %Ensure continuous rotations
             iq = mod(prev_pos.q, 2*pi); fq = mod(next_pos.q, 2*pi);
@@ -58,14 +61,20 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
                     iq = iq - 2 * pi;
                 end
             end
-        
+            
             obj = Trajectories.Trajectory();
             obj.duration = duration;
+            
+            center = Pose.centeredPose(prev_pos, next_pos);
+            shiftpose = Pose(sin(center.q + pi/2) * outwards, ...
+                cos(center.q + pi/2) * outwards, ...
+                center.z, center.q, center.v);
+            shift = center + shiftpose;
             obj.data = {
                 Trajectories.BezierTrajectory(duration, ...
-                    prev_pos.x, next_pos.x, -prev_speed.x, -next_speed.x);
+                    prev_pos.x, next_pos.x, -prev_speed.x, -next_speed.x, shift.x);
                 Trajectories.BezierTrajectory(duration, ...
-                    prev_pos.y, next_pos.y, -prev_speed.y, -next_speed.y);
+                    prev_pos.y, next_pos.y, -prev_speed.y, -next_speed.y, shift.y);
                 Trajectories.BezierTrajectory(duration, ...
                     0, 0, 0, 0, height);
                 Trajectories.BezierTrajectory(duration, ...

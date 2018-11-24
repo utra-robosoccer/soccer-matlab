@@ -1,6 +1,5 @@
-classdef Trajectory
-    %TRAJECTORY Summary of this class goes here
-    %   Detailed explanation goes here
+classdef Path
+    %TRAJECTORY Entire Animation of the robot, including location
     
     properties
         startpose   % Start Pose of the trajectory
@@ -8,19 +7,16 @@ classdef Trajectory
         
         waypoints   % Individual points for the path
         poseactions % The paths
-        angles      % Motor angles for the robot during that time
+        animation   % Motor angles for the robot during that time
         
         states      % The current state of the robot (actionLabel type)
-        
-        totalsteps
-        duration
         
         q0_left     % Used for simulation
         q0_right    % Used for simulation
     end
     
     methods
-        function obj = Trajectory(startpose, endpose, waypoints, poseactions, angles)
+        function obj = Path(startpose, endpose, waypoints, poseactions, angles)
             %TRAJECTORY Construct an instance of this class
             %   waypoints   [1 x N] list of Navigation.Pose
             %   poseactions [1 x N[ list of Navigation.PoseActions
@@ -30,10 +26,15 @@ classdef Trajectory
             obj.endpose = endpose;
             obj.waypoints = waypoints;
             obj.poseactions = poseactions;
-            obj.angles = angles;
-            
-            [~,obj.totalsteps] = size(obj.angles);
-            obj.duration = obj.totalsteps / 100;
+            obj.animation = Animation.Animation.CreateAnimation(angles, 0.01);
+        end
+        
+        function duration = Duration(obj)
+            duration = obj.animation.duration;
+        end
+        
+        function framecount = FrameCount(obj)
+            framecount = obj.animation.FrameCount;
         end
         
         function DrawPath(obj)
@@ -50,29 +51,13 @@ classdef Trajectory
             
             % Plot the angles
             subplot(4,4,1:12);
-            ax = plot(1:obj.totalsteps, obj.angles);
-            title('Trajectory');
-            xlabel('Step');
-            ylabel('Angle');
-            legend('Torso Left Hip Side', ...,
-                'Left Hip Side Front', ...,
-                'Left Hip Front Thigh', ...,
-                'Left Thigh Calve', ...,
-                'Left Calve Ankle', ...,
-                'Left Ankle Foot', ...,
-                'Torso Right Hip Side', ...,
-                'Right Hip Side Front', ...,
-                'Right Hip Front Thigh', ...,
-                'Right Thigh Calve', ...,
-                'Right Calve Ankle', ...,
-                'Right Ankle Foot')
-            grid minor;
+            obj.animation.Plot;
             
             % Plot the state
             subplot(4,4,13:16); 
-            plot(1:obj.totalsteps,obj.states);
+            plot(obj.animation.TimeVector,obj.states);
             title('State')
-            xlabel('Step')
+            xlabel('Seconds')
             ylabel('State')
             ylim([0,5])
             grid minor;
@@ -92,18 +77,14 @@ classdef Trajectory
         end
         
         function vel = AverageSpeed(obj)
-            vel = obj.TotalDistance() / obj.duration;
+            vel = obj.TotalDistance() / obj.Duration;
         end
         
-        function angles = UrdfConventionAngles(obj)
-            angles = obj.angles;
-            
-            angles(1,:) = -angles(1,:);
-            angles(6,:) = -angles(6,:);
-        end
-
-        function duration = Duration(obj)
-            duration = length(obj.angles) * 0.01;
+        function Publish(obj, step)
+            if (nargin == 1)
+                step = 0;
+            end
+            obj.animation.Publish(step);
         end
     end
 end
