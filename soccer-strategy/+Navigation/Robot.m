@@ -16,7 +16,8 @@ classdef Robot < Navigation.Entity
         body_hip_height = 0.180;
         
         % Height of the torso's center
-        body_height = 0.180 + 0.031075; % Hip Height while walking + distance hip to body
+        % body_hip_height + body hip to bottom of torso + torso/2 + feet/2
+        body_height = 0.180 + 0.031075 + 0.152/2 + 0.5/2;
         
         % Seperation between the hips
         body_hip_width = 0.0645;
