@@ -3,15 +3,26 @@ classdef State
     
     properties
         angles
+        calibration
     end
     
     methods
-        function obj = State(angles)
+        function obj = State(angles, calibration)
             obj.angles = angles;
+            
+            if (nargin == 2)
+                obj.calibration = calibration;
+            else
+                obj.calibration = zeros(1,20);
+            end
+        end
+        
+        function calibratedangles = CalibratedAngles(obj)
+            calibratedangles = obj.angles + obj.calibration;
         end
         
         function angles = UrdfConventionAngles(obj)
-            angles = obj.angles;
+            angles = obj.CalibratedAngles;
             
             angles(1) = -angles(1);
             angles(6) = -angles(6);
