@@ -16,7 +16,7 @@ classdef Path
     end
     
     methods
-        function obj = Path(startpose, endpose, waypoints, poseactions, angles)
+        function obj = Path(startpose, endpose, angles, poseactions, waypoints)
             %TRAJECTORY Construct an instance of this class
             %   waypoints   [1 x N] list of Navigation.Pose
             %   poseactions [1 x N[ list of Navigation.PoseActions
@@ -24,9 +24,14 @@ classdef Path
             
             obj.startpose = startpose;
             obj.endpose = endpose;
-            obj.waypoints = waypoints;
-            obj.poseactions = poseactions;
             obj.animation = Animation.Animation.CreateAnimation(angles, 0.01);
+            
+            if (nargin >= 4)
+                obj.poseactions = poseactions;
+            end
+            if (nargin >= 5)
+                obj.waypoints = waypoints;
+            end
         end
         
         function duration = Duration(obj)

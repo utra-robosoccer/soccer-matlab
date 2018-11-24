@@ -1,4 +1,4 @@
-test_pathfinding
+% test_pathfinding
 
 % Get the actual trajectory
 path.AverageSpeed();

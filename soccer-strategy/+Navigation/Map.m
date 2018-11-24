@@ -87,10 +87,10 @@ classdef Map < handle
                 poseactions = obj.WaypointsPoseAction(waypoints, speed);
 
                 % Calculate from the pose action list
-                [angles, states, q0_left, q0_right] = robot.CreateTrajectory(poseactions);
+                [angles, states, q0_left, q0_right] = robot.CreateAnimation(poseactions);
 
                 % Clip off bad angles
-                path = Navigation.Path(robot.pose, endPose, waypoints, poseactions, angles);
+                path = Navigation.Path(robot.pose, endPose, angles, poseactions, waypoints);
                 path.q0_left = q0_left;
                 path.q0_right = q0_right;
                 path.states = states;
