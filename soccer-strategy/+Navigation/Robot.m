@@ -17,7 +17,7 @@ classdef Robot < Navigation.Entity
         
         % Height of the torso's center
         % body_hip_height + body hip to bottom of torso + torso/2 + feet/2
-        body_height = 0.180 + 0.031075 + 0.152/2 + 0.5/2;
+        body_height = 0.180 + 0.031075 + 0.152/2;
         
         % Seperation between the hips
         body_hip_width = 0.0645;
@@ -63,11 +63,11 @@ classdef Robot < Navigation.Entity
             end
             totalSteps = int16(floor(totalDuration) * 100);
 
-            angles = zeros(totalSteps, 12);
+            angles = zeros(totalSteps, 18);
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, :) = [cn(1, :), cn(2, :)];
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
         
@@ -88,18 +88,61 @@ classdef Robot < Navigation.Entity
             q0_right = command.cur_angles(2,:);
             
             for i = 1:stancecount
-                command.append(Command.ActionLabel.PrepareLeft, pose, obj.stance_time);
-                command.append(Command.ActionLabel.PrepareRight, pose, obj.stance_time);
+                command.append(Command.ActionLabel.StanceLeft, pose, obj.stance_time);
+                command.append(Command.ActionLabel.StanceRight, pose, obj.stance_time);
             end
             
             totalDuration = stancecount * 2 * (obj.cycle_time / 2 - obj.swing_time);
             totalSteps = int16(floor(totalDuration) * (1/ts));
 
-            angles = zeros(totalSteps, 12);
+            angles = zeros(totalSteps, 18);
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, :) = [cn(1, :), cn(2, :)];
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
+            end
+        end
+        
+        function [angles, states, q0_left, q0_right] = CreateAnimationOscillatingSwing(obj, foot, stancecount)
+            ts = 0.01;
+            pose = Pose(0,0,0,0,0);
+            forwardpose = Pose(0.05,0,0,0,0);
+            backwardpose = Pose(-0.05,0,0,0,0);
+            
+            command = Command.Command(pose);
+            command.swing_time = obj.swing_time;
+            command.stance_time = obj.stance_time;
+            command.cycle_time = obj.cycle_time;
+            command.step_height = obj.step_height;
+            command.hip_height = obj.body_hip_height;
+            command.hip_width = obj.body_hip_width / 2;
+            command.step_outwards = obj.step_outwards;
+            
+            q0_left = command.cur_angles(1,:);
+            q0_right = command.cur_angles(2,:);
+            
+            if (foot == Mechanics.Foot.Left)
+                command.append(Command.ActionLabel.StanceRight, pose, obj.stance_time);
+            else
+                command.append(Command.ActionLabel.StanceLeft, pose, obj.stance_time);
+            end
+            
+            if (foot == Mechanics.Foot.Left)
+                command.append(Command.ActionLabel.SwingLeft, forwardpose, obj.swing_time);
+%                 command.append(Command.ActionLabel.SwingLeftBack, backwardpose, obj.swing_time);
+            else
+                command.append(Command.ActionLabel.SwingRight, forwardpose, obj.swing_time);
+%                 command.append(Command.ActionLabel.SwingRightBack, backwardpose, obj.swing_time);
+            end
+            
+            totalDuration = (obj.cycle_time / 2 - obj.swing_time) + obj.swing_time;
+            totalSteps = int16(floor(totalDuration) * (1/ts));
+
+            angles = zeros(totalSteps, 18);
+            states = zeros(totalSteps, 1);
+            for i = 1:(totalSteps)
+                [cn, states(i)] = command.next();
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
             
@@ -111,7 +154,7 @@ classdef Robot < Navigation.Entity
             in = in.setModelParameter('StartTime', '0', 'StopTime', num2str(path.Duration));
             in = in.setModelParameter('SimulationMode', 'Normal');
 
-            angles_ts = path.animation.TimeSeries;
+            angles_ts = path.animation.TimeSeries(1:12);
 
             in = in.setVariable('dh', obj.dh, 'Workspace', 'biped_robot');
             in = in.setVariable('q0_left', path.q0_left, 'Workspace', 'biped_robot');
