@@ -5,6 +5,9 @@ addpath('soccer-strategy/data')
 addpath('soccer-strategy/tests')
 savepath
 
+% To prevent starting error
+load('soccer-strategy/data/types.mat')
+
 % Connect Robot
 connectrobot;
 

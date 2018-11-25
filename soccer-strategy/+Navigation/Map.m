@@ -75,28 +75,34 @@ classdef Map < handle
             
         end
         
-        function trajectory = FindTrajectory(obj, startPose, endPose, speed)
+        function trajectory = FindTrajectory(obj, robot, endPose, speed)
             % Start Pose [1x1] Pose
             % End Pose [1x1] Pose
             
             try
                 % First find waypoints
-                waypoints = obj.FindWaypoints(startPose, endPose, speed);
-                
+                waypoints = obj.FindWaypoints(robot.pose, endPose, speed);
+
                 % Convert waypoints to pose actions
                 poseactions = obj.WaypointsPoseAction(waypoints, speed);
                 
                 % Calculate from the pose action list
-                [angles, q0_left, q0_right] = createtrajectory(poseactions);
+                [angles, states, q0_left, q0_right] = robot.CreateTrajectory(poseactions);
 
                 % Clip off bad angles
-                trajectory = Navigation.Trajectory(startPose, endPose, waypoints, poseactions, angles);
+                trajectory = Navigation.Trajectory(robot.pose, endPose, waypoints, poseactions, angles);
                 trajectory.q0_left = q0_left;
                 trajectory.q0_right = q0_right;
+                trajectory.states = states;
                 
             catch ME
                 disp(strcat('Failed: ', ME.identifier))
-                disp(startPose)
+                disp(ME.message)
+                for i = 1:length(ME.stack)
+                    disp(ME.stack(i))
+                end
+                disp(ME.stack)
+                disp(robot.pose)
                 disp(endPose)
                 disp('------ Objects -----')
                 for i = 1:length(obj.objects)
@@ -104,7 +110,7 @@ classdef Map < handle
                 end
                 obj.Draw
                 pause
-                trajectory = Navigation.Trajectory(startPose, startPose, startPose, Navigation.PoseAction(startPose, 0, 0), 0);
+                trajectory = Navigation.Trajectory(robot.pose, robot.pose, robot.pose, Navigation.PoseAction(robot.pose, 0, 0), 0);
             end
         end
         
@@ -153,77 +159,78 @@ classdef Map < handle
             [l,~] = size(waypoints);
             poseactions = cell(l,1);
             disp(l);
-            %
-            %need to add function to use angle measurements
             for i = 1:l
-                % additions:
-%                 disp(i);
-                disp(waypoints{i}.x);
-                disp(waypoints{i}.y);
                 disp(waypoints{i}.q);
-                disp('----------------');
+            end
+            
+            i = 1;
+            
+            while i < l
+                
+                curr_q = waypoints{i}.q;
+                next_q = waypoints{i + 1}.q;
+                abs_dif = abs(curr_q - next_q);
+                
                 if (i == 1)
-                    currX = waypoints{i}.x;
-                    currY = waypoints{i}.y;
-                    nextX = waypoints{i + 1}.x;
-                    nextY = waypoints{i + 1}.y;
-                    if (nextX > currX && nextY > currY)
-                        actionLabel = Command.ActionLabel.Forward;
-                    elseif(nextX > currX && nextY < currY)
-                        actionLabel = Command.ActionLabel.PrepareRight;
-                    elseif(nextX < currX && nextY > currY)
+                    if (curr_q > 0)
                         actionLabel = Command.ActionLabel.PrepareLeft;
                     else
-                        actionLabel = Command.ActionLabel.Turn;
-                    end
-                elseif (1 < i && i < l)
-                    prevActionLabel = poseactions{i - 1}.ActionLabel;
-                    currX = waypoints{i}.x;
-                    currY = waypoints{i}.y;
-                    nextX = waypoints{i + 1}.x;
-                    nextY = waypoints{i + 1}.y;
-                    if (prevActionLabel == Command.ActionLabel.Turn)
-                        % FixStance action comes after Turn action
-                        actionLabel = Command.ActionLabel.FixStance;
-                    elseif (prevActionLabel == Command.ActionLabel.PrepareLeft || ...
-                            prevActionLabel == Command.ActionLabel.PrepareRight)
-                        actionLabel = Command.ActionLabel.Turn;
-                    elseif (nextX > currX && nextY > currY)
-                        actionLabel = Command.ActionLabel.Forward;
-                    elseif (nextX > currX && nextY < currY)
                         actionLabel = Command.ActionLabel.PrepareRight;
-                    elseif (nextX < currX && nextY > currY)
-                        actionLabel = Command.ActionLabel.PrepareLeft;
-                    elseif (nextX < currX && nextY < currY)
-                        actionLabel = Command.ActionLabel.Backward;
-                    else
-                        actionLabel = Command.ActionLabel.Turn;
                     end
+                    next_action = Command.ActionLabel.Turn;
+                    next_next_action = Command.ActionLabel.FixStance;
+                    poseactions{i} = Navigation.PoseAction(waypoints{i}, ...
+                            actionLabel);
+                    
+                    % pose preserved with action sequence Turn -> FixStance
+                    poseactions{i + 1} = Navigation.PoseAction(waypoints{i + 1},...
+                            next_action);
+                    poseactions{i + 2} = Navigation.PoseAction(waypoints{i + 1},...
+                            next_next_action);
+                    i = i + 2;
                 else
-                    % when i == l
-                    actionLabel = Command.ActionLabel.Forward;
+                    if (abs_dif > 0.3) % threshold over angle change
+                        actionLabel = Command.ActionLabel.Turn;
+                        next_action = Command.ActionLabel.FixStance;
+                        poseactions{i} = Navigation.PoseAction(waypoints{i}, ...
+                            actionLabel);
+                        poseactions{i + 1} = Navigation.PoseAction(waypoints{i},...
+                            next_action);
+                        i = i + 1;
+                    else
+                        actionLabel = Command.ActionLabel.Forward;
+                        poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel);
+                    end
+                        
                 end
-%                 if (i == 1)
-%                     actionLabel = Command.ActionLabel.PrepareLeft;
-%                 else
-%                     actionLabel = Command.ActionLabel.Forward;
-%                 end
-%                 disp(i);
-                poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel);
-%                 --------
-%                 actionLabel = Command.ActionLabel.Forward; % init action was Forward
-%                 poseactions{i} = Navigation.PoseAction(waypoints{i}, actionLabel);
+                i = i + 1;
+            end
+            
+            % accounts for 
+            if (size(poseactions{l}, 1) == 0)
+                poseactions{l} = Navigation.PoseAction(waypoints{l}, ...
+                    Command.ActionLabel.Forward);
             end
             
             for i = 1:l
                 if (i == 1)
                     continue
                 end
-
-                xdelta = poseactions{i}.Pose.x - poseactions{i-1}.Pose.x;
-                ydelta = poseactions{i}.Pose.y - poseactions{i-1}.Pose.y;
+                if (poseactions{i}.ActionLabel == Command.ActionLabel.FixStance)
+                    xdelta = waypoints{i}.x - waypoints{i-1}.x;
+                    ydelta = waypoints{i}.y - waypoints{i-1}.y;
+                else
+                    xdelta = poseactions{i}.Pose.x - poseactions{i-1}.Pose.x;
+                    ydelta = poseactions{i}.Pose.y - poseactions{i-1}.Pose.y;
+                end
                 distance = sqrt(xdelta * xdelta + ydelta * ydelta);
                 poseactions{i}.Duration = distance / speed;
+            end
+            
+            % display action labels and time duration assigned
+            for i = 1:l
+                disp(poseactions{i}.ActionLabel);
+                disp(poseactions{i}.Duration);
             end
         end
         

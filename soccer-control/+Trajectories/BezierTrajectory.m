@@ -12,28 +12,28 @@ classdef BezierTrajectory < Trajectories.GeneralizedTrajectory
     
     methods
         function obj = BezierTrajectory(duration, varargin)
-        %BEZIERTRAJECTORY creates a bezier trajectory between points
-        %    OBJ = BEZIERTRAJECTORY(DURATION, INI_POS, FIN_POS, INI_VEL, FIN_VEL)
-        %    OBJ = BEZIERTRAJECTORY(DURATION, INI_POS, FIN_POS, INI_VEL, FIN_VEL, HEIGHT)
-        %
-        %   Produces a one-dimensional Bezier trajectory based on the
-        %   provided boundary conditions. Currently supports third and
-        %   fourth order Bezier curves.
-        %
-        %
-        %   Arguments
-        %
-        %   DURATION = [1 x 1]
-        %       The time to move between the two positions
-        %
-        %   PREV_POS, NEXT_POS = [1 x 1]
-        %       The starting and ending positions of the foot in the x-axis
-        %
-        %   PREV_SPEED, NEXT_SPEED = [1 x 1]
-        %       The starting and ending speeds of the foot in the x-axis
-        %
-        %   HEIGHT = [1 x 1]
-        %       The peak height during mid-swing of the cycle
+            %BEZIERTRAJECTORY creates a bezier trajectory between points
+            %    OBJ = BEZIERTRAJECTORY(DURATION, INI_POS, FIN_POS, INI_VEL, FIN_VEL)
+            %    OBJ = BEZIERTRAJECTORY(DURATION, INI_POS, FIN_POS, INI_VEL, FIN_VEL, HEIGHT)
+            %
+            %   Produces a one-dimensional Bezier trajectory based on the
+            %   provided boundary conditions. Currently supports third and
+            %   fourth order Bezier curves.
+            %
+            %
+            %   Arguments
+            %
+            %   DURATION = [1 x 1]
+            %       The time to move between the two positions
+            %
+            %   PREV_POS, NEXT_POS = [1 x 1]
+            %       The starting and ending positions of the foot in the x-axis
+            %
+            %   PREV_SPEED, NEXT_SPEED = [1 x 1]
+            %       The starting and ending speeds of the foot in the x-axis
+            %
+            %   HEIGHT = [1 x 1]
+            %       The peak height during mid-swing of the cycle
         
             if nargin > 0
                 obj.order = length(varargin) - 1;

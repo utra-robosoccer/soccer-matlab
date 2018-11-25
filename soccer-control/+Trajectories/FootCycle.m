@@ -74,6 +74,28 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
             end
         end
         
+        function state = stateAtTime(obj, t)
+        %POSITIONATTIME returns the state at the given time
+        %   X = POSITIONATTIME(OBJ, T)   
+        %
+        %
+        %   Arguments
+        %
+        %   T = [1 x 1]
+        %       The time to retrieve the positon at
+        %
+        %
+        %   Outputs
+        %
+        %   X = [1 x 1] Mechanics.FootState
+        %       The state at time t, 1 if stance, 0 if swing
+            if t < obj.trans_time
+                state = Mechanics.FootState.Swing;
+            else
+                state = Mechanics.FootState.Stance;
+            end
+        end
+        
         function speed = speedAtTime(obj, t)            
         %SPEEDATTIME returns the speed at the given team
         %   V = SPEEDATTIME(OBJ, T)

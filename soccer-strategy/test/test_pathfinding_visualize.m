@@ -1,5 +1,6 @@
-%test_pathfinding;
+test_pathfinding_simulate
 
+% Draw the visualization
 close all;
 f = figure('pos',[10 10 900 600]);
 ax = axes('Parent',f,'position',[0.13 0.29  0.77 0.64]);
