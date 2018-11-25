@@ -20,8 +20,12 @@ classdef Animation
             obj.calibration = zeros(1,20);
         end
      
-        function tseries = TimeSeries(obj)
-            tseries = timeseries(obj.trajectory, obj.TimeVector);
+        function tseries = TimeSeries(obj, range)
+            if (nargin == 2)
+                tseries = timeseries(obj.trajectory(:,range), obj.TimeVector);
+            else
+                tseries = timeseries(obj.trajectory, obj.TimeVector);
+            end
         end
         
         function tvector = TimeVector(obj)
@@ -62,9 +66,6 @@ classdef Animation
         
         function angles = UrdfConventionAngles(obj)
             angles = obj.CalibratedAngles;
-            
-            angles(:,1) = -angles(:,1);
-            angles(:,6) = -angles(:,6);
         end
         
         function Publish(obj, step)

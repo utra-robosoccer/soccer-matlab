@@ -10,7 +10,7 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
     
     methods
         function obj = FootCycle(body_traj, last_step, next_step, ...
-                step_height, step_outwards, trans_time, duration)
+                step_height, step_outwards, trans_time, duration, nostance)
         %FOOTCYCLE Constructor
         %   OBJ = FOOTCYCLE(BODY_TRAJ, LAST_STEP, NEXT_STEP, STEP_HEIGHT,
         %       CUR_TIME, TRANS_TIME, DURATION)
@@ -50,9 +50,15 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
             % If there exists a swing phase, construct swing trajectory
             obj.swing = Trajectories.Trajectory.footTrajectory(trans_time, ...
                 init_pos, trans_pos, init_speed, trans_speed, step_height, step_outwards);
+            
             % If there exists a stance phase, construct stance trajectory
-            obj.stance = Trajectories.Trajectory.footTrajectory(duration - trans_time, ...
-                trans_pos, fin_pos, trans_speed, fin_speed, 0, 0);
+            if (nargin ~= 8 || nostance ~= 1)
+                obj.stance = Trajectories.Trajectory.footTrajectory(duration - trans_time, ...
+                    trans_pos, fin_pos, trans_speed, fin_speed, 0, 0);
+            else
+                obj.stance = Trajectories.Trajectory.footTrajectory(0, ...
+                    trans_pos, trans_pos, trans_speed, trans_speed, 0, 0);
+            end
         end
         
         function pos = positionAtTime(obj, t)
