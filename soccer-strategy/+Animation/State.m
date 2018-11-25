@@ -12,9 +12,6 @@ classdef State
         
         function angles = UrdfConventionAngles(obj)
             angles = obj.angles;
-            
-            angles(1) = -angles(1);
-            angles(6) = -angles(6);
         end
         
         function Publish(obj, duration)

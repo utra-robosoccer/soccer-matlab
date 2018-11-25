@@ -63,11 +63,11 @@ classdef Robot < Navigation.Entity
             end
             totalSteps = int16(floor(totalDuration) * 100);
 
-            angles = zeros(totalSteps, 12);
+            angles = zeros(totalSteps, 18);
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, :) = [cn(1, :), cn(2, :)];
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
         
