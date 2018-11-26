@@ -17,8 +17,8 @@ sampleTime = 0.01;
 motorCalibration = [ ...
     0; ... % Torso              -    Right Hip (Side)
     0; ... % Right Hip (Side)   -    Right Hip (Front)
-    0;...0.09; ... % Right Hip (Front)  -    Right Thigh
-    0; ... % Right Thigh        -    Right Calve
+    0.05;...0.09; ... % Right Hip (Front)  -    Right Thigh
+    0.05; ... % Right Thigh        -    Right Calve
     0; ... % Right Calve        -    Right Ankle
     0; ... % Right Ankle        -    Right Foot
     0; ... % Torso              -    Left Hip (Side)
@@ -40,10 +40,10 @@ motorCalibration = [ ...
 soccer_strategy_fixed_trajectories
 
 % Left Right Control
-hipCalveGain = 1;
-kneeGain = 2;
+hipCalveGain = 0;
+kneeGain = 0;
 
 % Forward Backward control
-hipGain = 1;
+hipGain = 2;
 forearmGain = 1.5;
 feetGain = 0;
