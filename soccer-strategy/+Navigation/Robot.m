@@ -122,21 +122,81 @@ classdef Robot < Navigation.Entity
             q0_right = command.cur_angles(2,:);
             
             if (foot == Mechanics.Foot.Left)
-                command.append(Command.ActionLabel.StanceRight, pose, obj.stance_time);
+%                 command.append(Command.ActionLabel.SwingLeft, forwardpose, obj.cycle_time / 2);
+                command.append(Command.ActionLabel.SwingLeftBack, backwardpose, obj.cycle_time + 0.001);
             else
-                command.append(Command.ActionLabel.StanceLeft, pose, obj.stance_time);
+                command.append(Command.ActionLabel.SwingRight, forwardpose, obj.cycle_time / 2 + 0.001);
+                command.append(Command.ActionLabel.SwingRightBack, backwardpose, obj.cycle_time / 2 + 0.001);
             end
             
-            if (foot == Mechanics.Foot.Left)
-                command.append(Command.ActionLabel.SwingLeft, forwardpose, obj.swing_time);
-%                 command.append(Command.ActionLabel.SwingLeftBack, backwardpose, obj.swing_time);
-            else
-                command.append(Command.ActionLabel.SwingRight, forwardpose, obj.swing_time);
-%                 command.append(Command.ActionLabel.SwingRightBack, backwardpose, obj.swing_time);
-            end
-            
-            totalDuration = (obj.cycle_time / 2 - obj.swing_time) + obj.swing_time;
+            totalDuration = obj.cycle_time * 2;
             totalSteps = int16(floor(totalDuration) * (1/ts));
+
+            angles = zeros(totalSteps, 18);
+            states = zeros(totalSteps, 1);
+            for i = 1:(totalSteps)
+                [cn, states(i)] = command.next();
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
+            end
+        end
+        
+        function [angles, states, q0_left, q0_right] = CreateAnimationWalking(obj, duration, speed)
+            ts = 0.01;
+            pose = Pose(0,0,0,0,0);
+            
+            command = Command.Command(pose);
+            command.swing_time = obj.swing_time;
+            command.stance_time = obj.stance_time;
+            command.cycle_time = obj.cycle_time;
+            command.step_height = obj.step_height;
+            command.hip_height = obj.body_hip_height;
+            command.hip_width = obj.body_hip_width / 2;
+            command.step_outwards = obj.step_outwards;
+            
+            q0_left = command.cur_angles(1,:);
+            q0_right = command.cur_angles(2,:);
+            
+            count = floor(duration / obj.cycle_time);
+            
+            for i = 1:count
+                poseforward = Pose(speed / obj.cycle_time * i,0,0,0,0);
+                command.append(Command.ActionLabel.Forward, poseforward, obj.cycle_time + 0.001);
+            end
+            
+            totalSteps = int16(floor(duration) * (1/ts));
+
+            angles = zeros(totalSteps, 18);
+            states = zeros(totalSteps, 1);
+            for i = 1:(totalSteps)
+                [cn, states(i)] = command.next();
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
+            end
+        end
+        
+        function [angles, states, q0_left, q0_right] = CreateAnimationTurningStationary(obj, duration, omega)
+            ts = 0.01;
+            pose = Pose(0,0,0,0,0);
+            
+            command = Command.Command(pose);
+            command.swing_time = obj.swing_time;
+            command.stance_time = obj.stance_time;
+            command.cycle_time = obj.cycle_time;
+            command.step_height = obj.step_height;
+            command.hip_height = obj.body_hip_height;
+            command.hip_width = obj.body_hip_width / 2;
+            command.step_outwards = obj.step_outwards;
+            
+            q0_left = command.cur_angles(1,:);
+            q0_right = command.cur_angles(2,:);
+            
+            count = floor(duration / obj.cycle_time);
+            
+            for i = 1:count
+                poseforward = Pose(i*0.02,0,0,omega*i*2,0);
+                command.append(Command.ActionLabel.Forward, poseforward, obj.cycle_time + 0.001);
+            end
+            
+            totalSteps = int16(floor(duration) * (1/ts));
 
             angles = zeros(totalSteps, 18);
             states = zeros(totalSteps, 1);

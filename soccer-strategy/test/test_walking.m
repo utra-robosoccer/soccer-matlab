@@ -6,9 +6,9 @@ robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.05);
 
 % Create the oscillating movement
 duration = 20;
-omega = 0.2; % radian per second
+speed = 0.001;
 foot = Mechanics.Foot.Right;
-[angles, states, q0_left, q0_right] = robot.CreateAnimationTurningStationary(duration, omega);
+[angles, states, q0_left, q0_right] = robot.CreateAnimationWalkingStationary(duration, speed);
 
 path = Navigation.Path(pose, pose, angles);
 path.q0_left = q0_left;
