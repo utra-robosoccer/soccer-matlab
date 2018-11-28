@@ -1,10 +1,12 @@
 close all; clear; clc;
-soccer_strategy_fixed_trajectories;
+soccer_strategy_setup;
 
 %% Standing
+standingstate.calibration = motorCalibration';
 standingstate.Publish
 
 %% Ready
+readystate.calibration = motorCalibration';
 readystate.Publish
 
 %% Get Up Front Animation

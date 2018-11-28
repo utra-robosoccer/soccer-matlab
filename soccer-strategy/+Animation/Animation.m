@@ -7,6 +7,7 @@ classdef Animation
         trajectory          % [N x duration/ts] double
         ts = 0.01           % Sample time
         duration            % Double
+        calibration
     end
 
     methods
@@ -16,6 +17,7 @@ classdef Animation
             obj.stateend = stateend;
             obj.ts = ts;
             obj.duration = duration;
+            obj.calibration = zeros(1,20);
         end
      
         function tseries = TimeSeries(obj, range)
@@ -54,8 +56,16 @@ classdef Animation
             grid minor;
         end
         
+        function calibratedangles = CalibratedAngles(obj)
+            [l,w] = size(obj.trajectory);
+            calibratedangles = zeros(l,w);
+            for i = 1:l
+                calibratedangles(i,1:w) = obj.trajectory(i, 1:w) + obj.calibration(1:w);
+            end
+        end
+        
         function angles = UrdfConventionAngles(obj)
-            angles = obj.trajectory;
+            angles = obj.CalibratedAngles;
         end
         
         function Publish(obj, step)
