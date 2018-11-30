@@ -1,16 +1,33 @@
 %% Initialization Parameters
-dh = [
-    0.0280     -pi/2         0      pi/2
-         0      pi/2         0     -pi/2
-         0         0    0.0930         0
-         0         0    0.0827         0
-         0         0         0      pi/2
-         0         0    0.0253         0
-];
+dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
+% % DH table starts from 'base_link'
+% dh_arm = [
+%         0       pi/2        0.3536      0
+%         0.0157  0           0.0725      0
+%         0.1     0           0           -pi/2
+% ];
+% dh_arm = dh_arm(:, [3 4 1 2 ]);   
+% 
+% % DH table starts from 'torso'
+% dh_leg = [
+%      -0.0135     pi/2         0.035      0
+%          0      -pi/2         0.156      0
+%          0         0          0          0
+%          0.0929    0          0        -pi/2
+%          0         0          0          0
+%          0.0827  -pi/2        0          0
+% ];
+% dh_led = dh(:, [3 4 1 2 ]); % inverting columns d,theta,a,alpha vs. a,alpha,d,theta
+
+
 body_height = 0.099 + 0.16;
 body.depth = 0.1305;
 body.height = 0.152;
 body.width = 0.145;
+ground.length = 9;
+ground.width = 6;
+ground.depth = 0.01;
+gravity = 9.81;
 
 %% Generate Angles
 
@@ -46,8 +63,12 @@ in = in.setVariable('q0_left', q0_left, 'Workspace', 'biped_robot');
 in = in.setVariable('q0_right', q0_right, 'Workspace', 'biped_robot');
 in = in.setVariable('angles', angles_ts, 'Workspace', 'biped_robot');
 in = in.setVariable('init_body_height', body_height, 'Workspace', 'biped_robot');
-in = in.setVariable('hip_width', 0.063, 'Workspace', 'biped_robot');
+in = in.setVariable('hip_width', 0.07, 'Workspace', 'biped_robot');
 in = in.setVariable('body', body, 'Workspace', 'biped_robot');
 in = in.setVariable('init_angle', start_pose.q, 'Workspace', 'biped_robot');
+in = in.setVariable('body_mass', 1.529201,'Workspace', 'biped_robot');
+in = in.setVariable('ground', ground,'Workspace', 'biped_robot');
+in = in.setVariable('gravity', gravity,'Workspace', 'biped_robot');
+
 
 out = sim(in);

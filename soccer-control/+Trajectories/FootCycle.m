@@ -10,7 +10,7 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
     
     methods
         function obj = FootCycle(body_traj, last_step, next_step, ...
-                step_height, trans_time, duration)
+                step_height, step_outwards, trans_time, duration, nostance)
         %FOOTCYCLE Constructor
         %   OBJ = FOOTCYCLE(BODY_TRAJ, LAST_STEP, NEXT_STEP, STEP_HEIGHT,
         %       CUR_TIME, TRANS_TIME, DURATION)
@@ -28,6 +28,9 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
         %
         %   STEP_HEIGHT = [1 x 1]
         %       The peak height of the step
+        % 
+        %   STEP_OUTWARDS = [1 x 1]
+        %       Outwardness of the step
         %
         %   CUR_TIME, TRANS_TIME, DURATION = [1 x 1]
         %       The current time, the time of transition to stance phase,
@@ -46,10 +49,16 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
             
             % If there exists a swing phase, construct swing trajectory
             obj.swing = Trajectories.Trajectory.footTrajectory(trans_time, ...
-                init_pos, trans_pos, init_speed, trans_speed, step_height);
+                init_pos, trans_pos, init_speed, trans_speed, step_height, step_outwards);
+            
             % If there exists a stance phase, construct stance trajectory
-            obj.stance = Trajectories.Trajectory.footTrajectory(duration - trans_time, ...
-                trans_pos, fin_pos, trans_speed, fin_speed, 0);
+            if (nargin ~= 8 || nostance ~= 1)
+                obj.stance = Trajectories.Trajectory.footTrajectory(duration - trans_time, ...
+                    trans_pos, fin_pos, trans_speed, fin_speed, 0, 0);
+            else
+                obj.stance = Trajectories.Trajectory.footTrajectory(0, ...
+                    trans_pos, trans_pos, trans_speed, trans_speed, 0, 0);
+            end
         end
         
         function pos = positionAtTime(obj, t)
@@ -71,6 +80,28 @@ classdef FootCycle < Trajectories.GeneralizedTrajectory
                 pos = obj.swing.positionAtTime(t);
             else
                 pos = obj.stance.positionAtTime(t - obj.trans_time);
+            end
+        end
+        
+        function state = stateAtTime(obj, t)
+        %POSITIONATTIME returns the state at the given time
+        %   X = POSITIONATTIME(OBJ, T)   
+        %
+        %
+        %   Arguments
+        %
+        %   T = [1 x 1]
+        %       The time to retrieve the positon at
+        %
+        %
+        %   Outputs
+        %
+        %   X = [1 x 1] Mechanics.FootState
+        %       The state at time t, 1 if stance, 0 if swing
+            if t < obj.trans_time
+                state = Mechanics.FootState.Swing;
+            else
+                state = Mechanics.FootState.Stance;
             end
         end
         

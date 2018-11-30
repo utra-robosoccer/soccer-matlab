@@ -11,7 +11,7 @@ for i = 1:10
     map = Navigation.Map(9, 6, 0.05);
     
     % Create a robot
-    robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
+    robot = Navigation.Robot(Pose(0,0,pi/2,0,0), Navigation.EntityType.Self, 0.05);
 
     % Add obstacles
     for j = 1:obstaclecount
@@ -23,13 +23,13 @@ for i = 1:10
     endPose = map.RandomPose;
 
     % Attempt
-    trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
+    path = map.FindPath(robot.pose, endPose, robot.speed);
     
     disp(strcat('Trajectory found for test ', num2str(i), ' avg speed: ', num2str(trajectory.AverageSpeed)));
     hold off;
     map.Draw();
     hold on;
-    trajectory.DrawPath();
+    path.DrawPath();
     grid minor;
     drawnow;
 end
