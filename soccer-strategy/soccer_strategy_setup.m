@@ -13,28 +13,7 @@ connectrobot;
 % Sample Time
 sampleTime = 0.01;
 
-% Calibration
-motorCalibration = [ ...
-    0; ... % Torso              -    Right Hip (Side)
-    0; ... % Right Hip (Side)   -    Right Hip (Front)
-    0.05;...0.09; ... % Right Hip (Front)  -    Right Thigh
-    0.05; ... % Right Thigh        -    Right Calve
-    0; ... % Right Calve        -    Right Ankle
-    0; ... % Right Ankle        -    Right Foot
-    0; ... % Torso              -    Left Hip (Side)
-    0; ... % Left Hip (Side)    -    Left Hip (Front)
-    0; ... % Left Hip (Front)   -    Left Thigh
-    0; ... % Left Thigh         -    Left Calve
-    0; ... % Left Calve         -    Left Ankle
-    0; ... % Left Ankle         -    Left Foot
-    0; ... % Torso              -    Right Bicep
-    0; ... % Right Bicep        -    Right Forearm
-    0; ... % Torso              -    Left Bicep
-    0; ... % Left Bicep         -    Left Forearm
-    0; ... % Torso              -    Neck
-    0; ... % Neck               -    Head
-    0; ... %
-    0]; %
+soccer_strategy_calibration;
 
 % Fixed Trajectories
 soccer_strategy_fixed_trajectories
@@ -49,7 +28,7 @@ forearmGain = 1.5;
 feetGain = 0;
 
 % Dynamic trajectory gains (stanceLeft = stance Left to Right)
-stanceLeft.pitch.rightHipSideFront.p = 0.0;
+stanceLeft.pitch.rightHipSideFront.p = 0.5;
 stanceLeft.pitch.rightHipSideFront.i = 0.0;
 stanceLeft.pitch.rightHipSideFront.d = 0.0;
 stanceLeft.pitch.rightHipSideFront.direction = 1;
@@ -65,7 +44,7 @@ stanceLeft.pitch.rightAnkleFoot.p = 0.0;
 stanceLeft.pitch.rightAnkleFoot.i = 0.0;
 stanceLeft.pitch.rightAnkleFoot.d = 0.0;
 stanceLeft.pitch.rightAnkleFoot.direction = 1;
-stanceLeft.pitch.leftHipSideFront.p = 0.0;
+stanceLeft.pitch.leftHipSideFront.p = 0.5;
 stanceLeft.pitch.leftHipSideFront.i = 0.0;
 stanceLeft.pitch.leftHipSideFront.d = 0.0;
 stanceLeft.pitch.leftHipSideFront.direction = 1;
@@ -322,20 +301,20 @@ swingRight.roll.leftAnkleFoot.direction = 1;
 swingRight.roll.desiredAngle = 0.0;
 
 motorFeedback = Feedback.MotorFeedback(stanceLeft,stanceRight,swingLeft,swingRight);
-motorFeedback.rightHipSideFront.roll.enabled = 1;
-motorFeedback.rightHipFrontThigh.roll.enabled = 1;
-motorFeedback.rightCalveAnkle.roll.enabled = 1;
-motorFeedback.rightAnkleFoot.roll.enabled = 1;
-motorFeedback.leftHipSideFront.roll.enabled = 1;
-motorFeedback.leftHipFrontThigh.roll.enabled = 1;
-motorFeedback.leftCalveAnkle.roll.enabled = 1;
-motorFeedback.leftAnkleFoot.roll.enabled = 1;
+motorFeedback.rightHipSideFront.roll.enabled = 0;
+motorFeedback.rightHipFrontThigh.roll.enabled = 0;
+motorFeedback.rightCalveAnkle.roll.enabled = 0;
+motorFeedback.rightAnkleFoot.roll.enabled = 0;
+motorFeedback.leftHipSideFront.roll.enabled = 0;
+motorFeedback.leftHipFrontThigh.roll.enabled = 0;
+motorFeedback.leftCalveAnkle.roll.enabled = 0;
+motorFeedback.leftAnkleFoot.roll.enabled = 0;
 motorFeedback.rightHipSideFront.pitch.enabled = 1;
-motorFeedback.rightHipFrontThigh.pitch.enabled = 1;
-motorFeedback.rightCalveAnkle.pitch.enabled = 1;
-motorFeedback.rightAnkleFoot.pitch.enabled = 1;
+motorFeedback.rightHipFrontThigh.pitch.enabled = 0;
+motorFeedback.rightCalveAnkle.pitch.enabled = 0;
+motorFeedback.rightAnkleFoot.pitch.enabled = 0;
 motorFeedback.leftHipSideFront.pitch.enabled = 1;
-motorFeedback.leftHipFrontThigh.pitch.enabled = 1;
-motorFeedback.leftCalveAnkle.pitch.enabled = 1;
-motorFeedback.leftAnkleFoot.pitch.enabled = 1;
+motorFeedback.leftHipFrontThigh.pitch.enabled = 0;
+motorFeedback.leftCalveAnkle.pitch.enabled = 0;
+motorFeedback.leftAnkleFoot.pitch.enabled = 0;
 

@@ -9,6 +9,7 @@ classdef Command < handle
         % Body physical parameters
         hip_height = 0.16;
         hip_width = 0.0315;
+        feet_width = 0.0315;
         
         % DH Table (loaded)
         dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
@@ -127,7 +128,7 @@ classdef Command < handle
             %   GENERATENEXTFOOTSTEPS(OBJ)
 
             step_duration = obj.cycle_time / 2;
-            step_width = obj.hip_width;
+            step_width = obj.feet_width;
             init_pose = obj.actions.positionAtTime(0);
             next_pose = obj.actions.positionAtTime(obj.cycle_time / 2);
             label = obj.getCurrentLabel();

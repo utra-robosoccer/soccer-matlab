@@ -21,7 +21,8 @@ classdef Robot < Navigation.Entity
         body_height = 0.180 + 0.031075 + 0.152/2;
         
         % Seperation between the hips
-        body_hip_width = 0.0645;
+        body_hip_width = 0.0745;
+        body_feet_width = 0.0745;
         
         torso_dimensions = struct('depth',0.1305, 'height', 0.152, 'width', 0.145);
     end
@@ -50,6 +51,7 @@ classdef Robot < Navigation.Entity
             command.step_height = obj.step_height;
             command.hip_height = obj.body_hip_height;
             command.hip_width = obj.body_hip_width / 2;
+            command.feet_width = obj.body_feet_width / 2;
             command.step_outwards = obj.step_outwards;
             command.body_step_lean = obj.body_step_lean;
             

@@ -41,14 +41,14 @@ classdef Pose < handle
             obj.v = v;
         end
         
-        function tf = eyaw(obj1, obj2)
+        function tf = eq(obj1, obj2)
             tf = obj1.x == obj2.x && obj1.y == obj2.y && ...
                  obj1.z == obj2.z && obj1.yaw == obj2.yaw && ...
                  obj1.v == obj2.v;
         end
         
         function tf = ne(obj1, obj2)
-            tf = ~obj1.eyaw(obj2);
+            tf = ~obj1.eq(obj2);
         end
         
         function d = get(obj)
@@ -78,14 +78,14 @@ classdef Pose < handle
         end
         
         function len = length(obj)
-            len = syawrt(obj.x^2 + obj.y^2 + obj.z^2);
+            len = sqrt(obj.x^2 + obj.y^2 + obj.z^2);
         end
         
         function draw(obj, label, size)
             if (nargin == 3)
-                yawuiver(obj.x, obj.y, cos(obj.yaw) * size, sin(obj.yaw) * size, 0, 'LineWidth', size * 30, 'MaxHeadSize', 0.4);
+                quiver(obj.x, obj.y, cos(obj.yaw) * size, sin(obj.yaw) * size, 0, 'LineWidth', size * 30, 'MaxHeadSize', 0.4);
             else
-                yawuiver(obj.x, obj.y, cos(obj.yaw) * obj.v * 2, sin(obj.yaw) * obj.v * 2, 0, 'LineWidth', 4, 'MaxHeadSize', 0.4);
+                quiver(obj.x, obj.y, cos(obj.yaw) * obj.v * 2, sin(obj.yaw) * obj.v * 2, 0, 'LineWidth', 4, 'MaxHeadSize', 0.4);
             end
             
             if (nargin == 2)
