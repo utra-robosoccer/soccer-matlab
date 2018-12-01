@@ -10,6 +10,7 @@ classdef Robot < Navigation.Entity
         cycle_time = 2;
         step_height = 0.05;
         step_outwards = 0.01;
+        body_step_lean = pi/12; % Angle to lean when taking a step
         
         % Hip height while walking, higher means can not make big steps 
         % (Maximum 0.198, unable to move)
@@ -50,6 +51,7 @@ classdef Robot < Navigation.Entity
             command.hip_height = obj.body_hip_height;
             command.hip_width = obj.body_hip_width / 2;
             command.step_outwards = obj.step_outwards;
+            command.body_step_lean = obj.body_step_lean;
             
             q0_left = command.cur_angles(1,:);
             q0_right = command.cur_angles(2,:);
@@ -83,6 +85,7 @@ classdef Robot < Navigation.Entity
             command.hip_height = obj.body_hip_height;
             command.hip_width = obj.body_hip_width / 2;
             command.step_outwards = obj.step_outwards;
+            command.body_step_lean = obj.body_step_lean;
             
             q0_left = command.cur_angles(1,:);
             q0_right = command.cur_angles(2,:);
@@ -223,7 +226,7 @@ classdef Robot < Navigation.Entity
             in = in.setVariable('init_body_height', obj.body_height, 'Workspace', 'biped_robot');
             in = in.setVariable('hip_width', obj.body_hip_width, 'Workspace', 'biped_robot');
             in = in.setVariable('body', obj.torso_dimensions, 'Workspace', 'biped_robot');
-            in = in.setVariable('init_angle', path.startpose.q, 'Workspace', 'biped_robot');
+            in = in.setVariable('init_angle', path.startpose.yaw, 'Workspace', 'biped_robot');
             
             simOut = sim(in);
             simTime = simOut.tout;

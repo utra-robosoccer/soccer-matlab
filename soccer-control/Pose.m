@@ -6,14 +6,18 @@ classdef Pose < handle
         x = 0;
         y = 0;
         z = 0;
-        % Angle in the x-y plane measured ccw from positive x
-        q = 0;
-        % Velocity along q
+        
+        % Angles
+        yaw = 0;
+        pitch = 0;
+        roll = 0;
+        
+        % Velocity along yaw
         v = 0;
     end
     
     methods
-        function obj = Pose(x, y, z, q, v)
+        function obj = Pose(x, y, z, yaw, v)
         %POSE Constructor
         %   OBJ = POSE()
         %   OBJ = POSE(X, Y, Z, Q, V)
@@ -28,27 +32,27 @@ classdef Pose < handle
         %       The angle in the x-y plane ccw from positive x
         %
         %   V = [1 x 1]
-        %       The veloicty along the line denoted by q
+        %       The veloicty along the line denoted by yaw
         
             obj.x = x;
             obj.y = y;
             obj.z = z;
-            obj.q = q;
+            obj.yaw = yaw;
             obj.v = v;
         end
         
-        function tf = eq(obj1, obj2)
+        function tf = eyaw(obj1, obj2)
             tf = obj1.x == obj2.x && obj1.y == obj2.y && ...
-                 obj1.z == obj2.z && obj1.q == obj2.q && ...
+                 obj1.z == obj2.z && obj1.yaw == obj2.yaw && ...
                  obj1.v == obj2.v;
         end
         
         function tf = ne(obj1, obj2)
-            tf = ~obj1.eq(obj2);
+            tf = ~obj1.eyaw(obj2);
         end
         
         function d = get(obj)
-            d = [obj.x obj.y obj.z obj.q obj.v];
+            d = [obj.x obj.y obj.z obj.yaw obj.v];
         end
         
         function r = uplus(obj)
@@ -74,14 +78,14 @@ classdef Pose < handle
         end
         
         function len = length(obj)
-            len = sqrt(obj.x^2 + obj.y^2 + obj.z^2);
+            len = syawrt(obj.x^2 + obj.y^2 + obj.z^2);
         end
         
         function draw(obj, label, size)
             if (nargin == 3)
-                quiver(obj.x, obj.y, cos(obj.q) * size, sin(obj.q) * size, 0, 'LineWidth', size * 30, 'MaxHeadSize', 0.4);
+                yawuiver(obj.x, obj.y, cos(obj.yaw) * size, sin(obj.yaw) * size, 0, 'LineWidth', size * 30, 'MaxHeadSize', 0.4);
             else
-                quiver(obj.x, obj.y, cos(obj.q) * obj.v * 2, sin(obj.q) * obj.v * 2, 0, 'LineWidth', 4, 'MaxHeadSize', 0.4);
+                yawuiver(obj.x, obj.y, cos(obj.yaw) * obj.v * 2, sin(obj.yaw) * obj.v * 2, 0, 'LineWidth', 4, 'MaxHeadSize', 0.4);
             end
             
             if (nargin == 2)
@@ -92,16 +96,16 @@ classdef Pose < handle
     
     methods (Static)
         function centered = centeredPose(obj1, obj2)
-            new_q = (obj1.q + obj2.q) / 2;
-            if abs(mod(new_q - obj1.q, 2 * pi) - pi) < ...
-                    abs(mod(new_q - obj1.q + pi, 2 * pi) - pi)
-                new_q = mod(new_q, 2 * pi) - pi;
+            new_yaw = (obj1.yaw + obj2.yaw) / 2;
+            if abs(mod(new_yaw - obj1.yaw, 2 * pi) - pi) < ...
+                    abs(mod(new_yaw - obj1.yaw + pi, 2 * pi) - pi)
+                new_yaw = mod(new_yaw, 2 * pi) - pi;
             end
             centered = Pose( ...
                 (obj1.x + obj2.x) / 2, ...
                 (obj1.y + obj2.y) / 2, ...
                 (obj1.z + obj2.z) / 2, ...
-                new_q, ...
+                new_yaw, ...
                 (obj1.v + obj2.v) / 2  ...
             );
         end

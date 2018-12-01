@@ -1,4 +1,4 @@
-classdef Path
+classdef Path < handle
     %TRAJECTORY Entire Animation of the robot, including location
     
     properties
@@ -49,6 +49,24 @@ classdef Path
             for i = 1:length(obj.waypoints)
                 obj.waypoints{i}.draw(num2str(i));
             end
+        end
+        
+        function ApplyTilt(obj, tiltangleincrement)
+            [l,~] = size(obj.animation.trajectory);
+            
+            tiltangle = tiltangleincrement * 50 / 2;
+            tiltangles = zeros(l,1);
+            for i = 1:l
+                if (obj.states(i) == Command.ActionState.LeftToRightStance)
+                    tiltangle = tiltangle + tiltangleincrement;
+                end
+                if (obj.states(i) == Command.ActionState.RightToLeftStance)
+                    tiltangle = tiltangle - tiltangleincrement;
+                end
+                tiltangles(i) = tiltangle;
+            end            
+            obj.animation.trajectory(:,2) = obj.animation.trajectory(:,2) + tiltangles;
+            obj.animation.trajectory(:,8) = obj.animation.trajectory(:,8) + tiltangles;
         end
         
         function PlotAngles(obj)

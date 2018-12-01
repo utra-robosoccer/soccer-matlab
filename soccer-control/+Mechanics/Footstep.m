@@ -45,10 +45,10 @@ classdef Footstep < Pose & Trajectories.GeneralizedTrajectory
         %   TIME = [1 x 1]
         %       When this footstep happens relative in body-trajectory time
             obj@Pose(0, 0, 0, 0, 0);
-            [x, y, q, side, time] = obj.getParam(varargin{:});
+            [x, y, yaw, side, time] = obj.getParam(varargin{:});
             obj.x = x;
             obj.y = y;
-            obj.q = q;
+            obj.yaw = yaw;
             obj.side = side;
             obj.duration = time;
         end

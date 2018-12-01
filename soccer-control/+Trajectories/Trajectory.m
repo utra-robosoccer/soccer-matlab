@@ -53,7 +53,7 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
             %       The peak outwards during mid-swing of the cycle
 
             %Ensure continuous rotations
-            iq = mod(prev_pos.q, 2*pi); fq = mod(next_pos.q, 2*pi);
+            iq = mod(prev_pos.yaw, 2*pi); fq = mod(next_pos.yaw, 2*pi);
             if abs(fq - iq) > pi
                 if abs(fq) > abs(iq)
                     fq = fq - 2 * pi;
@@ -66,9 +66,9 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
             obj.duration = duration;
             
             center = Pose.centeredPose(prev_pos, next_pos);
-            shiftpose = Pose(sin(center.q + pi/2) * outwards, ...
-                cos(center.q + pi/2) * outwards, ...
-                center.z, center.q, center.v);
+            shiftpose = Pose(sin(center.yaw + pi/2) * outwards, ...
+                cos(center.yaw + pi/2) * outwards, ...
+                center.z, center.yaw, center.v);
             shift = center + shiftpose;
             obj.data = {
                 Trajectories.BezierTrajectory(duration, ...
@@ -78,7 +78,7 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
                 Trajectories.BezierTrajectory(duration, ...
                     0, 0, 0, 0, height);
                 Trajectories.BezierTrajectory(duration, ...
-                    iq, fq, -prev_speed.q, -next_speed.q);
+                    iq, fq, -prev_speed.yaw, -next_speed.yaw);
                 Trajectories.BezierTrajectory(duration, ...
                     prev_pos.v, next_pos.v, -prev_speed.v, -next_speed.v)
             };
@@ -104,11 +104,11 @@ classdef Trajectory < Trajectories.GeneralizedTrajectory
             obj.duration = duration;
             obj.data = {
                 Trajectories.BezierTrajectory(duration, prev_pose.x, next_pose.x, ...
-                    prev_pose.v*cos(prev_pose.q), next_pose.v*cos(next_pose.q));
+                    prev_pose.v*cos(prev_pose.yaw), next_pose.v*cos(next_pose.yaw));
                 Trajectories.BezierTrajectory(duration, prev_pose.y, next_pose.y, ...
-                    prev_pose.v*sin(prev_pose.q), next_pose.v*sin(next_pose.q));
+                    prev_pose.v*sin(prev_pose.yaw), next_pose.v*sin(next_pose.yaw));
                 Trajectories.BezierTrajectory(duration, prev_pose.z, next_pose.z, 0, 0);
-                Trajectories.BezierTrajectory(duration, prev_pose.q, next_pose.q, 0, 0);
+                Trajectories.BezierTrajectory(duration, prev_pose.yaw, next_pose.yaw, 0, 0);
                 Trajectories.BezierTrajectory(duration, prev_pose.v, next_pose.v, 0, 0)
             };
         end

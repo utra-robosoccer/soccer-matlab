@@ -1,8 +1,5 @@
 classdef Leg
-    
-    properties
-    end
-    
+
     methods(Static)
         function q = InverseKinematics(dh, x6, y6, z6, g, q0)
             %INVERSEKINEMATICS returns joint angles to produces ee position
