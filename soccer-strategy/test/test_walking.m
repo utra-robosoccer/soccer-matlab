@@ -8,7 +8,7 @@ robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.05);
 duration = 20;
 speed = 0.001;
 foot = Mechanics.Foot.Right;
-[angles, states, q0_left, q0_right] = robot.CreateAnimationWalkingStationary(duration, speed);
+[angles, states, q0_left, q0_right] = robot.CreateAnimationWalking(duration, speed);
 
 path = Navigation.Path(pose, pose, angles);
 path.q0_left = q0_left;

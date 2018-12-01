@@ -35,13 +35,13 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
 
             map = Navigation.Map(9, 6, 0.05);
             map.objects = {obj.robot, obs1, obs2, obs3};
-            traj = map.FindPath(obj.robot, endPose, obj.robot.speed);
-                        
-            % Fill in the trajectory
-            [l,w] = size(traj.animation.trajectory);
+            path = map.FindPath(obj.robot, endPose, obj.robot.speed);
             
-            obj.trajectory(1:l,1:w) = traj.animation.trajectory(1:l,1:w);
-            obj.states(1:l) = traj.states(1:l);
+            % Fill in the trajectory
+            [l,w] = size(path.animation.trajectory);
+            
+            obj.trajectory(1:l,1:w) = path.animation.trajectory(1:l,1:w);
+            obj.states(1:l) = path.states(1:l);
             
             obj.trajectory(1:l,1) = -obj.trajectory(1:l,6);
             obj.trajectory(1:l,6) = -obj.trajectory(1:l,6);
