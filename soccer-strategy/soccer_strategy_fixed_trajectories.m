@@ -4,8 +4,9 @@ ts = 0.01; % Sample Time
 if ~exist('manual', 'var')
     load('poses.mat')
 end
-if ~exist('customTrajectory', 'var')
+if ~exist('customTrajectory', 'var') || ~exist('customTrajectoryStates', 'var') 
     customTrajectory = timeseries([manual;manual], [0;0]);
+    customTrajectoryStates = timeseries([1;1],[0;0]);
 end
 
 % Poses
