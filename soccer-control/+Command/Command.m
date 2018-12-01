@@ -9,6 +9,7 @@ classdef Command < handle
         % Body physical parameters
         hip_height = 0.16;
         hip_width = 0.0315;
+        feet_width = 0.0315;
         
         % DH Table (loaded)
         dh = csvread('soccer_description/models/soccerbot/dh.table',2,0,[2,0,7,4]); 
@@ -126,7 +127,7 @@ classdef Command < handle
             %   GENERATENEXTFOOTSTEPS(OBJ)
 
             step_duration = obj.cycle_time / 2;
-            step_width = obj.hip_width;
+            step_width = obj.feet_width;
             init_pose = obj.actions.positionAtTime(0);
             next_pose = obj.actions.positionAtTime(obj.cycle_time / 2);
             label = obj.getCurrentLabel();
@@ -249,11 +250,11 @@ classdef Command < handle
             
             % Initial Foot Positions
             obj.foot_pos = {
-                Mechanics.Footstep(-obj.hip_width * sin(start_pose.q), ...
-                                    obj.hip_width * cos(start_pose.q), ...
+                Mechanics.Footstep(-obj.feet_width * sin(start_pose.q), ...
+                                    obj.feet_width * cos(start_pose.q), ...
                                     start_pose.q, Mechanics.Foot.Left, 0),... 
-                Mechanics.Footstep( obj.hip_width * sin(start_pose.q), ...
-                                   -obj.hip_width * cos(start_pose.q), ...
+                Mechanics.Footstep( obj.feet_width * sin(start_pose.q), ...
+                                   -obj.feet_width * cos(start_pose.q), ...
                                     start_pose.q, Mechanics.Foot.Right, 0)
             }; % L, R
             
@@ -274,12 +275,12 @@ classdef Command < handle
             obj.cur_angles(1,3) = 1;
             obj.cur_angles(2,3) = 1;
             obj.cur_angles(1,:) = Mechanics.Leg.InverseKinematics(obj.dh, ...
-                obj.foot_pos{1}.x + obj.hip_width * sin(start_pose.q), ...
-                obj.foot_pos{1}.y - obj.hip_width * cos(start_pose.q), ...
+                obj.foot_pos{1}.x + obj.feet_width * sin(start_pose.q), ...
+                obj.foot_pos{1}.y - obj.feet_width * cos(start_pose.q), ...
                 -obj.hip_height, 0, obj.cur_angles(1,:));
             obj.cur_angles(2,:) = Mechanics.Leg.InverseKinematics(obj.dh, ...
-                obj.foot_pos{2}.x - obj.hip_width * sin(start_pose.q), ...
-                obj.foot_pos{2}.y + obj.hip_width * cos(start_pose.q), ...
+                obj.foot_pos{2}.x - obj.feet_width * sin(start_pose.q), ...
+                obj.foot_pos{2}.y + obj.feet_width * cos(start_pose.q), ...
                 -obj.hip_height, 0, obj.cur_angles(2,:));
         end
         
@@ -475,10 +476,10 @@ classdef Command < handle
             
             % Transform from world frame to body frame
             abq = action.q + bp.q;
-            lx = ftl.x - bp.x + obj.hip_width * sin(abq);
-            ly = ftl.y - bp.y - obj.hip_width * cos(abq);
-            rx = ftr.x - bp.x - obj.hip_width * sin(abq);
-            ry = ftr.y - bp.y + obj.hip_width * cos(abq);
+            lx = ftl.x - bp.x + obj.feet_width * sin(abq);
+            ly = ftl.y - bp.y - obj.feet_width * cos(abq);
+            rx = ftr.x - bp.x - obj.feet_width * sin(abq);
+            ry = ftr.y - bp.y + obj.feet_width * cos(abq);
             lr = sqrt(lx^2 + ly^2);
             rr = sqrt(rx^2 + ry^2);
             lq = atan2(ly, lx) - abq;
