@@ -1,6 +1,10 @@
 close all; clear; clc;
 soccer_strategy_setup;
 
+%% Squat
+squatstate.calibration = motorCalibration';
+squatstate.Publish;
+
 %% Standing
 standingstate.calibration = motorCalibration';
 standingstate.Publish

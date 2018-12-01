@@ -12,6 +12,7 @@ end
 % Poses
 standingstate = Animation.State(standing);
 readystate = Animation.State(ready);
+squatstate = Animation.State(squat);
 
 standingtoreadyanimation = Animation.Animation.CreateAnimation2States(standingstate, readystate, ts, 2);
 readytostandinganimation = Animation.Animation.CreateAnimation2States(readystate, standingstate, ts, 2);

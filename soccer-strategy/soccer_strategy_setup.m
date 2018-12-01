@@ -10,6 +10,10 @@ load('soccer-strategy/data/bustypes.mat')
 % Connect Robot
 connectrobot;
 
+% Selecet IMU F
+global VSS_DIRECT_INFORMATION ;
+VSS_DIRECT_INFORMATION = Simulink.Variant('useRobot==0');
+
 % Sample Time
 sampleTime = 0.01;
 
@@ -28,7 +32,7 @@ forearmGain = 1.5;
 feetGain = 0;
 
 % Dynamic trajectory gains (stanceLeft = stance Left to Right)
-stanceLeft.pitch.rightHipSideFront.p = 0.5;
+stanceLeft.pitch.rightHipSideFront.p = 0.4;
 stanceLeft.pitch.rightHipSideFront.i = 0.0;
 stanceLeft.pitch.rightHipSideFront.d = 0.0;
 stanceLeft.pitch.rightHipSideFront.direction = 1;
@@ -44,7 +48,8 @@ stanceLeft.pitch.rightAnkleFoot.p = 0.0;
 stanceLeft.pitch.rightAnkleFoot.i = 0.0;
 stanceLeft.pitch.rightAnkleFoot.d = 0.0;
 stanceLeft.pitch.rightAnkleFoot.direction = 1;
-stanceLeft.pitch.leftHipSideFront.p = 0.5;
+
+stanceLeft.pitch.leftHipSideFront.p = 0.4;
 stanceLeft.pitch.leftHipSideFront.i = 0.0;
 stanceLeft.pitch.leftHipSideFront.d = 0.0;
 stanceLeft.pitch.leftHipSideFront.direction = 1;
