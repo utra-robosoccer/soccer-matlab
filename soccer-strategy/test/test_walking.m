@@ -17,7 +17,7 @@ path.states = states;
 
 % Draw the angles
 path.PlotAngles;
-path.ApplyTilt(0.003);
+path.ApplyTilt(-0.004);
 path.PlotAngles;
 
 

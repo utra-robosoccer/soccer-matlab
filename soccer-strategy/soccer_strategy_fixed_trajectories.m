@@ -34,5 +34,34 @@ getupbacksmooth = getupbackanimation.TimeSeries;
 headnodding = headnoddinganimation.TimeSeries;
 headshaking = headshakinganimation.TimeSeries;
 
+
+
+% Static walking trajectory
+pose = Pose(0,0,0,0,0);
+robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.05);
+
+% Create the oscillating movement
+duration = 20;
+speed = 0.001;
+foot = Mechanics.Foot.Right;
+[angles, states, q0_left, q0_right] = robot.CreateAnimationWalking(duration, speed);
+
+path = Navigation.Path(pose, pose, angles);
+path.q0_left = q0_left;
+path.q0_right = q0_right;
+path.states = states;
+
+path.ApplyTilt(0.003);
+
+walkingWayPoints = path.animation.trajectory;
+walkingWayPoints(:,19:20) = 0;
+
+% Move arms backwards
+walkingWayPoints(:,13:16) = repmat(ready_armsback(13:16), size(walkingWayPoints,1 ),1); 
+walkinganimation = Animation.Animation.CreateAnimationKeyframes(walkingWayPoints, ts, duration, 0.00000001); % no smooth atm
+
+walking = walkinganimation.TimeSeries;
+walkingStates = states;
+
 % Clear unnessesary information
 clear getUpBackWayPoints getUpFrontWayPoints ts

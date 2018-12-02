@@ -10,13 +10,14 @@ load('soccer-strategy/data/bustypes.mat')
 % Connect Robot
 connectrobot;
 
-% Selecet IMU F
-global VSS_DIRECT_INFORMATION ;
+% Selecet Angle Estimation block
+global VSS_DIRECT_INFORMATION;
 VSS_DIRECT_INFORMATION = Simulink.Variant('useRobot==0');
 
 % Sample Time
 sampleTime = 0.01;
 
+% Load motor calibration offsets
 soccer_strategy_calibration;
 
 % Fixed Trajectories
