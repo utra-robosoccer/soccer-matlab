@@ -15,9 +15,9 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
+path.ApplyTilt(0.001, robot.stance_time / 2);
+
 % Draw the angles
-path.PlotAngles;
-path.ApplyTilt(-0.004);
 path.PlotAngles;
 
 

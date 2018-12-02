@@ -51,10 +51,12 @@ classdef Path < handle
             end
         end
         
-        function ApplyTilt(obj, tiltangleincrement)
+        function ApplyTilt(obj, tiltangleincrement, stancetime)
+            
             [l,~] = size(obj.animation.trajectory);
             
-            tiltangle = tiltangleincrement * 50 / 2;
+            % Create a zigzag pattern around 0
+            tiltangle = tiltangleincrement * stancetime * 100 / 2;
             tiltangles = zeros(l,1);
             for i = 1:l
                 if (obj.states(i) == Command.ActionState.LeftToRightStance)
@@ -64,12 +66,42 @@ classdef Path < handle
                     tiltangle = tiltangle - tiltangleincrement;
                 end
                 tiltangles(i) = tiltangle;
-            end            
-            obj.animation.trajectory(:,2) = obj.animation.trajectory(:,2) + tiltangles;
-            obj.animation.trajectory(:,8) = obj.animation.trajectory(:,8) + tiltangles;
+            end
             
-            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) - tiltangles;
-            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12) - tiltangles;
+            % Constant Seperation
+            constant_seperation = 0.1;
+            direct_leg_scale = 1.0;
+            other_leg_scale = 0.0;
+            leg_imbalance = 1.0;
+            
+            tiltanglesindividual = zeros(l,1);
+            for i = 1:l
+                if (tiltangles(i) < 0)
+                    tiltanglesindividual(i) = other_leg_scale * tiltangles(i);
+                else
+                    tiltanglesindividual(i) = direct_leg_scale * tiltangles(i);
+                end
+            end
+            tiltanglesindividual = abs(tiltanglesindividual) + constant_seperation;
+            
+            plot(tiltanglesindividual);
+            
+            % Right Hip Side
+            obj.animation.trajectory(:,2) = obj.animation.trajectory(:,2) - tiltanglesindividual;
+            
+            % Left Hip Side
+            obj.animation.trajectory(:,8) = obj.animation.trajectory(:,8) + tiltanglesindividual * leg_imbalance;
+            
+            ankle_scale = 0.5;
+            
+            % Right Calve Ankle
+            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) - abs(tiltangles) * ankle_scale;
+             
+            % Left Calve Ankle
+            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12) + abs(tiltangles) * ankle_scale * leg_imbalance;
+            
+            plot(tiltangles);
+            
         end
         
         function PlotAngles(obj)
