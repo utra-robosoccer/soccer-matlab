@@ -116,6 +116,7 @@ for rightstate = {'stanceRight', 'swingRight'}
             
             eval([rightstate{1} '.' euangle{1} '.(''' leftlink{1} ''')=' rightstate{1} '.' euangle{1} '.' rightlink{1} ';']);
             eval([leftstate{1} '.' euangle{1} '.(''' leftlink{1} ''')=' rightstate{1} '.' euangle{1} '.' rightlink{1} ';']);
+            eval([leftstate{1} '.' euangle{1} '.(''' rightlink{1} ''')=' rightstate{1} '.' euangle{1} '.' rightlink{1} ';']);
         end
     end
 end
