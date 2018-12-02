@@ -50,6 +50,9 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
+path.ApplyTiltForward(0.05);
+path.ApplyLegSpread(0.1);
+
 walkingWayPoints = path.animation.trajectory;
 walkingWayPoints(:,19:20) = 0;
 
@@ -70,6 +73,9 @@ path = Navigation.Path(pose, pose, angles);
 path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
+
+path.ApplyTiltForward(0.05);
+path.ApplyLegSpread(0.1);
 
 % Apply tilt
 stanceWayPoints = path.animation.trajectory;

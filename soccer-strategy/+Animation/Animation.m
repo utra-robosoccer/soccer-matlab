@@ -87,6 +87,7 @@ classdef Animation
                 robotgoalpub.send(msg)
                 
                 if (step)
+                    disp(i);
                     pause;
                 else
                     pause(obj.ts);
