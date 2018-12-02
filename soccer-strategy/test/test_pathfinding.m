@@ -1,7 +1,7 @@
 close all; clear; clc;
 
 % Create a robot
-robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
+robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.02);
 
 % Destination position
 endPose = Pose(2.5,2.5,0,0,0);

@@ -74,7 +74,7 @@ classdef Robot < Navigation.Entity
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, 1:12) = LukasToJason([cn(1, :), cn(2, :)]);
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
         
@@ -107,7 +107,7 @@ classdef Robot < Navigation.Entity
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, 1:12) = LukasToJason([cn(1, :), cn(2, :)]);
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
         
@@ -144,7 +144,7 @@ classdef Robot < Navigation.Entity
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, 1:12) = LukasToJason([cn(1, :), cn(2, :)]);
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
         
@@ -177,7 +177,7 @@ classdef Robot < Navigation.Entity
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, 1:12) = obj.LukasToJason([cn(1, :), cn(2, :)]);
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
         end
         
@@ -210,12 +210,8 @@ classdef Robot < Navigation.Entity
             states = zeros(totalSteps, 1);
             for i = 1:(totalSteps)
                 [cn, states(i)] = command.next();
-                angles(i, 1:12) = LukasToJason([cn(1, :), cn(2, :)]);
+                angles(i, 1:12) = [cn(1, :), cn(2, :)];
             end
-        end
-        
-        function angles_out = LukasToJason(~, angles)
-            angles_out = angles;
         end
         
         function [simTime, simPosition] = SimulateTrajectory(obj, path)

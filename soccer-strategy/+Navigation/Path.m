@@ -51,8 +51,17 @@ classdef Path < handle
             end
         end
         
-        function ApplyTilt(obj, tiltangleincrement, stancetime)
+        function ApplyLegSpread(obj, legspreadangle)
+            obj.animation.trajectory(:,2) = obj.animation.trajectory(:,2) - legspreadangle;
+            obj.animation.trajectory(:,8) = obj.animation.trajectory(:,8) + legspreadangle;
             
+            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) + legspreadangle;
+            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12) - legspreadangle;
+            
+        end
+        
+        function ApplyTilt(obj, tiltangleincrement, stancetime)
+
             [l,~] = size(obj.animation.trajectory);
             
             % Create a zigzag pattern around 0
@@ -69,7 +78,6 @@ classdef Path < handle
             end
             
             % Constant Seperation
-            constant_seperation = 0.1;
             direct_leg_scale = 1.0;
             other_leg_scale = 0.0;
             leg_imbalance = 1.0;
@@ -82,7 +90,7 @@ classdef Path < handle
                     tiltanglesindividual(i) = direct_leg_scale * tiltangles(i);
                 end
             end
-            tiltanglesindividual = abs(tiltanglesindividual) + constant_seperation;
+            tiltanglesindividual = abs(tiltanglesindividual);
             
             plot(tiltanglesindividual);
             
@@ -95,13 +103,22 @@ classdef Path < handle
             ankle_scale = 0.5;
             
             % Right Calve Ankle
-            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) - abs(tiltangles) * ankle_scale;
+            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) + abs(tiltangles) * ankle_scale;
              
             % Left Calve Ankle
-            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12) + abs(tiltangles) * ankle_scale * leg_imbalance;
+            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12) - abs(tiltangles) * ankle_scale * leg_imbalance;
             
             plot(tiltangles);
             
+        end
+        
+        function ApplyTiltForward(obj, tiltangle)
+            obj.animation.trajectory(:,3) = obj.animation.trajectory(:,3) + tiltangle;
+            obj.animation.trajectory(:,9) = obj.animation.trajectory(:,9) + tiltangle;
+        end
+        
+        function ApplySpeedAdjustment(obj, adjustedspeed)
+            % TODO
         end
         
         function PlotAngles(obj)

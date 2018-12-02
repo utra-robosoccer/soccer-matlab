@@ -10,8 +10,7 @@ load('soccer-strategy/data/bustypes.mat')
 % Connect Robot
 connectrobot;
 
-% Selecet Angle Estimation block
-global VSS_DIRECT_INFORMATION;
+% Select Angle Estimation block
 VSS_DIRECT_INFORMATION = Simulink.Variant('useRobot==0');
 
 % Sample Time
