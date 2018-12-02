@@ -35,8 +35,7 @@ headnodding = headnoddinganimation.TimeSeries;
 headshaking = headshakinganimation.TimeSeries;
 
 
-
-% Static walking trajectory
+%% Static walking trajectory
 pose = Pose(0,0,0,0,0);
 robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.05);
 
@@ -51,6 +50,7 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
+% Apply tilt
 path.ApplyTilt(0.003);
 
 walkingWayPoints = path.animation.trajectory;
@@ -58,10 +58,35 @@ walkingWayPoints(:,19:20) = 0;
 
 % Move arms backwards
 walkingWayPoints(:,13:16) = repmat(ready_armsback(13:16), size(walkingWayPoints,1 ),1); 
-walkinganimation = Animation.Animation.CreateAnimationKeyframes(walkingWayPoints, ts, duration, 0.00000001); % no smooth atm
 
+walkinganimation = Animation.Animation.CreateAnimationKeyframes(walkingWayPoints, ts, duration, 0.00000001); % no smooth atm
 walking = walkinganimation.TimeSeries;
 walkingStates = states;
+
+%% Stance trajectory
+clear path
+% Create the oscillating movement
+stancecount = 5;
+[angles, states, q0_left, q0_right] = robot.CreateAnimationOscillatingStance(stancecount);
+
+path = Navigation.Path(pose, pose, angles);
+path.q0_left = q0_left;
+path.q0_right = q0_right;
+path.states = states;
+
+% Apply tilt
+path.ApplyTilt(0.003);
+
+stanceWayPoints = path.animation.trajectory;
+stanceWayPoints(:,19:20) = 0;
+
+% Move arms backwards
+stanceWayPoints(:,13:16) = repmat(ready_armsback(13:16), size(stanceWayPoints,1 ),1); 
+
+stanceanimation = Animation.Animation.CreateAnimationKeyframes(stanceWayPoints, ts, duration, 0.00000001);
+stance = stanceanimation.TimeSeries;
+stanceStates = states;
+
 
 % Clear unnessesary information
 clear getUpBackWayPoints getUpFrontWayPoints ts
