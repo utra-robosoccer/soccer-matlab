@@ -15,7 +15,7 @@ classdef findtrajectorysystem < matlab.System & matlab.system.mixin.Propagates
     
     methods(Access = protected)
         function setupImpl(obj)
-            obj.robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.05);
+            obj.robot = Navigation.Robot(Pose(0,0,0,0,0), Navigation.EntityType.Self, 0.03);
             obj.trajectory = zeros(10000,20);    % Output max trajectory
             obj.states = zeros(10000,1);
         end

@@ -50,13 +50,10 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
-% Apply tilt 
-path.ApplyTilt(-0.004);
-
 walkingWayPoints = path.animation.trajectory;
 walkingWayPoints(:,19:20) = 0;
 
-% Move arms backwards
+% Arm position
 walkingWayPoints(:,13:16) = repmat(ready_armsback(13:16), size(walkingWayPoints,1 ),1); 
 
 walkinganimation = Animation.Animation.CreateAnimationKeyframes(walkingWayPoints, ts, duration, 0.00000001); % no smooth atm
@@ -75,8 +72,6 @@ path.q0_right = q0_right;
 path.states = states;
 
 % Apply tilt
-path.ApplyTilt(0.003);
-
 stanceWayPoints = path.animation.trajectory;
 stanceWayPoints(:,19:20) = 0;
 
