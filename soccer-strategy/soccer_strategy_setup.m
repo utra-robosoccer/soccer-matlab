@@ -66,7 +66,7 @@ stanceLeft.pitch.rightAnkleFoot.direction = 1;
 % stanceLeft.pitch.leftAnkleFoot.i = 0.0;
 % stanceLeft.pitch.leftAnkleFoot.d = 0.0;
 % stanceLeft.pitch.leftAnkleFoot.direction = 1;
-% stanceLeft.pitch.desiredAngle = 0.0;
+stanceLeft.pitch.desiredAngle = 0.0;
 
 stanceLeft.roll.rightHipSideFront.p = 0.0;
 stanceLeft.roll.rightHipSideFront.i = 0.0;
@@ -100,7 +100,7 @@ stanceLeft.roll.rightAnkleFoot.direction = 1;
 % stanceLeft.roll.leftAnkleFoot.i = 0.0;
 % stanceLeft.roll.leftAnkleFoot.d = 0.0;
 % stanceLeft.roll.leftAnkleFoot.direction = 1;
-% stanceLeft.roll.desiredAngle = 0.0;
+stanceLeft.roll.desiredAngle = 0.0;
 
 stanceRight.pitch.rightHipSideFront.p = 0.0;
 stanceRight.pitch.rightHipSideFront.i = 0.0;
@@ -134,7 +134,7 @@ stanceRight.pitch.rightAnkleFoot.direction = 1;
 % stanceRight.pitch.leftAnkleFoot.i = 0.0;
 % stanceRight.pitch.leftAnkleFoot.d = 0.0;
 % stanceRight.pitch.leftAnkleFoot.direction = 1;
-% stanceRight.pitch.desiredAngle = 0.0;
+stanceRight.pitch.desiredAngle = 0.0;
 
 stanceRight.roll.rightHipSideFront.p = 0.0;
 stanceRight.roll.rightHipSideFront.i = 0.0;
@@ -168,7 +168,7 @@ stanceRight.roll.rightAnkleFoot.direction = 1;
 % stanceRight.roll.leftAnkleFoot.i = 0.0;
 % stanceRight.roll.leftAnkleFoot.d = 0.0;
 % stanceRight.roll.leftAnkleFoot.direction = 1;
-% stanceRight.roll.desiredAngle = 0.0;
+stanceRight.roll.desiredAngle = 0.0;
 
 swingLeft.pitch.rightHipSideFront.p = 0.0;
 swingLeft.pitch.rightHipSideFront.i = 0.0;
@@ -202,7 +202,7 @@ swingLeft.pitch.rightAnkleFoot.direction = 1;
 % swingLeft.pitch.leftAnkleFoot.i = 0.0;
 % swingLeft.pitch.leftAnkleFoot.d = 0.0;
 % swingLeft.pitch.leftAnkleFoot.direction = 1;
-% swingLeft.pitch.desiredAngle = 0.0;
+swingLeft.pitch.desiredAngle = 0.0;
 
 swingLeft.roll.rightHipSideFront.p = 0.0;
 swingLeft.roll.rightHipSideFront.i = 0.0;
@@ -236,7 +236,7 @@ swingLeft.roll.rightAnkleFoot.direction = 1;
 % swingLeft.roll.leftAnkleFoot.i = 0.0;
 % swingLeft.roll.leftAnkleFoot.d = 0.0;
 % swingLeft.roll.leftAnkleFoot.direction = 1;
-% swingLeft.roll.desiredAngle = 0.0;
+swingLeft.roll.desiredAngle = 0.0;
 
 swingRight.pitch.rightHipSideFront.p = 0.0;
 swingRight.pitch.rightHipSideFront.i = 0.0;
@@ -270,7 +270,7 @@ swingRight.pitch.rightAnkleFoot.direction = 1;
 % swingRight.pitch.leftAnkleFoot.i = 0.0;
 % swingRight.pitch.leftAnkleFoot.d = 0.0;
 % swingRight.pitch.leftAnkleFoot.direction = 1;
-% swingRight.pitch.desiredAngle = 0.0;
+swingRight.pitch.desiredAngle = 0.0;
 
 swingRight.roll.rightHipSideFront.p = 0.0;
 swingRight.roll.rightHipSideFront.i = 0.0;
@@ -304,12 +304,12 @@ swingRight.roll.rightAnkleFoot.direction = 1;
 % swingRight.roll.leftAnkleFoot.i = 0.0;
 % swingRight.roll.leftAnkleFoot.d = 0.0;
 % swingRight.roll.leftAnkleFoot.direction = 1;
-% swingRight.roll.desiredAngle = 0.0;
+swingRight.roll.desiredAngle = 0.0;
 
 % Replacate same variables for left leg
 for state = {'stanceLeft', 'stanceRight', 'swingLeft', 'swingRight'}
-    for euangle = fieldnames(eval(state{1}))
-        for rightlink = fieldnames(eval([state{1} '.' euangle{1}]))
+    for euangle = fieldnames(eval(state{1}))'
+        for rightlink = fieldnames(eval([state{1} '.' euangle{1}]))'
             leftlink = replace(rightlink, 'right', 'left');
             eval([state{1} '.' euangle{1} '.(''' leftlink{1} ''')=' state{1} '.' euangle{1} '.' rightlink{1} ';']);
         end
