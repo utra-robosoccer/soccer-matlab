@@ -29,13 +29,17 @@ classdef Line2f < handle
         function point = center(obj)
             point = Geometry.Point2f(obj.rho * cos(obj.theta), obj.rho * sin(obj.theta));
         end
+        function v = normalUnitVector(obj)
+            v = Geometry.Vec2f(cos(obj.theta), sin(obj.theta));
+        end
         function line2f = newOrigin(obj, x, y)
             v = Geometry.Vec2f(x, y);
-            v2 = Geometry.Vec2f(obj.center().x, obj.center().y);
+            % v2 = Geometry.Vec2f(obj.center().x, obj.center().y);
+            vu = obj.normalUnitVector();
+            % proj = v2.Projection(v);
+            proj = vu.Projection(v);
             
-            proj = v2.Projection(v);
-            
-            line2f = Geometry.Line2f(obj.rho + proj, obj.theta);            
+            line2f = Geometry.Line2f(obj.rho - proj, obj.theta);            
         end
         function segment = screenIntersection(obj, height, width)
             obj.normalize();
