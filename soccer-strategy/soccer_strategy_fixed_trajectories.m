@@ -50,8 +50,8 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
-% Apply tilt
-path.ApplyTilt(0.003);
+% Apply tilt (positive values = more swing)
+path.ApplyTilt(-0.004);
 
 walkingWayPoints = path.animation.trajectory;
 walkingWayPoints(:,19:20) = 0;
@@ -86,7 +86,6 @@ stanceWayPoints(:,13:16) = repmat(ready_armsback(13:16), size(stanceWayPoints,1 
 stanceanimation = Animation.Animation.CreateAnimationKeyframes(stanceWayPoints, ts, duration, 0.00000001);
 stance = stanceanimation.TimeSeries;
 stanceStates = states;
-
 
 % Clear unnessesary information
 clear getUpBackWayPoints getUpFrontWayPoints ts

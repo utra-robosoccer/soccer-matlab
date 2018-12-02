@@ -2,7 +2,7 @@ close all; clear; clc;
 
 % Create a robot
 pose = Pose(0,0,0,0,0);
-robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.05);
+robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.0001);
 
 % Create the oscillating movement
 stancecount = 5;
@@ -13,5 +13,6 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
+path.ApplyTilt(-0.003);
 % Draw the angles
 path.PlotAngles;

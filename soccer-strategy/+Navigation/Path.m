@@ -67,6 +67,9 @@ classdef Path < handle
             end            
             obj.animation.trajectory(:,2) = obj.animation.trajectory(:,2) + tiltangles;
             obj.animation.trajectory(:,8) = obj.animation.trajectory(:,8) + tiltangles;
+            
+            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) - tiltangles;
+            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12) - tiltangles;
         end
         
         function PlotAngles(obj)
