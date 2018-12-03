@@ -1,4 +1,4 @@
-function segments = trimlines(rho, theta, counts, H, W)
+function segments = trimlines(lines, H, W)
 % trimlines  Takes in a vector of lines defined by rho and theta and
 % outputs a vector of segments, where the segments are segmented
 % by the intersections of the lines, essentially there should be no
@@ -18,11 +18,12 @@ function segments = trimlines(rho, theta, counts, H, W)
 % Not needed if we already have the count variable
 
 % Define emtpy array of lines
-lines = Geometry.Line2f.empty(counts,0);
+% lines = Geometry.Line2f.empty(counts,0);
+counts = length(lines);
 
 % Create lines and normalize
 for i = 1:counts
-    lines(i) = Geometry.Line2f(rho(i), theta(i));
+    lines(i).normalize();
 end
 
 % Center lines at (W/2, 0)
@@ -38,6 +39,7 @@ lines = lines(ind);
 % Center lines at (-W/2, 0)
 for i = 1:counts
     lines(i) = lines(i).newOrigin(-W/2,0);
+    lines(i).normalize();
 end
 % TODO Deal with parallel lines
 
@@ -86,8 +88,11 @@ for i = 2:(counts)
     end
 end
 
+test = lines(end).screenIntersection(H,W);
+
 % points{p_index} = pickRightIntersection(lines(end).screenIntersection(H,W));
 points{p_index} = pickLeftIntersection(lines(end).screenIntersection(H,W));
+% points{p_index} = pickLowerAngleIntersection(lines(end).screenIntersection(H,W), W/2, 0);
 
 % % Return a list of segments
 % for i=1:2:length(points)
@@ -100,6 +105,7 @@ end
 
 
 end
+
 function intersect = pickLeftIntersection(points)
     p1 = points.p1;
     p2 = points.p2;

@@ -6,7 +6,6 @@ imageHeight = 240;
 imageWidth = 320;
 
 VSS_GAZEBO_INPUT=Simulink.Variant('VSS_MODE==1');
-VSS_VIDEO_INPUT=Simulink.Variant('VSS_MODE==2');
 
 % VSS_MODE = 2 for Video file, 1 for Gazebo
 VSS_MODE = 2;
