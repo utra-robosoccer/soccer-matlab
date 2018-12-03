@@ -23,13 +23,13 @@ for i = 1:10
     endPose = map.RandomPose;
 
     % Attempt
-    trajectory = map.FindTrajectory(robot.pose, endPose, robot.speed);
+    path = map.FindPath(robot.pose, endPose, robot.speed);
     
     disp(strcat('Trajectory found for test ', num2str(i), ' avg speed: ', num2str(trajectory.AverageSpeed)));
     hold off;
     map.Draw();
     hold on;
-    trajectory.DrawPath();
+    path.DrawPath();
     grid minor;
     drawnow;
 end

@@ -1,17 +1,18 @@
-%test_pathfinding;
+test_pathfinding_simulate
 
+% Draw the visualization
 close all;
 f = figure('pos',[10 10 900 600]);
 ax = axes('Parent',f,'position',[0.13 0.29  0.77 0.64]);
 hold on;
 grid minor;
 map.Draw();
-trajectory.DrawPath();
+path.DrawPath();
 plot(simPose(:,1), simPose(:,2));
 
 startTime = 0;
 currentTime = 0;
-endTime = trajectory.Duration;
+endTime = path.Duration;
 
 % Create the robot
 maprobot = robotics.RigidBodyTree;
@@ -28,15 +29,15 @@ show(maprobot, conf,'Parent', ax);
 p = uipanel(f,'Position',[0.0 0.0 1.0 0.2]);
 b = uicontrol(p ,'Style','slider','Units','normalized','Position',[0.1,0.3,0.8,0.4],...
               'value',currentTime, 'min',startTime, 'max',endTime);
-b.Callback = @(src,event) updateConfiguration(src, event, ax, maprobot, conf, map, trajectory, simTime, simPose); 
+b.Callback = @(src,event) updateConfiguration(src, event, ax, maprobot, conf, map, path, simTime, simPose); 
 
 legend('Expected Path', 'Simulation Ground Truth')
 
-function updateConfiguration(src, event, ax, maprobot, conf, map, trajectory, simTime, simPose)
+function updateConfiguration(src, event, ax, maprobot, conf, map, path, simTime, simPose)
     % Redraw original one
     cla(ax);
     map.Draw();
-    trajectory.DrawPath();
+    path.DrawPath();
     plot(simPose(:,1), simPose(:,2));
 
     [~, id] = min( abs(src.Value-simTime ) );
@@ -44,7 +45,7 @@ function updateConfiguration(src, event, ax, maprobot, conf, map, trajectory, si
     ypos = simPose(id,2);
     disp(ceil(src.Value*100)+1)
     
-    configangles = trajectory.angles(:,ceil(src.Value * 100)+1);
+    configangles = path.angles(:,ceil(src.Value * 100)+1);
     disp(ceil(src.Value * 100)+1);
     
     conf(3).JointPosition = configangles(1);
