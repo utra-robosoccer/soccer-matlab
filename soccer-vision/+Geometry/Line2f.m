@@ -11,6 +11,11 @@ classdef Line2f < handle
         function obj = Line2f(rho, theta)
             %LINE Construct an instance of this class
             %   Detailed explanation goes here
+            
+            if (nargin == 3 && convention == 1)
+                obj.rho = rho;
+                obj.theta = -theta;
+            end
             obj.rho = rho;
             obj.theta = theta;
             normalize(obj);
@@ -107,6 +112,10 @@ classdef Line2f < handle
             
             % Create the intersection
             intersect = Geometry.Point2f(r(1), r(2));
+        end
+        function obj = ImgConvention(rho, theta, height)
+            l = Geometry.Line2f(rho, -theta);
+            obj = l.newOrigin(0, -height);
         end
     end
 end

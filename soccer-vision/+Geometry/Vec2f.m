@@ -5,7 +5,7 @@ classdef Vec2f
         dy
     end
     
-    methods
+    methods        
         function obj = Vec2f(dx,dy)
             obj.dx = dx;
             obj.dy = dy;
