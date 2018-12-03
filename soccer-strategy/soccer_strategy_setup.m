@@ -55,7 +55,7 @@ swingRight.pitch.rightHipSideFront.p = 0.0;
 swingRight.pitch.rightHipSideFront.i = 0.0;
 swingRight.pitch.rightHipSideFront.d = 0.0;
 swingRight.pitch.rightHipSideFront.direction = 1;
-swingRight.pitch.rightHipFrontThigh.p = 0.0;
+swingRight.pitch.rightHipFrontThigh.p = 0;
 swingRight.pitch.rightHipFrontThigh.i = 0.0;
 swingRight.pitch.rightHipFrontThigh.d = 0.0;
 swingRight.pitch.rightHipFrontThigh.direction = 1;
@@ -70,11 +70,11 @@ swingRight.pitch.rightAnkleFoot.direction = 1;
 swingRight.pitch.desiredAngle = 0.0;
 
 % Roll
-stanceRight.roll.rightHipSideFront.p = 0.0;
+stanceRight.roll.rightHipSideFront.p = 0;
 stanceRight.roll.rightHipSideFront.i = 0.0;
 stanceRight.roll.rightHipSideFront.d = 0.0;
 stanceRight.roll.rightHipSideFront.direction = 1;
-stanceRight.roll.rightHipFrontThigh.p = 0.0;
+stanceRight.roll.rightHipFrontThigh.p = 0;
 stanceRight.roll.rightHipFrontThigh.i = 0.0;
 stanceRight.roll.rightHipFrontThigh.d = 0.0;
 stanceRight.roll.rightHipFrontThigh.direction = 1;
@@ -88,7 +88,7 @@ stanceRight.roll.rightAnkleFoot.d = 0.0;
 stanceRight.roll.rightAnkleFoot.direction = 1;
 stanceRight.roll.desiredAngle = 0.0;
 
-swingRight.roll.rightHipSideFront.p = 0.0;
+swingRight.roll.rightHipSideFront.p = 0;
 swingRight.roll.rightHipSideFront.i = 0.0;
 swingRight.roll.rightHipSideFront.d = 0.0;
 swingRight.roll.rightHipSideFront.direction = 1;
@@ -106,14 +106,23 @@ swingRight.roll.rightAnkleFoot.d = 0.0;
 swingRight.roll.rightAnkleFoot.direction = 1;
 swingRight.roll.desiredAngle = 0.0;
 
+% override PID values for all motors
+pid.p = 0.5;
+pid.i = 0.5;
+pid.d = 0.001;
+pid.direction = 1;
+
 % Replacate same variables for LEFT sates and LEFT leg
 for rightstate = {'stanceRight', 'swingRight'}
     
     for euangle = fieldnames(eval(rightstate{1}))'
         for rightlink = fieldnames(eval([rightstate{1} '.' euangle{1}]))'
-            leftstate = replace(rightstate, 'Right','Left')
+            leftstate = replace(rightstate, 'Right','Left');
             leftlink = replace(rightlink, 'right', 'left');
-            
+% %             Set all parameters the same
+%             if ~strcmp(leftlink, 'desiredAngle')
+%                 eval([rightstate{1} '.' euangle{1} '.' rightlink{1} '= pid']);
+%             end
             eval([rightstate{1} '.' euangle{1} '.(''' leftlink{1} ''')=' rightstate{1} '.' euangle{1} '.' rightlink{1} ';']);
             eval([leftstate{1} '.' euangle{1} '.(''' leftlink{1} ''')=' rightstate{1} '.' euangle{1} '.' rightlink{1} ';']);
             eval([leftstate{1} '.' euangle{1} '.(''' rightlink{1} ''')=' rightstate{1} '.' euangle{1} '.' rightlink{1} ';']);
@@ -337,20 +346,20 @@ end
 
 
 motorFeedback = Feedback.MotorFeedback(stanceLeft,stanceRight,swingLeft,swingRight);
-motorFeedback.rightHipSideFront.roll.enabled = 0;
-motorFeedback.rightHipFrontThigh.roll.enabled = 0;
-motorFeedback.rightCalveAnkle.roll.enabled = 0;
-motorFeedback.rightAnkleFoot.roll.enabled = 0;
-motorFeedback.leftHipSideFront.roll.enabled = 0;
-motorFeedback.leftHipFrontThigh.roll.enabled = 0;
-motorFeedback.leftCalveAnkle.roll.enabled = 0;
-motorFeedback.leftAnkleFoot.roll.enabled = 0;
+motorFeedback.rightHipSideFront.roll.enabled =1;
+motorFeedback.rightHipFrontThigh.roll.enabled = 1;
+motorFeedback.rightCalveAnkle.roll.enabled = 1;
+motorFeedback.rightAnkleFoot.roll.enabled = 1;
+motorFeedback.leftHipSideFront.roll.enabled = 1;
+motorFeedback.leftHipFrontThigh.roll.enabled = 1;
+motorFeedback.leftCalveAnkle.roll.enabled = 1;
+motorFeedback.leftAnkleFoot.roll.enabled = 1;
 motorFeedback.rightHipSideFront.pitch.enabled = 1;
-motorFeedback.rightHipFrontThigh.pitch.enabled = 0;
-motorFeedback.rightCalveAnkle.pitch.enabled = 0;
-motorFeedback.rightAnkleFoot.pitch.enabled = 0;
+motorFeedback.rightHipFrontThigh.pitch.enabled = 1;
+motorFeedback.rightCalveAnkle.pitch.enabled = 1;
+motorFeedback.rightAnkleFoot.pitch.enabled = 1;
 motorFeedback.leftHipSideFront.pitch.enabled = 1;
-motorFeedback.leftHipFrontThigh.pitch.enabled = 0;
-motorFeedback.leftCalveAnkle.pitch.enabled = 0;
-motorFeedback.leftAnkleFoot.pitch.enabled = 0;
+motorFeedback.leftHipFrontThigh.pitch.enabled = 1;
+motorFeedback.leftCalveAnkle.pitch.enabled = 1;
+motorFeedback.leftAnkleFoot.pitch.enabled = 1;
 

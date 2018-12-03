@@ -41,7 +41,7 @@ robot = Navigation.Robot(pose, Navigation.EntityType.Self, 0.05);
 
 % Create the oscillating movement
 duration = 20;
-speed = 0.001;
+speed = 0.4;
 foot = Mechanics.Foot.Right;
 [angles, states, q0_left, q0_right] = robot.CreateAnimationWalking(duration, speed);
 
@@ -50,8 +50,10 @@ path.q0_left = q0_left;
 path.q0_right = q0_right;
 path.states = states;
 
+% Apply tilts
+path.ApplyAnkleTilt(0.1);
 path.ApplyTiltForward(0.05);
-path.ApplyLegSpread(0.1);
+path.ApplyLegSpread(0.05);
 
 walkingWayPoints = path.animation.trajectory;
 walkingWayPoints(:,19:20) = 0;
