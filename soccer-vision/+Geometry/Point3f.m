@@ -9,7 +9,7 @@ classdef Point3f < handle
     end
     
     methods
-        function obj = Point2f(x,y,z)
+        function obj = Point3f(x,y,z)
             obj.x = x;
             obj.y = y;
             obj.z = z;

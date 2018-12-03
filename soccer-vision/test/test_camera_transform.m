@@ -19,8 +19,21 @@ for i = 1:w
     segments{i} = camimg.TrimLines(lines);
 end
 
-%% Create the camera
-t = Geometry.Transform([0.5, 0.5, 1.0], eul2quat([0,deg2rad(30),deg2rad(30)]));
+%% Camera Raytrace
+t = Geometry.Transform([0.5, 0.5, 1.0], eul2quat([deg2rad(45),deg2rad(45),0]));
 camera = Camera.Camera(t, 240, 360);
 camera.Draw();
+hold on;
+camera.DrawPixelRayTrace(120, 180);
+camera.DrawPixelRayTrace(0, 0);
+camera.DrawPixelRayTrace(240, 360);
+camera.DrawPixelRayTrace(240, 0);
+camera.DrawPixelRayTrace(0, 360);
 
+%% Plot the image onto the camera
+
+% TODO
+
+%% Break all the lines into points and plot them
+
+% TODO

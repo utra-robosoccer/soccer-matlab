@@ -19,28 +19,28 @@ classdef Camera
         end
         
         function DrawPixelRayTrace(obj, pixelx, pixely)
-            point3f = FindFloorCoordinate(pixelx, pixely);
-            seg3f = Segment3f(obj.pose.GetPoint3f, point3f);
+            point3f = obj.FindFloorCoordinate(pixelx, pixely);
+            seg3f = Geometry.Segment3f(obj.pose.GetPoint3f, point3f);
             seg3f.Draw;
         end
         
-        function point3f = FindFloorCoordinate(pixelx, pixely)
-            [tx, ty] = ImageSensorLocation(pixelx, pixely);
+        function point3f = FindFloorCoordinate(obj, pixelx, pixely)
+            [tx, ty] = obj.ImageSensorLocation(pixelx, pixely);
             
             % x is direction forward, backward
             % y is direction left right
             % z is direction up down
-            pixelLocation3d = Geometry.Transform([obj.focal_length / 1000, tx / 1000, ty / 1000]);
+            pixelrelLocation3d = Geometry.Transform([obj.focal_length / 1000, tx / 1000, ty / 1000]);
             
             % Coordinate of pixel in real space
-            pixelLocation3d.ApplyTransformation(obj.pose);
+            pixelLocation3d = pixelrelLocation3d.ApplyTransformation(obj.pose);
             
             % Raytrace that pixel onto the floor
             ratio = (pixelLocation3d.Z - obj.pose.Z) / obj.pose.Z;
-            xdelta = (pixelLocation3d.X - obj.pose.X) * ratio;
-            ydelta = (pixelLocation3d.Y - obj.pose.Y) * ratio;
+            xdelta = (pixelLocation3d.X - obj.pose.X) / ratio;
+            ydelta = (pixelLocation3d.Y - obj.pose.Y) / ratio;
             
-            point3f = Geometry.Point3f(obj.pose.X + xdelta, obj.pose.Y + ydelta, 0);
+            point3f = Geometry.Point3f(obj.pose.X - xdelta, obj.pose.Y - ydelta, 0);
         end
         
         function Draw(obj)

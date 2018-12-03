@@ -18,8 +18,8 @@ classdef Transform < handle
         end
         
         function objout = ApplyTransformation(obj, t2)
-            Hnew = t2.H . (obj.H);
-            objout = Transform([Hnew(1,4), Hnew(2,4), Hnew(3,4)], rotm2quat(Hnew(1:3, 1:3)));
+            Hnew = (t2.H) * (obj.H);
+            objout = Geometry.Transform([Hnew(1,4), Hnew(2,4), Hnew(3,4)], rotm2quat(Hnew(1:3, 1:3)));
         end
         
         function Scale(obj, ratio)
