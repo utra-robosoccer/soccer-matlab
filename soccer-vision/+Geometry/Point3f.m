@@ -17,6 +17,9 @@ classdef Point3f < handle
         function n = norm(obj)
             n = sqrt(obj.x^2 + obj.y^2 + obj.z^2);
         end
+        function Draw(obj)
+            plot3([obj.x], [obj.y], [obj.z], '+')
+        end
     end
 end
 
