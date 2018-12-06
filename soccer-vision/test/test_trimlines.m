@@ -76,15 +76,6 @@ counts = squeeze(counts.Data);
 [l,w] = size(rhos);
 
 cam = Camera.Image(240,360);
-segments = cell(0,w);
-
-for i = 1:w
-    lines = Geometry.Line2f.empty(counts(i),0);
-    for j = 1:counts(i)
-        lines(j) = Geometry.Line2f.ImgConvention(rhos(j,i), thetas(j,i), 240);
-    end
-    segments{i} = cam.TrimLines(lines);
-end
 
 figure;
 
@@ -95,6 +86,7 @@ for i = 1:w
     cla;
     lines = Geometry.Line2f.empty(counts(i),0);
     hold on;
+    
     for j = 1:counts(i)
         lines(j) = Geometry.Line2f.ImgConvention(rhos(j,i), thetas(j,i), 240);
         lines(j).Draw(240,360);
@@ -104,9 +96,8 @@ for i = 1:w
     title('Lines After');
     cla;
     hold on;
-    for k = 1:length(segments{i})
-        segments{i}{k}.Draw(240,360);
-    end
+    cam.UpdateFieldLine(rhos(:,i), thetas(:,i), counts(i));
+    cam.Draw();
     
     pause(0.03);
 end

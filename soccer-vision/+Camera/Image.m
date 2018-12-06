@@ -1,14 +1,32 @@
-classdef Image
+classdef Image < handle
     
     properties
-        height = 240;
-        width = 360;
+        height = 240;   % Y
+        width = 360;    % X
+        
+        segments;
     end
     
     methods
         function obj = Image(height,width)
             obj.height = height;
             obj.width = width;
+        end
+        
+        function UpdateFieldLine(obj, rhos, thetas, count)
+            lines = Geometry.Line2f.empty(count,0);
+            obj.segments = Geometry.Line2f.empty(count,0);
+            for i = 1:count
+                lines(i) = Geometry.Line2f.ImgConvention(rhos(i), thetas(i), obj.height);
+            end
+            obj.segments = obj.TrimLines(lines);
+        end
+        
+        function Draw(obj)
+            hold on;
+            for i = 1:length(obj.segments)
+                obj.segments{i}.Draw(obj.height, obj.width);
+            end
         end
         
         function segments = TrimLines(obj, lines)

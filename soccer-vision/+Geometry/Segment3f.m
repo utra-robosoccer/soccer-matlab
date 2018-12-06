@@ -21,17 +21,16 @@ classdef Segment3f < handle
             len = sqrt( (obj.p1.x - obj.p2.x)^2 + (obj.p1.y - obj.p2.y)^2 + (obj.p1.z - obj.p2.z)^2 );
         end
         function dots = ConvertToDots(obj, delta)
-            dots = {};
-            counts = obj.Length() / delta;
-            d_x = (obj.p2.x - obj.p1.x) / counts;
-            d_y = (obj.p2.y - obj.p1.y) / counts;
-            d_z = (obj.p2.z - obj.p1.z) / counts;
-            index = 1;
-            for i=0:counts
-                dots{index} = Geometry.Point3f(obj.p1.x + d_x * i, obj.p1.y + d_y * i, obj.p1.z + d_z * i);
-                index = index + 1;
+            count = floor(obj.Length() / delta);
+            d_x = (obj.p2.x - obj.p1.x) / count;
+            d_y = (obj.p2.y - obj.p1.y) / count;
+            d_z = (obj.p2.z - obj.p1.z) / count;
+            
+            dots = Geometry.Point3f.empty(count,0);
+            for i = 1 : count
+                dots(i) = Geometry.Point3f(obj.p1.x + d_x * i, obj.p1.y + d_y * i, obj.p1.z + d_z * i);
             end
-            dots{index} = Geometry.Point3f(obj.p2.x, obj.p2.y, obj.p2.z);
+            dots(i) = Geometry.Point3f(obj.p2.x, obj.p2.y, obj.p2.z);
         end
     end
 end
