@@ -10,9 +10,9 @@ classdef Robot < Navigation.Entity
         swing_time = 1;
         stance_time;
         cycle_time = 4.0;
-        step_height = 0.05;
+        step_height = 0.04;
         step_outwards = 0.01;
-        body_step_lean = pi/12; % Angle to lean when taking a step
+        body_step_lean = pi/8; % Angle to lean when taking a step
         
         % Hip height while walking, higher means can not make big steps 
         % (Maximum 0.198, unable to move)

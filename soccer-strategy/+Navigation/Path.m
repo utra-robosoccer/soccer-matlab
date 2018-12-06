@@ -60,6 +60,29 @@ classdef Path < handle
             
         end
         
+        function ApplyAnkleTilt(obj, ankletiltangle)
+            [l,~] = size(obj.animation.trajectory);
+            
+            tiltangles = zeros(l,1);
+            for i = 1:l
+                if (obj.states(i) == Command.ActionState.LeftSwing)
+                    tiltangle = ankletiltangle;
+                elseif (obj.states(i) == Command.ActionState.RightSwing)
+                    tiltangle = ankletiltangle;
+                else
+                    tiltangle = 0;
+                end
+                tiltangles(i) = tiltangle;
+            end
+            
+            % Right Calve Ankle
+            obj.animation.trajectory(:,6) = obj.animation.trajectory(:,6) - tiltangles;
+             
+            % Left Calve Ankle
+            obj.animation.trajectory(:,12) = obj.animation.trajectory(:,12)  + tiltangles;
+            
+        end
+        
         function ApplyTilt(obj, tiltangleincrement, stancetime)
 
             [l,~] = size(obj.animation.trajectory);
