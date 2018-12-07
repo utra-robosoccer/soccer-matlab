@@ -50,7 +50,7 @@ classdef Camera
         end
         
         function dots = GetDots(obj)
-            dots = Geometry.Point3f.empty(0,0);
+            dots = {};
             for i = 1:length(obj.image.segments)
                 p13d = obj.FindFloorCoordinate(obj.image.segments{i}.p1.x, obj.image.segments{i}.p1.y);
                 p23d = obj.FindFloorCoordinate(obj.image.segments{i}.p2.x, obj.image.segments{i}.p2.y);
@@ -124,7 +124,7 @@ classdef Camera
             % Segments
             dots = obj.GetDots;
             for i = 1:length(dots)
-                dots(i).Draw;
+                dots{i}.Draw;
             end
         end
     end

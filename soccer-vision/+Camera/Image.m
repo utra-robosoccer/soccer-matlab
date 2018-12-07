@@ -14,10 +14,12 @@ classdef Image < handle
         end
         
         function UpdateFieldLine(obj, rhos, thetas, count)
-            lines = Geometry.Line2f.empty(count,0);
-            obj.segments = Geometry.Line2f.empty(count,0);
+            lines = cell(count, 0);
+            if count == 0
+                return;
+            end
             for i = 1:count
-                lines(i) = Geometry.Line2f.ImgConvention(rhos(i), thetas(i), obj.height);
+                lines{i} = Geometry.Line2f.ImgConvention(rhos(i), thetas(i), obj.height);
             end
             obj.segments = obj.TrimLines(lines);
         end
@@ -48,18 +50,25 @@ classdef Image < handle
             
             % Center lines at (W/2, 0)
             for i = 1:counts
-                lines(i) = lines(i).newOrigin(obj.width/2,0);
+                lines{i} = lines{i}.newOrigin(obj.width/2,0);
             end
 
             % Sort in order of angle
-            [~, ind] = sort([lines.theta]);
-            lines = lines(ind);
+            thetas = zeros(length(lines));
+            for i = 1:length(lines)
+                thetas(i) = lines{i}.theta;
+            end
+            [~,sortIdx] = sort(thetas);
+            linestemp = lines;
+            for i = 1:length(lines)
+                lines{i} = linestemp{sortIdx(i)};
+            end
 
             % Revert back the lines after sorting the angles
             % Center lines at (-W/2, 0)
             for i = 1:counts
-                lines(i) = lines(i).newOrigin(-obj.width/2,0);
-                lines(i).normalize();
+                lines{i} = lines{i}.newOrigin(-obj.width/2,0);
+                lines{i}.normalize();
             end
 
             % TODO Deal with parallel lines
@@ -67,9 +76,9 @@ classdef Image < handle
             % For the left and right most lines, find intersections with the border of 
             % the camera screen, for the ones in between, find intersections among the
             % lines themselves
-            points = {};
+            points = cell(1,1);
             p_index = 1;
-            points{1} = obj.pickLowerAngleIntersection(lines(1).screenIntersection(obj.height,obj.width), obj.width/2, 0);
+            points{1} = obj.pickLowerAngleIntersection(lines{1}.screenIntersection(obj.height,obj.width), obj.width/2, 0);
             p_index = p_index + 1;
 
             % pickLowerAngleIntersection(points, orig_x, orig_y)
@@ -92,11 +101,11 @@ classdef Image < handle
             % end
 
             for i = 2:(counts)
-                intersection = Geometry.Line2f.intersection(lines(i),lines(i-1));
+                intersection = Geometry.Line2f.intersection(lines{i},lines{i-1});
                 if obj.isOutOfPicture(intersection, obj.height, obj.width)
-                    points{p_index} = obj.pickLowerAngleIntersection(lines(i-1).screenIntersection(obj.height, obj.width), obj.width/2, 0);
+                    points{p_index} = obj.pickLowerAngleIntersection(lines{i-1}.screenIntersection(obj.height, obj.width), obj.width/2, 0);
                     p_index = p_index + 1;
-                    points{p_index} = obj.pickLowerAngleIntersection(lines(i).screenIntersection(obj.height, obj.width), obj.width/2, 0);
+                    points{p_index} = obj.pickLowerAngleIntersection(lines{i}.screenIntersection(obj.height, obj.width), obj.width/2, 0);
                     p_index = p_index + 1;
                 else
                     points{p_index} = intersection;
@@ -108,14 +117,14 @@ classdef Image < handle
 
 
             % points{p_index} = pickRightIntersection(lines(end).screenIntersection(H,W));
-            points{p_index} = obj.pickLeftIntersection(lines(end).screenIntersection(obj.height, obj.width));
+            points{p_index} = obj.pickLeftIntersection(lines{end}.screenIntersection(obj.height, obj.width));
             % points{p_index} = pickLowerAngleIntersection(lines(end).screenIntersection(H,W), W/2, 0);
 
             % % Return a list of segments
             % for i=1:2:length(points)
             %     segments{(i+1)/2} = Geometry.Segment2f(points{i}, points{i+1});
             % end
-
+            segments = {};
             for i=2:length(points)
                 segments{i - 1} = Geometry.Segment2f(points{i - 1}, points{i});
             end

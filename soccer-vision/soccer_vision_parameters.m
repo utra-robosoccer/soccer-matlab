@@ -5,11 +5,11 @@ sampleTime = 1/30;
 imageHeight = 240;
 imageWidth = 320;
 
-% VSS_MODE = 2 for Video file, 1 for Gazebo
-VSS_MODE = 2;
+% VSS_MODE = 1 for Video file, 0 for Gazebo
+VSS_MODE = 1;
 
 % Connect Robot
-if VSS_MODE == 1
+if VSS_MODE == 0
     connectRobot;
 end
 VSS_VIDEO_INPUT=Simulink.Variant('VSS_MODE==1');
