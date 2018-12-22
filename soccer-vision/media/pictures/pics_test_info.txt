@@ -1,5 +1,6 @@
 Camera:
-Logitech C620
+Logitech C210
+https://support.logitech.com/en_us/product/webcam-c210
 
 ---------------------------------------------
 Field characteristics: 
