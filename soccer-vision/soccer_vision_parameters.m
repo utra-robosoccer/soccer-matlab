@@ -18,4 +18,4 @@ t = Geometry.Transform([0, 0, 1], eul2quat([0, 0, 0]));
 camera = Camera.Camera(t, 320, 240);
 focal_length = camera.focal_length;
 
-videotestfile = strcat(pwd,'/soccer-vision/media/videos/testcamera.mp4');
+videotestfile = strcat(pwd,'/soccer-vision/media/videos/testvideo.avi');
