@@ -11,6 +11,7 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
     % Pre-computed constants
     properties(Access = private)
         camera
+        seq = 0
     end
 
     methods(Access = protected)
@@ -38,6 +39,18 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
                 posearray.Poses(i).Orientation.Z = 0;
                 posearray.Poses(i).Orientation.W = 1;
             end
+            posearray.Poses_SL_Info.CurrentLength = uint32(length(dots));
+            posearray.Poses_SL_Info.ReceivedLength = uint32(length(dots));
+            
+            posearray.Header.Seq = uint32(obj.seq);
+            frame_name = 'base_footprint';
+            posearray.Header.FrameId(1:length(frame_name)) = uint32(frame_name);
+            posearray.Header.FrameId_SL_Info.CurrentLength = uint32(length(frame_name));
+            posearray.Header.FrameId_SL_Info.ReceivedLength = uint32(length(frame_name));
+            rt = rostime("now","system");
+            posearray.Header.Stamp.Sec = rt.Sec;
+            posearray.Header.Stamp.Nsec = rt.Nsec;
+            obj.seq = obj.seq + 1;
         end
         
         function [c1] = isOutputFixedSizeImpl(~)

@@ -7,7 +7,9 @@ if ismac
     fprintf('\n Local IP address is: %s \n', localIp);
 elseif isunix
     % Printing only. Needs testing
-    system('/sbin/ifconfig eth0');
+    [~,ip] = system('ifconfig | grep "inet " | tail -1 | grep -Eo ''inet (addr:)?([0-9]*\.){3}[0-9]*'' | grep -Eo ''([0-9]*\.){3}[0-9]*'' | grep -v ''127.0.0.1'' ');
+    localIp = strip(ip);
+    fprintf('\n Local IP address is: %s \n', localIp);
 elseif ispc
     % Printing only. Needs testing
     a=strread(evalc('!ipconfig -all'), '%s','delimiter','\n');
