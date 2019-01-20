@@ -11,6 +11,11 @@ classdef Line2f < handle
         function obj = Line2f(rho, theta)
             %LINE Construct an instance of this class
             %   Detailed explanation goes here
+            
+            if (nargin == 3 && convention == 1)
+                obj.rho = rho;
+                obj.theta = -theta;
+            end
             obj.rho = rho;
             obj.theta = theta;
             normalize(obj);
@@ -29,13 +34,15 @@ classdef Line2f < handle
         function point = center(obj)
             point = Geometry.Point2f(obj.rho * cos(obj.theta), obj.rho * sin(obj.theta));
         end
+        function v = unitVector(obj)
+            v = Geometry.Vec2f(cos(obj.theta), sin(obj.theta));
+        end
         function line2f = newOrigin(obj, x, y)
             v = Geometry.Vec2f(x, y);
-            v2 = Geometry.Vec2f(obj.center().x, obj.center().y);
-            
+            v2 = obj.unitVector();
             proj = v2.Projection(v);
             
-            line2f = Geometry.Line2f(obj.rho + proj, obj.theta);            
+            line2f = Geometry.Line2f(obj.rho - proj, obj.theta);            
         end
         function segment = screenIntersection(obj, height, width)
             obj.normalize();
@@ -80,9 +87,11 @@ classdef Line2f < handle
             segment = Geometry.Segment2f(r_int, l_int);
         end
         
-        function draw(obj, height, width)
+        function Draw(obj, height, width)
             seg = obj.screenIntersection(height, width);
-            seg.draw();
+            seg.Draw(height, width);
+            ylim([-10,height+10]);
+            xlim([-10,width+10]);
         end
     end
     
@@ -103,6 +112,10 @@ classdef Line2f < handle
             
             % Create the intersection
             intersect = Geometry.Point2f(r(1), r(2));
+        end
+        function obj = ImgConvention(rho, theta, height)
+            l = Geometry.Line2f(rho, -theta);
+            obj = l.newOrigin(0, -height);
         end
     end
 end

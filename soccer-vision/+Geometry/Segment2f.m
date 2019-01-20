@@ -23,8 +23,12 @@ classdef Segment2f < handle
         function b = intersecty(obj)
             b = obj.p1.y - obj.slope * obj.p1.x;
         end
-        function draw(obj)
+        function Draw(obj, height, width)
             plot([obj.p1.x obj.p2.x], [obj.p1.y obj.p2.y])
+            if (nargin == 3)
+                ylim([-10,height+10]);
+                xlim([-10,width+10]);
+            end
         end
     end
     
