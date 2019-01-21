@@ -52,8 +52,8 @@ for i = 1:w
     cla;
     camera.image.UpdateFieldLine(rhos(:,i), thetas(:,i), counts(i));    
     camera.Draw();
-    xlim([-1, 2]);
-    ylim([-1, 2]);
+    xlim([-1, 5]);
+    ylim([-1, 5]);
     view(0,90)
     pause(0.03);
 end

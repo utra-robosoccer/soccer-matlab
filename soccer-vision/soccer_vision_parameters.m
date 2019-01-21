@@ -1,3 +1,6 @@
+% Bus types
+load("soccer-vision/data/bus-types.mat")
+
 % Load Paths
 sampleTime = 1/30;
 

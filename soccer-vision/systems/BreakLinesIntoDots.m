@@ -4,7 +4,7 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
     properties
         width = 360;
         height = 240;
-        init_pitch = 30;
+        init_pitch = 12;
         init_height = 0.5;
     end
 
@@ -16,8 +16,8 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
 
     methods(Access = protected)
         function setupImpl(obj)
-            t = Geometry.Transform([0.0, 0.0, 0.5], eul2quat([deg2rad(0),deg2rad(obj.init_pitch),0]));
-            obj.camera = Camera.Camera(t, obj.width, obj.height);
+            t = Geometry.Transform([0.0, 0.0, obj.init_height], eul2quat([deg2rad(0),deg2rad(obj.init_pitch),0]));
+            obj.camera = Camera.Camera(t, obj.height, obj.width);
         end
 
         function posearray = stepImpl(obj, thetas, rhos, counts, camerapose, posearray)
@@ -28,6 +28,12 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
             % Update the field lines and calculate positions
             obj.camera.image.UpdateFieldLine(rhos, thetas, counts);
             dots = obj.camera.GetDots;
+            
+            cla;
+            obj.camera.Draw();
+            xlim([-1, 2]);
+            ylim([-1, 2]);
+            view(0,90)
             
             % Output
             for i = 1:length(dots)
@@ -56,7 +62,7 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
         function [c1] = isOutputFixedSizeImpl(~)
             c1 = false;
         end
-        function [sz_1] = getOutputSizeImpl(obj)
+        function [sz_1] = getOutputSizeImpl(~)
             sz_1 = 1;
         end 
         function [out1] = getOutputDataTypeImpl(~)
