@@ -16,6 +16,7 @@ classdef Image < handle
         function UpdateFieldLine(obj, rhos, thetas, count)
             lines = cell(count, 0);
             if count == 0
+                obj.segments = {};
                 return;
             end
             for i = 1:count
@@ -125,11 +126,9 @@ classdef Image < handle
             %     segments{(i+1)/2} = Geometry.Segment2f(points{i}, points{i+1});
             % end
             segments = {};
-            for i=2:length(points)
+            for i = 2:length(points)
                 segments{i - 1} = Geometry.Segment2f(points{i - 1}, points{i});
             end
-
-
         end
     end
     

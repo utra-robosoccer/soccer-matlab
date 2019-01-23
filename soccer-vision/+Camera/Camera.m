@@ -3,13 +3,17 @@ classdef Camera
     
     properties
         % Geometry.Transform
-        pose; 
-
+        pose;
+        
         % Values for the C920 camera
         resolution_y = 240;
         resolution_x = 360;
         diagonal_fov = 1.36; % radians (field of view)
         focal_length = 3.67; % mm
+        
+        % For creating the points
+        distance_between_dots = 0.1;
+        max_line_distance = 10;   % Maximum distance to project the current line, if the endpoint is above the horizon
         
         % Camera Image (type Camera Image)
         image
@@ -51,11 +55,28 @@ classdef Camera
         
         function dots = GetDots(obj)
             dots = {};
+            
+            max_pixel_height = obj.MaxPixelHeightGivenMaxDistance;
+            
             for i = 1:length(obj.image.segments)
+                % Both points are above the horizon line
+                if (obj.image.segments{i}.p1.y > max_pixel_height && obj.image.segments{i}.p2.y > max_pixel_height)
+                    continue
+                elseif (obj.image.segments{i}.p1.y < max_pixel_height && obj.image.segments{i}.p2.y > max_pixel_height)
+                    ratio = (max_pixel_height - obj.image.segments{i}.p1.y) / (obj.image.segments{i}.p2.y - obj.image.segments{i}.p1.y);
+                    obj.image.segments{i}.p2.y = obj.image.segments{i}.p1.y + (obj.image.segments{i}.p2.y - obj.image.segments{i}.p1.y) * ratio;
+                    obj.image.segments{i}.p2.x = obj.image.segments{i}.p1.x + (obj.image.segments{i}.p2.x - obj.image.segments{i}.p1.x) * ratio;
+                elseif (obj.image.segments{i}.p2.y < max_pixel_height && obj.image.segments{i}.p1.y > max_pixel_height)
+                    ratio = (max_pixel_height - obj.image.segments{i}.p2.y) / (obj.image.segments{i}.p1.y - obj.image.segments{i}.p2.y);
+                    obj.image.segments{i}.p1.y = obj.image.segments{i}.p2.y + (obj.image.segments{i}.p1.y - obj.image.segments{i}.p2.y) * ratio;
+                    obj.image.segments{i}.p1.x = obj.image.segments{i}.p2.x + (obj.image.segments{i}.p1.x - obj.image.segments{i}.p2.x) * ratio;
+                end
+                
+                % Find the points on the ground
                 p13d = obj.FindFloorCoordinate(obj.image.segments{i}.p1.x, obj.image.segments{i}.p1.y);
                 p23d = obj.FindFloorCoordinate(obj.image.segments{i}.p2.x, obj.image.segments{i}.p2.y);
                 seg = Geometry.Segment3f(p13d, p23d);
-                dots = [dots seg.ConvertToDots(0.1)];
+                dots = [dots seg.ConvertToDots(obj.distance_between_dots)];
             end
         end
         
@@ -127,12 +148,12 @@ classdef Camera
                 dots{i}.Draw;
             end
         end
-    end
-    
-    methods(Access = private)
         function fov = VerticalFOV(obj)
             fov = obj.resolution_y / sqrt(obj.resolution_x^2 + obj.resolution_y^2);
         end
+    end
+    
+    methods(Access = private)
         function fov = HorizontalFOV(obj)
             fov = obj.resolution_x / sqrt(obj.resolution_x^2 + obj.resolution_y^2);
         end
@@ -163,6 +184,18 @@ classdef Camera
             
             ty = deltay * obj.PixelHeight;
             tx = deltax * obj.PixelWidth;
+        end
+        
+        function max_pixel_height = MaxPixelHeight(obj)
+            max_pixel_height = (obj.resolution_y / 2) + (obj.resolution_y / 2) * tan(obj.pose.Pitch) / tan(obj.VerticalFOV);
+        end
+        
+        function angle = MaxPitchAngleGivenMaxDistance(obj)
+            angle = atan2(obj.pose.Z, obj.max_line_distance);
+        end
+        
+        function pixel_height = MaxPixelHeightGivenMaxDistance(obj)
+            pixel_height = (obj.resolution_y / 2) + (obj.resolution_y / 2) * tan(obj.pose.Pitch - obj.MaxPitchAngleGivenMaxDistance) / tan(obj.VerticalFOV);
         end
     end
 end

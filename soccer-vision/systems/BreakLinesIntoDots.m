@@ -29,11 +29,12 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
             obj.camera.image.UpdateFieldLine(rhos, thetas, counts);
             dots = obj.camera.GetDots;
             
-            cla;
-            obj.camera.Draw();
-            xlim([-1, 2]);
-            ylim([-1, 2]);
-            view(0,90)
+            % Draw
+%             cla;
+%             obj.camera.Draw();
+%             xlim([-1, 2]);
+%             ylim([-1, 2]);
+%             view(0,90)
             
             % Output
             for i = 1:length(dots)

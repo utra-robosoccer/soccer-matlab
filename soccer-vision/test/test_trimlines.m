@@ -78,7 +78,6 @@ counts = squeeze(counts.Data);
 cam = Camera.Image(240,360);
 
 figure;
-
 for i = 1:w
     
     subplot(2,1,1);
@@ -91,6 +90,7 @@ for i = 1:w
         lines(j) = Geometry.Line2f.ImgConvention(rhos(j,i), thetas(j,i), 240);
         lines(j).Draw(240,360);
     end
+    grid minor;
     
     subplot(2,1,2);
     title('Lines After');
@@ -98,6 +98,7 @@ for i = 1:w
     hold on;
     cam.UpdateFieldLine(rhos(:,i), thetas(:,i), counts(i));
     cam.Draw();
+    grid minor;
     
     pause(0.03);
 end
