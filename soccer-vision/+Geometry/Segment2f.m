@@ -30,6 +30,59 @@ classdef Segment2f < handle
                 xlim([-10,width+10]);
             end
         end
+        
+        % Point2f is the starting point, angles is a array of angles
+        % shoots at. Returns a single intercept
+        function intercepts = FindIntercept(obj, origin, angles)
+            intercepts = [];
+            ang1 = atan2(obj.p1.y - origin.y, obj.p1.x - origin.x);
+            ang2 = atan2(obj.p2.y - origin.y, obj.p2.x - origin.x);
+            
+            if (ang1 > ang2)
+                angmax = ang1;
+                angmin = ang2;
+                pangmin = obj.p2;
+            else
+                angmax = ang2;
+                angmin = ang1;
+                pangmin = obj.p1;
+            end
+            
+            theta1 = angmin;
+            theta3 = obj.Angle;
+            langlemin = Geometry.Point2f.Distance(pangmin, origin);
+            
+            for angle = angles
+                if (angle > angmax)
+                    continue
+                elseif (angle < angmin)
+                    continue
+                end
+                
+                theta2 = angle - angmin;
+                
+                del_l = sin(theta2) / sin(pi - (theta1 - theta3) - theta2) * langlemin;
+                
+                intercept = Geometry.Point2f(pangmin.x - del_l * cos(theta3), pangmin.y - del_l * sin(theta3));
+                intercepts = [intercepts intercept];
+            end
+        end
+        
+        function k = Slope(obj)
+            k = (obj.p2.y - obj.p1.y) / (obj.p2.x - obj.p1.x);
+        end
+        
+        function b = YIntercept(obj)
+            b = obj.p1.y - obj.p1.x * obj.Slope;
+        end
+        
+        function angle = Angle(obj)
+            if (obj.p2.x > obj.p1.x)
+                angle = atan2(obj.p2.y - obj.p1.y, obj.p2.x - obj.p1.x);
+            else
+                angle = atan2(obj.p1.y - obj.p2.y, obj.p1.x - obj.p2.x);
+            end
+        end
     end
     
     methods(Static)
@@ -69,7 +122,7 @@ classdef Segment2f < handle
             b2 = line2(1,2) - m2*line2(1,1);
 
             xintersect = (b2-b1)/(m1-m2);
-            yintersect = m1*xintersect + b1;
+            yintersect = m1 * xintersect + b1;
             
             intersect = Geometry.Point2f(xintersect,yintersect);
         end
