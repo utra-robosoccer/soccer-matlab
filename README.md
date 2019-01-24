@@ -30,6 +30,8 @@ TBD
 Add the soccer-strategy/test folder to your path and run either soccer-strategy/test-pathfinding.m or soccer-strategy/test-pathfinding-repeat.m for consecutive tests
 ##### Testing Soccer Vision
 Add the soccer-vision/test folder to your path and run any of the tests in the folder
+##### Running the matlab testing framework
+results = runtests(pwd,'IncludeSubfolders',true);
 
 ### Running
 ##### Running Soccer Strategy
@@ -43,7 +45,7 @@ Add the soccer-vision/test folder to your path and run any of the tests in the f
 - Edit the soccer-vision/soccer_vision_setup.m file to customize parameters
 - Click Run to run the computer vision system as a ROS node
 
-### Uploading
+### Deployment
 ##### Uploading Soccer Strategy
 - Ensure the IP addresses of your host computer and the robot computer are correct in soccer-utility/connectrobot.m
 - Open the soccer-strategy/soccer_strategy.slx simulink file
