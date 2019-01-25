@@ -27,7 +27,7 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
 
             % Update the field lines and calculate positions
             obj.camera.image.UpdateFieldLine(rhos, thetas, counts);
-            dots = obj.camera.GetDots;
+            ranges = obj.camera.GetRanges;
             
             % Draw
 %             cla;
@@ -37,17 +37,11 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
 %             view(0,90)
             
             % Output
-            for i = 1:length(dots)
-                posearray.Poses(i).Position.X = dots{i}.x;
-                posearray.Poses(i).Position.Y = dots{i}.y;
-                posearray.Poses(i).Position.Z = dots{i}.z;
-                posearray.Poses(i).Orientation.X = 0;
-                posearray.Poses(i).Orientation.Y = 0;
-                posearray.Poses(i).Orientation.Z = 0;
-                posearray.Poses(i).Orientation.W = 1;
+            for i = 1:length(ranges)
+                posearray.Ranges(i) = ranges(i);
             end
-            posearray.Poses_SL_Info.CurrentLength = uint32(length(dots));
-            posearray.Poses_SL_Info.ReceivedLength = uint32(length(dots));
+            posearray.Ranges_SL_Info.CurrentLength = uint32(length(ranges));
+            posearray.Ranges_SL_Info.ReceivedLength = uint32(length(ranges));
             
             posearray.Header.Seq = uint32(obj.seq);
             frame_name = 'base_footprint';
@@ -58,6 +52,12 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
             posearray.Header.Stamp.Sec = rt.Sec;
             posearray.Header.Stamp.Nsec = rt.Nsec;
             obj.seq = obj.seq + 1;
+            
+            posearray.RangeMin = single(0.05);
+            posearray.RangeMax = single(obj.camera.max_line_distance);
+            posearray.AngleMin = single(-(obj.camera.angmax - pi/2));
+            posearray.AngleMax = single(-(obj.camera.angmin - pi/2));
+            posearray.AngleIncrement = single(obj.camera.laser_scan_angle_delta);
         end
         
         function [c1] = isOutputFixedSizeImpl(~)
@@ -67,7 +67,7 @@ classdef BreakLinesIntoDots < matlab.System & matlab.system.mixin.Propagates
             sz_1 = 1;
         end 
         function [out1] = getOutputDataTypeImpl(~)
-            out1 = "SL_Bus_soccer_vision_geometry_msgs_PoseArray";
+            out1 = "SL_Bus_soccer_vision_sensor_msgs_LaserScan";
         end
         function [c1] = isOutputComplexImpl(~)
             c1 = false;

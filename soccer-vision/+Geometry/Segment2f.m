@@ -33,8 +33,10 @@ classdef Segment2f < handle
         
         % Point2f is the starting point, angles is a array of angles
         % shoots at. Returns a single intercept
-        function intercepts = FindIntercept(obj, origin, angles)
+        function [intercepts, angles_intercepted] = FindIntercept(obj, origin, angles)
             intercepts = [];
+            angles_intercepted = [];
+            
             ang1 = atan2(obj.p1.y - origin.y, obj.p1.x - origin.x);
             ang2 = atan2(obj.p2.y - origin.y, obj.p2.x - origin.x);
             
@@ -65,6 +67,7 @@ classdef Segment2f < handle
                 
                 intercept = Geometry.Point2f(pangmin.x - del_l * cos(theta3), pangmin.y - del_l * sin(theta3));
                 intercepts = [intercepts intercept];
+                angles_intercepted = [angles_intercepted, angle];
             end
         end
         
