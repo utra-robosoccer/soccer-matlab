@@ -38,6 +38,11 @@ classdef Segment3f < handle
             
             dots{i+1} = Geometry.Point3f(obj.p2.x, obj.p2.y, obj.p2.z);
         end
+        
+        function seg2f = ToSegment2f(obj)
+            seg2f = Geometry.Segment2f(Geometry.Point2f(obj.p1.x, obj.p1.y), ...
+                Geometry.Point2f(obj.p2.x, obj.p2.y));
+        end
     end
 end
 

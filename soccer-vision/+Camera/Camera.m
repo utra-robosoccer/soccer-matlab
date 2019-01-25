@@ -12,8 +12,8 @@ classdef Camera
         focal_length = 3.67; % mm
         
         % For creating the points
-        distance_between_dots = 0.1;
         max_line_distance = 10;   % Maximum distance to project the current line, if the endpoint is above the horizon
+        laser_scan_angle_delta = deg2rad(3);
         
         % Camera Image (type Camera Image)
         image
@@ -57,6 +57,7 @@ classdef Camera
             dots = {};
             
             max_pixel_height = obj.MaxPixelHeightGivenMaxDistance;
+            ground_position = obj.pose.GetGroundPosition;
             
             for i = 1:length(obj.image.segments)
                 % Both points are above the horizon line
@@ -75,8 +76,10 @@ classdef Camera
                 % Find the points on the ground
                 p13d = obj.FindFloorCoordinate(obj.image.segments{i}.p1.x, obj.image.segments{i}.p1.y);
                 p23d = obj.FindFloorCoordinate(obj.image.segments{i}.p2.x, obj.image.segments{i}.p2.y);
-                seg = Geometry.Segment3f(p13d, p23d);
-                dots = [dots seg.ConvertToDots(obj.distance_between_dots)];
+                seg = Geometry.Segment3f(p13d, p23d).ToSegment2f;
+                
+                % Find the intercept between a laser and the line
+                dots = [dots seg.FindIntercept(ground_position, 0:obj.laser_scan_angle_delta:pi)];
             end
         end
         
@@ -145,7 +148,8 @@ classdef Camera
             % Segments
             dots = obj.GetDots;
             for i = 1:length(dots)
-                dots{i}.Draw;
+                s = Geometry.Segment2f(obj.pose.GetGroundPosition, dots(i));
+                s.Draw;
             end
         end
         function fov = VerticalFOV(obj)

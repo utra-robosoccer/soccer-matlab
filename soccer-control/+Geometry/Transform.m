@@ -30,6 +30,10 @@ classdef Transform < handle
             point3f = Geometry.Point3f(obj.position(1), obj.position(2), obj.position(3));
         end
         
+        function point2f = GetGroundPosition(obj)
+            point2f = Geometry.Point2f(obj.position(1), obj.position(2));
+        end
+        
         function H = H(obj)
             H = quat2tform(obj.orientation);
             H(1,4) = obj.position(1);
