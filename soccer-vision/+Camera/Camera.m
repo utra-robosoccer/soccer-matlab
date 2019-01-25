@@ -13,7 +13,11 @@ classdef Camera
         
         % For creating the points
         max_line_distance = 10;   % Maximum distance to project the current line, if the endpoint is above the horizon
+        
+        % Laser scan data
         laser_scan_angle_delta = deg2rad(3);
+        angmin = 0;
+        angmax = pi;
         
         % Camera Image (type Camera Image)
         image
@@ -53,8 +57,13 @@ classdef Camera
             point3f = Geometry.Point3f(obj.pose.X - xdelta, obj.pose.Y - ydelta, 0);
         end
         
-        function dots = GetDots(obj)
-            dots = {};
+        function angles = LaserAngles(obj)
+            angles = obj.angmin:obj.laser_scan_angle_delta:obj.angmax;
+        end
+        
+        function [dots, angles_intercepted] = GetDots(obj)
+            dots = [];
+            angles_intercepted = [];
             
             max_pixel_height = obj.MaxPixelHeightGivenMaxDistance;
             ground_position = obj.pose.GetGroundPosition;
@@ -79,8 +88,33 @@ classdef Camera
                 seg = Geometry.Segment3f(p13d, p23d).ToSegment2f;
                 
                 % Find the intercept between a laser and the line
-                dots = [dots seg.FindIntercept(ground_position, 0:obj.laser_scan_angle_delta:pi)];
+                [dot, ang] = seg.FindIntercept(ground_position, obj.LaserAngles);
+                dots = [dots dot];
+                angles_intercepted = [angles_intercepted, ang];
             end
+        end
+        
+        function [ranges] = GetRanges(obj)
+            [dots, angles_intercepted] = obj.GetDots;
+            laser_angles = obj.LaserAngles;
+            ranges = zeros(1,length(laser_angles));
+            
+            counter = 1;
+            for i = 1:length(ranges)
+                if (counter >= length(angles_intercepted))
+                    continue;
+                end
+                
+                if (angles_intercepted(counter) == laser_angles(i))
+                    counter = counter + 1;
+                    ranges(i) = Geometry.Point2f.Distance(dots(counter), obj.pose.GetGroundPosition);
+                else
+                    ranges(i) = 0;
+                end
+            end
+            
+            % Convert to ROS format
+            ranges = fliplr(ranges);
         end
         
         function Draw(obj)
