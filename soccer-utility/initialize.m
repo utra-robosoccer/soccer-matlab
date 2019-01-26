@@ -16,6 +16,7 @@ addpath('soccer-control/systems')
 addpath('soccer-vision')
 addpath('soccer-vision/test')
 addpath('soccer-vision/systems')
+addpath('soccer-vision/media/original/testvideo.avi')
 
 % Soccer Strategy Folders
 addpath('soccer-strategy')

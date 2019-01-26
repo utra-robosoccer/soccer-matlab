@@ -1,5 +1,4 @@
 % Bus types
-load("soccer-vision/data/bus-types.mat")
 
 % Load Paths
 sampleTime = 1/30;
@@ -10,7 +9,7 @@ imageWidth = 320;
 
 % VSS_MODE = 1 for Video file, 0 for Gazebo
 VSS_MODE = 1;
-VSS_PUBLISH_ROS = 0;
+VSS_PUBLISH_ROS = 1;
 
 % Connect Robot
 if VSS_MODE == 0 || VSS_PUBLISH_ROS == 1
