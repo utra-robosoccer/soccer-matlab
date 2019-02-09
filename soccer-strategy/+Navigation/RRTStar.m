@@ -12,23 +12,48 @@ classdef RRTStar
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %             Constructor              %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        function obj = RRTStar()
-            
+        
+        function obj = RRTStar(occupancymap, connectiondistance, numnodes)
+            % Create an RRTStar object, initialize with passed parameters.
+            obj.occupancymap = occupancymap;
+            obj.connectiondistance = connectiondistance;
+            obj.numnodes = numnodes;
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %              Primitives              %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Sample a random vaiable, independent, and identically distributed
+        
+        % Sample a random variable, independent, and identically distributed
         % from the entire occupancymap
         function v = sample(obj)
-        
+            dims = size(obj.occupancymap);
+            
+            % Obtain random point from occupancy map.
+            x_rand = Navigation.rand() * dims(1,2);
+            y_rand = Navigation.rand() * dims(1,1);
+            
+            % Return sample.
+            v = [x_rand y_rand];
         end
         
         % Sample a random vaiable, independent, and identically distributed
         % from the free space in occupancymap
         function v = freesample(obj)
-        
+            dims = size(obj.occupancymap);
+            
+            % Try initial sample of occupancymap.
+            x_rand = Navigation.rand() * dims(1,2);
+            y_rand = Navigation.rand() * dims(1,1);
+            
+            % Continue computing a sample until it is not occupied.
+            while(obj.occupancymap(x_rand, y_rand) ~= 0)
+                x_rand = Navigation.rand() * dims(1,2);
+                y_rand = Navigation.rand() * dims(1,1);
+            end
+            
+            % Return free sample.
+            v = [x_rand y_rand];
         end
         
         % Use Euclidean distance to find the closest neighbor to point x
@@ -60,5 +85,13 @@ classdef RRTStar
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %              Composites              %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        function computetree(obj)
+            
+        end
+        
+        function computepath(obj)
+            
+        end
     end
 end
