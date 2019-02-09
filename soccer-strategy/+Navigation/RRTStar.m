@@ -59,13 +59,23 @@ classdef RRTStar
         % Use Euclidean distance to find the closest neighbor to point x
         % already in the tree
         function v = nearestneighbor(obj, x)
-            
+            num_v = obj.tree.numnodes();
+            min_dist = Inf;
+            for i = 1:num_v
+                node_v = findnode(obj.tree, i);
+                dist = (node_v(1,1) - x(1,1))^2 + (node_v(1,2) - x(1,2))^2;
+                if(dist < min_dist)
+                    min_dist = dist;
+                    v = node_v;
+                end
+            end
         end
         
         % Returns the vertices in the tree that are contained in a circle
         % of radius r centered at x, a point in the occupancymap
         function v = near(obj, x, r)
-            
+            % I don't believe below does what I think it does.
+            % v = nearest(obj.tree, x, r);
         end
         
         % Returns a point v in the occupancymap such that v is closer to y
@@ -87,7 +97,7 @@ classdef RRTStar
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         function computetree(obj)
-            
+            obj.tree = digraph(start);
         end
         
         function computepath(obj)
