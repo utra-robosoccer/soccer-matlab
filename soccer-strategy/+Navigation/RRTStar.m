@@ -1,3 +1,10 @@
+% Implementation of the Optimized Rapidly-exploring Random Trees as
+% described by:
+%
+% 'Karaman, S. and Frazzoli, E. (2011). Sampling-based algorithms for 
+%  optimal motion planning. The International Journal of Robotics Research,
+%  30(7), pp.846-894.'
+
 classdef RRTStar
     properties
         occupancymap; % Map.occupancymap 
@@ -9,21 +16,25 @@ classdef RRTStar
     end
     
     methods
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %             Constructor              %
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                             Constructor                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         function obj = RRTStar(occupancymap, connectiondistance, numnodes)
             % Create an RRTStar object, initialize with passed parameters.
             obj.occupancymap = occupancymap;
             obj.connectiondistance = connectiondistance;
             obj.numnodes = numnodes;
+            
+            % Default: set start to (0,0)
+            obj.start = {0 0};
         end
         
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %              Primitives              %
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                              Primitives                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
         % Sample a random variable, independent, and identically distributed
         % from the entire occupancymap
         function v = sample(obj)
@@ -82,16 +93,28 @@ classdef RRTStar
             
         end
         
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %              Composites              %
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      Public Composites Methods                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        function computetree(obj)
+        function obj = explore(obj, goal)
+            % Initialize the Tree
+            obj.tree = digraph();
+            obj.goal = goal;
             
+            % Add the start position
         end
         
         function computepath(obj)
             
         end
-    end
+    end % Methods
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      Private Primitive Methods                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    methods (Access='protected')
+        
+    end % Primitive Measures
 end
