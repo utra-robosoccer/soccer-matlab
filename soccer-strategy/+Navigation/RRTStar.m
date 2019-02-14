@@ -38,11 +38,25 @@ classdef RRTStar
         % Sample a random variable, independent, and identically distributed
         % from the entire occupancymap
         function v = sample(obj)
-            dims = size(obj.occupancymap);
+            % Range of grid values
+            x_range = obj.occupancymap.GridSize(1);
+            y_range = obj.occupancymap.GridSize(2);
             
             % Obtain random point from occupancy map.
-            x_rand = Navigation.rand() * dims(1,2);
-            y_rand = Navigation.rand() * dims(1,1);
+            x_rand = Navigation.rand() * x_range;
+            y_rand = Navigation.rand() * y_range;
+            
+            % Round values to nearest integer
+            x_rand = round(x_rand);
+            y_rand = round(y_rand);
+            
+            % Scale down to occupancy map size 
+            x_rand = x_rand/obj.occupancymap.Resolution;
+            y_rand = y_rand/obj.occupancymap.Resolution;
+            
+            % Offset to center of the grid
+            x_rand = x_rand + obj.occupancymap.GridLocationInWorld(1);
+            y_rand = y_rand + obj.occupancymap.GridLocationInWorld(2);
             
             % Return sample.
             v = [x_rand y_rand];
