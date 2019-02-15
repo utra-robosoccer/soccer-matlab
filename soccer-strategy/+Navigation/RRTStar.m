@@ -65,20 +65,16 @@ classdef RRTStar
         % Sample a random vaiable, independent, and identically distributed
         % from the free space in occupancymap
         function v = freesample(obj)
-            dims = size(obj.occupancymap);
-            
-            % Try initial sample of occupancymap.
-            x_rand = Navigation.rand() * dims(1,2);
-            y_rand = Navigation.rand() * dims(1,1);
+            % Obtain a sample
+            sample = obj.sample();
             
             % Continue computing a sample until it is not occupied.
-            while(obj.occupancymap(x_rand, y_rand) ~= 0)
-                x_rand = Navigation.rand() * dims(1,2);
-                y_rand = Navigation.rand() * dims(1,1);
+            while(obj.occupancymap(sample(1), sample(2)) ~= 0)
+                sample = obj.sample();
             end
             
             % Return free sample.
-            v = [x_rand y_rand];
+            v = sample;
         end
         
         % Use Euclidean distance to find the closest neighbor to point x
@@ -86,10 +82,13 @@ classdef RRTStar
         function v = nearestneighbor(obj, x)
             num_v = obj.tree.numnodes();
             min_dist = Inf;
+            
+            % Loop over all nodes in the tree
             for i = 1:num_v
                 node_v = findnode(obj.tree, i);
-                dist = (node_v(1,1) - x(1,1))^2 + (node_v(1,2) - x(1,2))^2;
-                if(dist < min_dist)
+                %  Compute Euclidean Distance
+                dist = (node_v(1,1) - x(1,1))^2 + (node_v(1,2) - x(1,2))^2; %% THIS NEEDS TO BE FIXED, HOW ARE WE GOING TO STUDY COORDINATES FOR THESE NODES
+                if(dist < min_dist) 
                     min_dist = dist;
                     v = node_v;
                 end
