@@ -1,5 +1,0 @@
-numpy
-matplotlib
-pytest
-# tensorflow
-# pybullet
