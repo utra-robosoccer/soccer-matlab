@@ -1,24 +1,40 @@
-import tensorflow as tf
-import numpy as np
-import pybullet as p
-import matplotlib as plt
-from time import sleep
+"""
+"""
+from __future__ import print_function
 
-from agent import Robot 
-from environment import Ramp 
+import os 
+import sys 
+import argparse 
+
+import tensorflow as tf 
+
+import settings 
+import agent 
+import simulation 
+
+
+def run_simulation(sim):
+    """
+    """
+    pass 
+
+
 
 
 if __name__ == '__main__':
     
-    # Pybullet Setup
-    p.connect(p.GUI)
-    ramp = Ramp("pybullet/gym/pybullet_data/plane.urdf", (0, 0, 0), (0, 0, 0))
-    myrobot = Robot()
-    p.setGravity(0, 0, -10)
+    parser = argparse.ArgumentParser(description="start a simulation")
+    parser.add_argument('-a', '--action', default="train", help="train or test")
+    parser.add_argument('-p', '--params', default="params.yaml", help="training parameters")
+    args = parser.parse_args()
+    print(args)
 
-    # Step through simulation
-    while(1):
-        sleep(0.01)
-        pos, orn = p.getBasePositionAndOrientation(myrobot.body)
-        myrobot.stabilize()
-        p.stepSimulation()
+    # robot and simulation setup 
+    bot = agent.Robot(settings.BOT_MODEL)
+    sim = simulation.SoccerSim(bot)
+
+    # main execution 
+    run_simulation(sim)
+
+
+  
